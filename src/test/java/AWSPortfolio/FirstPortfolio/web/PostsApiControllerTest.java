@@ -54,6 +54,5 @@ public class PostsApiControllerTest {
         List<Posts> all = postsRepository.findAll();
         Assertions.assertThat(all.get(0).getTitle()).isEqualTo(title);
         Assertions.assertThat(all.get(0).getContent()).isEqualTo(content);
-
     }
 }
