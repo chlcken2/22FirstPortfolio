@@ -1,10 +1,12 @@
 package AWSPortfolio.FirstPortfolio.web;
 
+import AWSPortfolio.FirstPortfolio.config.auth.LoginUser;
 import AWSPortfolio.FirstPortfolio.config.auth.dto.SessionUser;
 import AWSPortfolio.FirstPortfolio.service.posts.PostsService;
 import AWSPortfolio.FirstPortfolio.web.dto.PostsListResponseDto;
 import AWSPortfolio.FirstPortfolio.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +19,11 @@ import javax.servlet.http.HttpSession;
 public class IndexController {
 
     private final PostsService postsService;
-    private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+//        SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
         if (user != null) {
             model.addAttribute("userName", user.getName());
