@@ -4,7 +4,7 @@ plugins {
 	id 'java'
 }
 
-group = 'AWSPortfolio'
+group = 'hellomyteam'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '8'
 
