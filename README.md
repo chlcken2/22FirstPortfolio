@@ -10,13 +10,11 @@
 * hellomyteam.com 로 접속하시면 됩니다. 
 
 # 기술 스택
-(개발자용)
-1. Java: 8 
-2. Springboot: 2.6.7
-3. junit:4.13.2'
-4. 서버(EC2, RDS)
-5. 호스팅(AWS Route 53)
-6. 프런트(웹: 타임리프 모바일 까지 고려해서 리액트, 플러터 중 고민)
-7. 자바스크립트, (타입스크립트 고려중)
-8. DB: MariaDB, 
-9. git action
+
+BackEnd
+- Language: Java 8, ES6,   
+- Framework: Springboot: 2.6.7
+- DB: Maria DB
+
+FrontEnd
+- 
