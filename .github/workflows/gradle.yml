@@ -6,7 +6,10 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
 
 name: Java CI with Gradle
-
+env:
+  S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
+  CODE_DEPLOY_APPLICATION_NAME: hellomyteam-service
+  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: hellomyteam-group
 on:
   push:
     branches: [ "main" ]
@@ -47,7 +50,7 @@ jobs:
         aws deploy push \
           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
           --ignore-hidden-files \
-          --s3-location s3://hellomyteam-github-action-s3-bucket/$GITHUB_SHA.zip \
+          --s3-location s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip \
           --source .
 
     # (6) S3 버킷에 있는 파일을 대상으로 CodeDeploy 실행
@@ -57,4 +60,4 @@ jobs:
           --application-name ${{ env.CODE_DEPLOY_APPLICATION_NAME }} \
           --deployment-config-name CodeDeployDefault.AllAtOnce \
           --deployment-group-name ${{ env.CODE_DEPLOY_DEPLOYMENT_GROUP_NAME }} \
-          --s3-location bucket=hellomyteam-github-action-s3-bucket,key=$GITHUB_SHA.zip,bundleType=zip
+          --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
