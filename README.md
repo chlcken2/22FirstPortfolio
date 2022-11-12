@@ -15,6 +15,7 @@ BackEnd
 - Language: Java 8, ES6,   
 - Framework: Springboot: 2.6.7
 - DB: Maria DB
+- CI/CD: git action
 
 FrontEnd
 - 작성중
