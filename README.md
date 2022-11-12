@@ -18,7 +18,7 @@ BackEnd
 - CI/CD: git action 
 
 FrontEnd
-- 작성중
+- 작성예정
 
 ### 추가될 내용..
 소캣 푸쉬알림, Redis를 활용한 메시지 기능등...
