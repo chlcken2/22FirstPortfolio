@@ -10,7 +10,7 @@ AWS 배포를 위한 설정 및 명령어 정리
 3. config 설정: vim ~/.ssh/config 
 4. HOSTNAME 설정: HOSTNAME = 탄력적IP 주소 할당 
 5. HOST 이름 변경으로 손쉽게 접근 가능
-6. Config파일 권한 설정: chmod 700 ~/.ssh/config
+6. Config파일 권한 설정: chmod 700 ~/.ssh/config 
 
 # ec2 세팅 후 필수설정
 1. java version 일치화
@@ -30,4 +30,4 @@ AWS 배포를 위한 설정 및 명령어 정리
 5. 호스트 네임 변경
 - 접속
   - sudo vim /etc/sysconfig/network
-- HOSTNAME 추가
+- HOSTNAME 추가완료
