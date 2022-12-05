@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
+                .antMatchers("/", "/**", "/css/**", "/images/**", "/js/**", "/h2-console/**").permitAll()
                 .antMatchers("/api/v1/**").hasRole(Role.GUEST.name())
                 .anyRequest().authenticated()
                 .and()
