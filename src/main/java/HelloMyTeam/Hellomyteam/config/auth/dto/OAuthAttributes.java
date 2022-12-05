@@ -1,7 +1,7 @@
 package HelloMyTeam.Hellomyteam.config.auth.dto;
 
-import HelloMyTeam.Hellomyteam.domain.user.Role;
-import HelloMyTeam.Hellomyteam.domain.user.User;
+import HelloMyTeam.Hellomyteam.entity.Role;
+import HelloMyTeam.Hellomyteam.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

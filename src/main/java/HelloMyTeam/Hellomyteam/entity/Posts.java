@@ -1,6 +1,5 @@
-package HelloMyTeam.Hellomyteam.domain.posts;
+package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.domain.BaseTimeEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

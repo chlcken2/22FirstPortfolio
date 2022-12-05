@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.web.dto;
+package HelloMyTeam.Hellomyteam.dto;
 
 import lombok.Builder;
 import lombok.Getter;

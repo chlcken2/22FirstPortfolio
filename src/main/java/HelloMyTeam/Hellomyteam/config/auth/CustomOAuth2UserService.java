@@ -2,8 +2,8 @@ package HelloMyTeam.Hellomyteam.config.auth;
 
 import HelloMyTeam.Hellomyteam.config.auth.dto.OAuthAttributes;
 import HelloMyTeam.Hellomyteam.config.auth.dto.SessionUser;
-import HelloMyTeam.Hellomyteam.domain.user.User;
-import HelloMyTeam.Hellomyteam.domain.user.UserRepository;
+import HelloMyTeam.Hellomyteam.entity.User;
+import HelloMyTeam.Hellomyteam.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

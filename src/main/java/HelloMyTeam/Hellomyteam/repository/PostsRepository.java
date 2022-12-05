@@ -1,5 +1,6 @@
-package HelloMyTeam.Hellomyteam.domain.posts;
+package HelloMyTeam.Hellomyteam.repository;
 
+import HelloMyTeam.Hellomyteam.entity.Posts;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

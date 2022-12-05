@@ -1,9 +1,9 @@
-package HelloMyTeam.Hellomyteam.web;
+package HelloMyTeam.Hellomyteam.controller;
 
 import HelloMyTeam.Hellomyteam.config.auth.LoginUser;
 import HelloMyTeam.Hellomyteam.config.auth.dto.SessionUser;
-import HelloMyTeam.Hellomyteam.service.posts.PostsService;
-import HelloMyTeam.Hellomyteam.web.dto.PostsResponseDto;
+import HelloMyTeam.Hellomyteam.service.PostsService;
+import HelloMyTeam.Hellomyteam.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

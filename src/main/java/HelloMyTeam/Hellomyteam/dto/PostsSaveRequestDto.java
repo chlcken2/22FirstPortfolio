@@ -1,6 +1,6 @@
-package HelloMyTeam.Hellomyteam.web.dto;
+package HelloMyTeam.Hellomyteam.dto;
 
-import HelloMyTeam.Hellomyteam.domain.posts.Posts;
+import HelloMyTeam.Hellomyteam.entity.Posts;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

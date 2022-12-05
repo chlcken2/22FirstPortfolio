@@ -1,5 +1,6 @@
-package HelloMyTeam.Hellomyteam.domain.user;
+package HelloMyTeam.Hellomyteam.repository;
 
+import HelloMyTeam.Hellomyteam.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

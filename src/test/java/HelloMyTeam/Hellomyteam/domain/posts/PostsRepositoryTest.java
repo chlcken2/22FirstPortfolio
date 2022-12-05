@@ -1,5 +1,7 @@
 package HelloMyTeam.Hellomyteam.domain.posts;
 
+import HelloMyTeam.Hellomyteam.entity.Posts;
+import HelloMyTeam.Hellomyteam.repository.PostsRepository;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;

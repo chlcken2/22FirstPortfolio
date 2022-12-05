@@ -1,11 +1,11 @@
-package HelloMyTeam.Hellomyteam.service.posts;
+package HelloMyTeam.Hellomyteam.service;
 
-import HelloMyTeam.Hellomyteam.domain.posts.Posts;
-import HelloMyTeam.Hellomyteam.domain.posts.PostsRepository;
-import HelloMyTeam.Hellomyteam.web.dto.PostsListResponseDto;
-import HelloMyTeam.Hellomyteam.web.dto.PostsResponseDto;
-import HelloMyTeam.Hellomyteam.web.dto.PostsSaveRequestDto;
-import HelloMyTeam.Hellomyteam.web.dto.PostsUpdateRequestDto;
+import HelloMyTeam.Hellomyteam.entity.Posts;
+import HelloMyTeam.Hellomyteam.repository.PostsRepository;
+import HelloMyTeam.Hellomyteam.dto.PostsListResponseDto;
+import HelloMyTeam.Hellomyteam.dto.PostsResponseDto;
+import HelloMyTeam.Hellomyteam.dto.PostsSaveRequestDto;
+import HelloMyTeam.Hellomyteam.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

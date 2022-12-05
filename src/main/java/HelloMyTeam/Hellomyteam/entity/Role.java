@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.domain.user;
+package HelloMyTeam.Hellomyteam.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

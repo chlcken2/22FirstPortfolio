@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.web.dto;
 
+import HelloMyTeam.Hellomyteam.dto.HelloResponseDto;
 import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 

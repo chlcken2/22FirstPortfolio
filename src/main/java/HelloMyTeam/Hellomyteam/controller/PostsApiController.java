@@ -1,9 +1,9 @@
-package HelloMyTeam.Hellomyteam.web;
+package HelloMyTeam.Hellomyteam.controller;
 
-import HelloMyTeam.Hellomyteam.service.posts.PostsService;
-import HelloMyTeam.Hellomyteam.web.dto.PostsResponseDto;
-import HelloMyTeam.Hellomyteam.web.dto.PostsSaveRequestDto;
-import HelloMyTeam.Hellomyteam.web.dto.PostsUpdateRequestDto;
+import HelloMyTeam.Hellomyteam.service.PostsService;
+import HelloMyTeam.Hellomyteam.dto.PostsResponseDto;
+import HelloMyTeam.Hellomyteam.dto.PostsSaveRequestDto;
+import HelloMyTeam.Hellomyteam.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

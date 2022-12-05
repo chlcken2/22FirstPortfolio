@@ -1,9 +1,9 @@
 package HelloMyTeam.Hellomyteam.web;
 
 
-import HelloMyTeam.Hellomyteam.domain.posts.Posts;
-import HelloMyTeam.Hellomyteam.domain.posts.PostsRepository;
-import HelloMyTeam.Hellomyteam.web.dto.PostsSaveRequestDto;
+import HelloMyTeam.Hellomyteam.entity.Posts;
+import HelloMyTeam.Hellomyteam.repository.PostsRepository;
+import HelloMyTeam.Hellomyteam.dto.PostsSaveRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
