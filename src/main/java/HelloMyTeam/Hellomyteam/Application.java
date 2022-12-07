@@ -14,6 +14,4 @@ public class Application {
 		application.run(args);
 
 	}
-
-
 }
