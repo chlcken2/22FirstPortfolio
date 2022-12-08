@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReactTestController {
     @GetMapping("/api/hello")
     public String test() {
-        return "Hello, world!";
+        return "Hello, 2world!";
     }
 }
