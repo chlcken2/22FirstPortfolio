@@ -1,4 +1,4 @@
-## 개발 release.yml의 최상단입니다.
+## release.yml의 최상단입니다.
 #
 env:
   S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
@@ -6,7 +6,7 @@ env:
   CODE_DEPLOY_APP_NAME: hellomyteam-webservice
   CODE_DEPLOY_GROUP_NAME: hellomyteam-webservice-back
 
-name: deploy-staging
+name: deploy-release
 
 on:
   push:
