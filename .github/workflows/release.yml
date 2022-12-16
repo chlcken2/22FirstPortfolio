@@ -1,4 +1,4 @@
-## release.yml의 최상단입니다.
+## 개발 release.yml의 최상단입니다.
 #
 env:
   S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
