@@ -13,8 +13,6 @@ on:
     types: [push] # (1) push시 자동으로 실행됩니다.
   push:
     branches: [release] # (2) release 브랜치에서 동작합니다!
-  workflow_dispatch: # (3) 수동으로도 실행이 가능힙니다.
-
 
 jobs:
   build:
