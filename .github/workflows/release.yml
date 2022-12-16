@@ -42,6 +42,6 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: Upload to S3             # 빌드파일 S3 업로드
-        run: aws deploy push --application-name=$CODE_DEPLOY_APP_NAME --description "myapp Test" --s3-location $S3_BUCKET_NAME --source .
+        run: aws deploy push --application-name=$CODE_DEPLOY_APP_NAME --description "myapp Test" --s3-location s3://$S3_BUCKET_NAME/$PROJECT_NAME/$PROJECT_NAME.zip --source .
       - name: Start Deploy with CodeDeploy      # CodeDeploy 실행
         run: aws deploy create-deployment --application-name=$CODE_DEPLOY_APP_NAME --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name=$CODE_DEPLOY_GROUP_NAME --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$PROJECT_NAME.zip    #(16)
