@@ -4,17 +4,15 @@ env:
   S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
   PROJECT_NAME: hellomyteam
   CODE_DEPLOY_APP_NAME: hellomyteam-webservice
-  CODE_DEPLOY_GROUP_NAME: hellomyteam-webservice-group
+  CODE_DEPLOY_GROUP_NAME: hellomyteam-webservice-back
 
-name: BackEnd-PROD-Deploy # (0) GitHub Action에서 보여질 이름을 지정합니다.
+name: BACKEND-Prod-Deploy # (0) GitHub Action에서 보여질 이름을 지정합니다.
 
 on:
   release:
     types: [push] # (1) push시 자동으로 실행됩니다.
   push:
     branches: [main] # (2) main 브랜치에서 동작합니다.
-  workflow_dispatch: # (3) 수동으로도 실행이 가능힙니다.
-
 
 jobs:
   build:
