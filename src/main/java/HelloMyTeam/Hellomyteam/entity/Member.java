@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity(name = "Member")
 @Getter
-public class Member {
+public class Member extends BaseTimeEntity{
 
     @Id
     @GeneratedValue

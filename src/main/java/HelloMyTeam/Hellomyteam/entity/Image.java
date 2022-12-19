@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity(name = "Image")
 @Getter
-public class Image {
+public class Image extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

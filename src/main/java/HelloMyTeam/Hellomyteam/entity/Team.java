@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Team {
+public class Team extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

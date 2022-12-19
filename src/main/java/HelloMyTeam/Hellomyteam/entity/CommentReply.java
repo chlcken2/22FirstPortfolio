@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class CommentReply {
+public class CommentReply extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

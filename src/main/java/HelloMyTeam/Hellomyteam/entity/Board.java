@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Getter
-public class Board {
+public class Board extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
