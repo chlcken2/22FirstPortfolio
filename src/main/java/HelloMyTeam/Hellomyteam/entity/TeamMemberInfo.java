@@ -4,14 +4,16 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-public class OwnTeam {
+public class TeamMemberInfo {
 
     @Id
     @GeneratedValue
-    @Column(name = "ownTeam_id")
+    @Column(name = "teamMemberInfo_id")
     private Long id;
     private int authority;                      //0-팀장, 1-부팀장, 2-팀원, 3-용병, 4-일반
     private int preferPosition;                 //0-ST, 1-RW, 2-LW, 3-CAM, 4-CM, 5-CDM, 6-LB, 7-LCB, 8-RB,9-RCB, 10-GK
@@ -22,7 +24,8 @@ public class OwnTeam {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToMany
-    @JoinColumn(name = "team_Id")
+    @ManyToOne
+    @JoinColumn(name = "team_id")
     private Team team;
+
 }

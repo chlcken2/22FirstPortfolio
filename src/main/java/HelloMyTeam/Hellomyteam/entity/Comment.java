@@ -20,9 +20,13 @@ public class Comment {
     private int memberId;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @OneToMany(mappedBy = "comment")
     private CommentReply commentReply;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

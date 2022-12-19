@@ -2,6 +2,8 @@ package HelloMyTeam.Hellomyteam.entity;
 
 import lombok.Getter;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,9 +23,11 @@ public class Team {
     private int maxTeamNo;                  //최대 30
     private int maxMercenaryNo;             //최대 10
 
-    @ManyToMany(mappedBy = "team")
-    private OwnTeam ownTeam;
+    @OneToMany(mappedBy = "team")
+    private List<Member> members = new ArrayList<>();
 
-    @OneToOne
-    private Image image;
+    @OneToMany(mappedBy = "team")
+    private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
+
+
 }
