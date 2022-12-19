@@ -1,7 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
 import lombok.Getter;
-
 import javax.persistence.*;
 
 @Entity(name = "Image")
@@ -12,11 +11,7 @@ public class Image extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "image_id")
     private Long id;
-
     private String path;
-    private Long memberId;
-    private Long teamId;
-    private Long boardNo;
 
     @OneToOne(mappedBy = "image")
     private Team team;
@@ -28,6 +23,4 @@ public class Image extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
-
 }

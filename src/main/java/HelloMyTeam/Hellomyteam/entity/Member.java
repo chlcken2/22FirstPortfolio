@@ -1,6 +1,5 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -19,7 +18,7 @@ public class Member extends BaseTimeEntity{
     private String email;                              //XXX@gmail.com
     private String memberName;                         //닉네임 -> 이름 사용 고정
     private String birthday;
-    private MemberStatus memberStatus;                 //0-정상, 1-중지, 2-탈퇴, 3-경고, 4-강퇴, 5-불법
+//    private MemberStatus memberStatus;                 //0-정상, 1-중지, 2-탈퇴, 3-경고, 4-강퇴, 5-불법
     private int termsOfServiceYn;                      //0-미수신, 1-수신
     private int privacyYn;                             //0-미수신, 1-수신
 

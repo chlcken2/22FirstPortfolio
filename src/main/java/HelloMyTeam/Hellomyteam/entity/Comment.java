@@ -1,9 +1,9 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.entity.status.CommentStatus;
 import lombok.Getter;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -13,18 +13,16 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "comment_id")
     private Long id;
-
     private String contents;
-    private CommentStatus commentStatus;
-    private int boardNo;
-    private int memberId;
+//    private CommentStatus commentStatus;
+
 
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
 
     @OneToMany(mappedBy = "comment")
-    private CommentReply commentReply;
+    private List<CommentReply> commentReply = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "member_id")

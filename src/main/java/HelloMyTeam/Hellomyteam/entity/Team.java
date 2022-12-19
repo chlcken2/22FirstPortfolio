@@ -20,8 +20,8 @@ public class Team extends BaseTimeEntity {
     private String oneIntro;
     private String detailIntro;
     private int style;
-    private int maxTeamNo;                  //최대 30
-    private int maxMercenaryNo;             //최대 10
+    private int memberCount;                //팀원 수
+    private int mercenaryCount;             //용병 수
 
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
