@@ -29,5 +29,8 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
 
 }

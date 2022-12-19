@@ -38,4 +38,7 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<CommentReply> commentReplies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Image> images = new ArrayList<>();
 }

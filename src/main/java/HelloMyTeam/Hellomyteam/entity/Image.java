@@ -18,8 +18,16 @@ public class Image {
     private Long teamId;
     private Long boardNo;
 
-    @OneToOne
+    @OneToOne(mappedBy = "image")
     private Team team;
+
+    @ManyToOne
+    @JoinColumn(name = "board_id")
+    private Board board;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
 
 }
