@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    default: local # 기본 환경을 local로
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam_dev_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: ckdgus988
+    password: tyzm4060!
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
