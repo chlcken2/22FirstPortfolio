@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "comment_id")
     private Long id;
+    @NotNull
     private String contents;
 //    private CommentStatus commentStatus;
 

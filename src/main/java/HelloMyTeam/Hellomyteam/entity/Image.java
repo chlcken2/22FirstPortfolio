@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ public class Image extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "image_id")
     private Long id;
+    @NotNull
     private String path;
 
     @OneToOne(mappedBy = "image")

@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,9 +13,12 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "teamMemberInfo_id")
     private Long id;
-    private int authority;                      //0-팀장, 1-부팀장, 2-팀원, 3-용병, 4-일반
+    @NotNull
+    private int authority;                      //0-팀장, 1-부팀장, 2-팀원, 3-용병, 4-일반, 5-탈퇴자
     private int preferPosition;                 //0-ST, 1-RW, 2-LW, 3-CAM, 4-CM, 5-CDM, 6-LB, 7-LCB, 8-RB,9-RCB, 10-GK
     private int preferStyle;                    //0-중거리슛, 1-테크니컬 드리블러, 2-긴 패스, 3-플레이메이커, 4-딥-라잉 플레이메이커
+
+    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime withdrawalDate;
 
     @ManyToOne

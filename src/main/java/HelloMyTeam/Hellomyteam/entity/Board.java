@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import com.sun.istack.NotNull;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -15,11 +16,17 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_id")
     private Long id;
 
+    @NotNull
     private int category;
+    @NotNull
     private String title;
+    @Lob
+    @NotNull
     private String contents;
+    @NotNull
     private int boardStatus;
     private int likeNo;
+
     private int viewNo;
 
     @ManyToOne

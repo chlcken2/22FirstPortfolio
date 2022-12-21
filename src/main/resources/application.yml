@@ -19,7 +19,10 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create #로컬, 개발 = update, create / 운영 none
+      ddl-auto: create
+      # 개발 초기 단계 : create / update
+      # 테스트 서버 : update / validate
+      # 운영 서버 : validate / none
     properties:
       hibernate:
         format_sql: true
