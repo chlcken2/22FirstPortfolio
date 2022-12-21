@@ -6,14 +6,20 @@ spring:
     default: local # 기본 환경을 local로
 
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam_dev_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ckdgus988
-    password: tyzm4060!
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/hellomyteam
+    username: sa
+    password:
+
+#  datasource:
+#    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam_dev_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    username: ckdgus988
+#    password: tyzm4060!
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create #로컬, 개발 = update, create / 운영 none
     properties:
       hibernate:
         format_sql: true
