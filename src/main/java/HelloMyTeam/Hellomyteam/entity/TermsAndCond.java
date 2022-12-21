@@ -3,7 +3,6 @@ package HelloMyTeam.Hellomyteam.entity;
 import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
-
 import javax.persistence.*;
 
 @Entity

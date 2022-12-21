@@ -7,7 +7,6 @@ import javax.persistence.*;
 @Entity(name = "Image")
 @Getter
 public class Image extends BaseTimeEntity {
-
     @Id
     @GeneratedValue
     @Column(name = "image_id")

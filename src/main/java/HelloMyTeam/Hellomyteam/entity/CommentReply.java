@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import javax.persistence.*;
@@ -12,8 +13,13 @@ public class CommentReply extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "comment_reply_id")
     private Long id;
+
     @NotNull
     private String contents;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private BoardAndCommentStatus commentReplyStatus;
 
     @ManyToOne
     @JoinColumn(name = "comment_id")

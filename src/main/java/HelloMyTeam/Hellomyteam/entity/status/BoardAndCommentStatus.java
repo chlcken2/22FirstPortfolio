@@ -3,11 +3,12 @@ package HelloMyTeam.Hellomyteam.entity.status;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-//TODO: 동아리 확장시 스포츠 타입별 생성
 @Getter
 @RequiredArgsConstructor
-public enum TeamPersonalityStatus {
-    FOOTBALL("축구");
+public enum BoardAndCommentStatus {
+    SUCCESS("정상"),
+    DELETE_USER("유저 삭제"),
+    DELETE_ADMIN("관리자 삭제");
 
     private final String value;
 }

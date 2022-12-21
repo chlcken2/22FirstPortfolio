@@ -4,6 +4,7 @@ import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,19 +14,24 @@ import java.util.List;
 @Entity(name = "Member")
 @Getter
 public class Member extends BaseTimeEntity{
-
     @Id
     @GeneratedValue
     @Column(name = "member_id")
     private Long id;
-    private String mobile;                             //핸드폰번호
-    private String email;                              //XXX@gmail.com
+
+    private String mobile;
+
+    private String email;
+
     @NotNull
-    private String memberName;                         //닉네임 -> 이름 사용 고정
+    private String memberName;
+
     @NotNull
     private LocalDate birthday;
+
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus;                 //0-정상, 1-중지, 2-탈퇴, 3-경고, 4-강퇴, 5-불법
+    @NotNull
+    private MemberStatus memberStatus;
 
     @ManyToOne
     @JoinColumn(name = "team_id")

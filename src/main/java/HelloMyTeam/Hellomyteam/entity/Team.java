@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.TacticalStyleStatus;
 import HelloMyTeam.Hellomyteam.entity.status.TeamPersonalityStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
@@ -11,22 +12,29 @@ import java.util.List;
 @Entity
 @Getter
 public class Team extends BaseTimeEntity {
-
     @Id
     @GeneratedValue
     @Column(name = "team_id")
     private Long id;
+
     @NotNull
     private String teamName;
+
     @NotNull
     private TeamPersonalityStatus teamPersonality;
+
     @NotNull
     private String oneIntro;
+
     @NotNull
     private String detailIntro;
+
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private int strategyStyle;
+    private TacticalStyleStatus strategyStyle;
+
     private int MemberNo;                               //팀원 수
+
     private int mercenaryNo;                            //용병 수
 
     @OneToMany(mappedBy = "team")
@@ -38,5 +46,4 @@ public class Team extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "image_id")
     private Image image;
-
 }

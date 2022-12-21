@@ -1,8 +1,8 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,21 +10,26 @@ import java.util.List;
 @Entity
 @Getter
 public class Board extends BaseTimeEntity {
-
     @Id
     @GeneratedValue
     @Column(name = "board_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private int category;
+    private BoardCategory boardCategory;
+
     @NotNull
     private String title;
+
     @Lob
     @NotNull
     private String contents;
+
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private int boardStatus;
+    private BoardAndCommentStatus boardStatus;
+
     private int likeNo;
 
     private int viewNo;
