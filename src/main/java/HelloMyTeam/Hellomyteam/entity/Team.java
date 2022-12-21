@@ -1,6 +1,9 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.TeamPersonalityStatus;
+import com.sun.istack.NotNull;
 import lombok.Getter;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +16,18 @@ public class Team extends BaseTimeEntity {
     @GeneratedValue
     @Column(name = "team_id")
     private Long id;
-
+    @NotNull
     private String teamName;
-
-    private int type;
+    @NotNull
+    private TeamPersonalityStatus teamPersonality;
+    @NotNull
     private String oneIntro;
+    @NotNull
     private String detailIntro;
-    private int style;
-    private int memberCount;                //팀원 수
-    private int mercenaryCount;             //용병 수
+    @NotNull
+    private int strategyStyle;
+    private int MemberNo;                               //팀원 수
+    private int mercenaryNo;                            //용병 수
 
     @OneToMany(mappedBy = "team")
     private List<Member> members = new ArrayList<>();
