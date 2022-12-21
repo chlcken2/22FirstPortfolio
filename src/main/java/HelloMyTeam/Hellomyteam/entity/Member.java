@@ -1,8 +1,12 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
+import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;
+import com.sun.istack.NotNull;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,11 +20,12 @@ public class Member extends BaseTimeEntity{
     private Long id;
     private String mobile;                             //핸드폰번호
     private String email;                              //XXX@gmail.com
+    @NotNull
     private String memberName;                         //닉네임 -> 이름 사용 고정
-    private String birthday;
-//    private MemberStatus memberStatus;                 //0-정상, 1-중지, 2-탈퇴, 3-경고, 4-강퇴, 5-불법
-    private int termsOfServiceYn;                      //0-미수신, 1-수신
-    private int privacyYn;                             //0-미수신, 1-수신
+    @NotNull
+    private LocalDate birthday;
+    @Enumerated(EnumType.STRING)
+    private MemberStatus memberStatus;                 //0-정상, 1-중지, 2-탈퇴, 3-경고, 4-강퇴, 5-불법
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -40,4 +45,8 @@ public class Member extends BaseTimeEntity{
 
     @OneToMany(mappedBy = "member")
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<TermsAndCond> termsAndConds = new ArrayList<>();
+
 }
