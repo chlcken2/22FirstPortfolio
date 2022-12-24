@@ -1,5 +1,7 @@
 package HelloMyTeam.Hellomyteam.config;
 
+import HelloMyTeam.Hellomyteam.service.Oauth2UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -10,6 +12,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private Oauth2UserService oauth2UserService;
+
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(
@@ -26,7 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
 //            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/**").permitAll()
-            .anyRequest().authenticated();
+            .anyRequest().authenticated()
+                .and()
+                .oauth2Login()
+                .loginPage("/login")
+                .defaultSuccessUrl("/home")
+                .failureUrl("/error")
+                .userInfoEndpoint()
+                .userService(oauth2UserService);
     }
 
 }

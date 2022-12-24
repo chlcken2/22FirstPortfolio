@@ -1,9 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,6 +16,15 @@ public class Member extends BaseTimeEntity{
     private String birthday;    // TODO-sj : 생년월일x -> builder 생성
     @Enumerated(EnumType.STRING) // TODO-sj : 논의
     private MemberStatus memberStatus;
+
+    @Builder
+    public Member(Long id, String email, String name, String birthday, MemberStatus memberStatus) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.birthday = birthday;
+        this.memberStatus = memberStatus;
+    }
 
     @Getter
     @AllArgsConstructor
