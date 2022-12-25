@@ -1,20 +1,33 @@
 package HelloMyTeam.Hellomyteam.config;
 
+import HelloMyTeam.Hellomyteam.jwt.JwtAuthenticationFilter;
+import HelloMyTeam.Hellomyteam.jwt.JwtTokenProvider;
 import HelloMyTeam.Hellomyteam.service.Oauth2UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private Oauth2UserService oauth2UserService;
+    private final Oauth2UserService oauth2UserService;
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     public void configure(WebSecurity web) {
@@ -33,13 +46,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
             .antMatchers("/**").permitAll()
             .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
-                .loginPage("/login")
-                .defaultSuccessUrl("/home")
-                .failureUrl("/error")
-                .userInfoEndpoint()
-                .userService(oauth2UserService);
+            .and()
+            .oauth2Login()
+            .loginPage("/login")
+            .defaultSuccessUrl("/home")
+            .failureUrl("/error")
+            .userInfoEndpoint()
+            .userService(oauth2UserService);
+
+        http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
     }
 
 }
