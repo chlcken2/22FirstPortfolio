@@ -11,7 +11,7 @@ public enum AuthorityStatus {
     TEAM_MEMBER("팀원"),
     MERCENARY("용병"),
     NORMAL("일반"),
-    RESIGNER("팀 탈퇴자");
+    WITHDRAW_FROM_TEAM("팀 탈퇴자");
 
     private final String value;
 }

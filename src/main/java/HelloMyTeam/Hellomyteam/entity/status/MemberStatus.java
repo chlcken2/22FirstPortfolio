@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum MemberStatus  {
-    SUCCESS("정상"),
-    STOP("중지"),
+    NORMAL("정상"),
+    PAUSE("중지"),
     WITHDRAW("탈퇴"),
     WARNING("경고"),
     EXIT("강퇴"),
