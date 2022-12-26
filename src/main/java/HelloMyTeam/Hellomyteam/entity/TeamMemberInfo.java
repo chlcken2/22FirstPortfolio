@@ -8,7 +8,9 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -42,5 +44,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @OneToMany(mappedBy = "teamMemberInfo")
+    private List<Image> images = new ArrayList<>();    //background / profile
 
 }

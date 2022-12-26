@@ -24,4 +24,8 @@ public class Image extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "teamMemberInfo_id")
+    private TeamMemberInfo teamMemberInfo;
 }
