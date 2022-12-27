@@ -1,58 +1,38 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
-import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;
-import com.sun.istack.NotNull;
-import lombok.Getter;
-import org.springframework.lang.Nullable;
+import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
-@Entity(name = "Member")
+@Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTimeEntity{
     @Id
     @GeneratedValue
-    @Column(name = "member_id")
     private Long id;
-
-    private String mobile;
-
     private String email;
-
-    @NotNull
-    private String memberName;
-
-    @NotNull
-    private LocalDate birthday;
-
-    @Enumerated(EnumType.STRING)
-    @NotNull
+    private String name;
+    private String birthday;    // TODO-sj : 생년월일x -> builder 생성
+    @Enumerated(EnumType.STRING) // TODO-sj : 논의
     private MemberStatus memberStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @Builder
+    public Member(Long id, String email, String name, String birthday, MemberStatus memberStatus) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.birthday = birthday;
+        this.memberStatus = memberStatus;
+    }
 
-    @OneToMany(mappedBy = "member")
-    private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
+    @Getter
+    @AllArgsConstructor
+    public enum MemberStatus {
+        NORMAL("정상", 0),
+        PAUSE("중지", 1);
 
-    @OneToMany(mappedBy = "member")
-    private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<CommentReply> commentReplies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Image> images = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<TermsAndCond> termsAndConds = new ArrayList<>();
-
+        private final String name;
+        private final int code;
+    }
 }
