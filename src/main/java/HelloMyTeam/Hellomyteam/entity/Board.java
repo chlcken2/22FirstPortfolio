@@ -34,7 +34,7 @@ public class Board extends BaseTimeEntity {
 
     private int viewNo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 

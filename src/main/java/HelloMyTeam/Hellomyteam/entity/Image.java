@@ -14,18 +14,18 @@ public class Image extends BaseTimeEntity {
     @NotNull
     private String path;
 
-    @OneToOne(mappedBy = "image")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "image")
     private Team team;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamMemberInfo_id")
     private TeamMemberInfo teamMemberInfo;
 }

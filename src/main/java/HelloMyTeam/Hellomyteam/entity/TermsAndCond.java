@@ -21,7 +21,7 @@ public class TermsAndCond {
     @NotNull
     private TermsAndCondStatus privacyYn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 }

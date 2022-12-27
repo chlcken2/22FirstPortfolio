@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.entity.status;
+package HelloMyTeam.Hellomyteam.entity.status.team;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

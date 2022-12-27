@@ -1,7 +1,7 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.entity.status.TacticalStyleStatus;
 import HelloMyTeam.Hellomyteam.entity.status.TeamPersonalityStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 
@@ -31,7 +31,7 @@ public class Team extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TacticalStyleStatus strategyStyle;
+    private AuthorityStatus.TacticalStyleStatus strategyStyle;
 
     private int MemberNo;                               //팀원 수
 
@@ -43,7 +43,7 @@ public class Team extends BaseTimeEntity {
     @OneToMany(mappedBy = "team")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     private Image image;
 }

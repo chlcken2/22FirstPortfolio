@@ -22,14 +22,14 @@ public class Comment extends BaseTimeEntity {
     @NotNull
     private BoardAndCommentStatus commentStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
     @OneToMany(mappedBy = "comment")
     private List<CommentReply> commentReply = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 }

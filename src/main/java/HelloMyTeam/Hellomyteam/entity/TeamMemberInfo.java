@@ -1,13 +1,12 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.entity.status.AuthorityStatus;
-import HelloMyTeam.Hellomyteam.entity.status.PersonalPositionStatus;
-import HelloMyTeam.Hellomyteam.entity.status.PersonalStyleStatus;
-import HelloMyTeam.Hellomyteam.entity.status.SpecialBadgeStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.PersonalPositionStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.PersonalStyleStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.SpecialBadgeStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,11 +36,11 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date withdrawalDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 

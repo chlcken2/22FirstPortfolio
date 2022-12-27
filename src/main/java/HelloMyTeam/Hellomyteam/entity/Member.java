@@ -33,7 +33,7 @@ public class Member extends BaseTimeEntity{
     @NotNull
     private MemberStatus memberStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 
