@@ -27,3 +27,6 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+jwt:
+  secret: 1234
+  token-validity-in-seconds: 12345
