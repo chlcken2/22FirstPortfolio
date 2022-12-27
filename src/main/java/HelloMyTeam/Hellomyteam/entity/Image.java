@@ -15,6 +15,7 @@ public class Image extends BaseTimeEntity {
     private String path;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
     private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
