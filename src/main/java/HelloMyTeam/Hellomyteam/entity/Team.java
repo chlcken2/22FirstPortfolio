@@ -43,7 +43,7 @@ public class Team extends BaseTimeEntity {
     @OneToMany(mappedBy = "team")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "image")
     @JoinColumn(name = "image_id")
     private Image image;
 }

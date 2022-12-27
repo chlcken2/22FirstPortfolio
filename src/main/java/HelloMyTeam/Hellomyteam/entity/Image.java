@@ -14,7 +14,7 @@ public class Image extends BaseTimeEntity {
     @NotNull
     private String path;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "image")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Team team;
 
     @ManyToOne(fetch = FetchType.LAZY)
