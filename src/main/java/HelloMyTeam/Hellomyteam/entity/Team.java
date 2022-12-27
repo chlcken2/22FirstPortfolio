@@ -1,10 +1,9 @@
 package HelloMyTeam.Hellomyteam.entity;
 
 import HelloMyTeam.Hellomyteam.entity.status.TeamPersonalityStatus;
-import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
 import com.sun.istack.NotNull;
 import lombok.Getter;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class Team extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private AuthorityStatus.TacticalStyleStatus strategyStyle;
+    private TacticalStyleStatus strategyStyle;
 
     private int MemberNo;                               //팀원 수
 

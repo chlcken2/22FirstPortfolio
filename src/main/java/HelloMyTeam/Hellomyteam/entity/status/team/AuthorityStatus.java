@@ -14,16 +14,4 @@ public enum AuthorityStatus {
     WITHDRAW_FROM_TEAM("팀 탈퇴자");
 
     private final String value;
-
-    /* 축구팀 전술 스타일 */
-    @Getter
-    @RequiredArgsConstructor
-    public enum TacticalStyleStatus {
-        POSSESSION("점유율"),
-        GEGENPRESSING("게겐프레싱"),
-        TIKI_TAKA("티키타카"),
-        COUNTER_ATTACK("선수비 후 역습");
-
-        private final String value;
-    }
 }
