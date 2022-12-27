@@ -2,7 +2,7 @@ server:
   port: 8080
 
 spring:
-  profiles:
+  profiles: oauth
     default: local # 기본 환경을 local로
 
   datasource:
@@ -27,6 +27,4 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
-jwt:
-  secret: 1234
-  token-validity-in-seconds: 12345
+
