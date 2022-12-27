@@ -1,31 +1,49 @@
+# common
 server:
   port: 8080
-
+  tomcat:
+    uri-encoding: UTF-8
 spring:
   profiles:
+    active: local
+    group:
+      local: local
+      develop: develop
     include: oauth
-    default: local # 기본 환경을 local로
 
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  devtools:
+    restart:
+      enabled: true
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/hellomyteam
+    url: jdbc:h2:tcp://localhost/~/helloMyTeam
+
     username: sa
     password:
 
-#  datasource:
-#    driver-class-name: org.mariadb.jdbc.Driver
-#    url: jdbc:mariadb://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam_dev_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-#    username: ckdgus988
-#    password: tyzm4060!
-
   jpa:
+    open-in-view: true
     hibernate:
-      ddl-auto: create
-      # 개발 초기 단계 : create / update
-      # 테스트 서버 : update / validate
-      # 운영 서버 : validate / none
-    properties:
-      hibernate:
-        format_sql: true
+      ddl-auto: none
+      use-new-id-generator-mappings: false
     show-sql: true
+    properties:
+      hibernate.format_sql: true
+      dialect: org.hibernate.dialect.H2Dialect
 
+---
+spring:
+  config:
+    activate:
+      on-profile: develop
