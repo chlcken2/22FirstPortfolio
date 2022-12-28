@@ -4,6 +4,7 @@ import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.exception.JwtTokenException;
 import HelloMyTeam.Hellomyteam.payload.ApiResponse;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
@@ -21,7 +22,7 @@ public class MemberController {
 //    public MemberController(MemberRepository memberRepository) {
 //        this.memberRepository = memberRepository;
 //    }
-
+    @ApiOperation(value = "user/me", notes = "본인인증")
     @GetMapping("/user/me")
     public ApiResponse<?> getMyMemberInfo(HttpServletRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

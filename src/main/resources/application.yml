@@ -16,6 +16,10 @@ spring:
   config:
     activate:
       on-profile: local
+  #Swagger set
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
   devtools:
     restart:
@@ -27,7 +31,10 @@ spring:
       path: /h2-console
   datasource:
     driver-class-name: org.h2.Driver
+    #hehe
     url: jdbc:h2:~/helloMyTeam
+    #john
+#    url: jdbc:h2:tcp://localhost/~/hellomyteam
     username: sa
     password:
 

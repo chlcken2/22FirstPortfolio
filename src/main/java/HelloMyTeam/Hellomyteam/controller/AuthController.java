@@ -10,6 +10,7 @@ import HelloMyTeam.Hellomyteam.payload.LoginRequest;
 import HelloMyTeam.Hellomyteam.payload.SignUpRequest;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import HelloMyTeam.Hellomyteam.service.TokenProvider;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.ObjectUtils;
@@ -28,6 +29,7 @@ public class AuthController {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
 
+    @ApiOperation(value = "login", notes = "로그인")
     @PostMapping("/login")
     public ApiResponse<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
@@ -50,7 +52,7 @@ public class AuthController {
 
 //        return ResponseEntity.ok(token);
     }
-
+    @ApiOperation(value = "signup", notes = "회원가입")
     @PostMapping("/signup")
     public ApiResponse<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if(memberRepository.existsByEmail(signUpRequest.getEmail())) {
