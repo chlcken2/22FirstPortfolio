@@ -15,6 +15,7 @@ import java.util.List;
 @Entity(name = "Member")
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseTimeEntity{
     @Id
@@ -29,7 +30,7 @@ public class Member extends BaseTimeEntity{
     @NotNull
     private String name;
 
-    @NotNull
+//    @NotNull
     private LocalDate birthday;
 
     @Enumerated(EnumType.STRING)
@@ -57,8 +58,4 @@ public class Member extends BaseTimeEntity{
 
     @OneToMany(mappedBy = "member")
     private List<TermsAndCond> termsAndConds = new ArrayList<>();
-
-    public Member() {
-
-    }
 }
