@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequiredArgsConstructor
 public class MemberController {
     private final MemberRepository memberRepository;
+
+    public MemberController(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 //    @GetMapping("/user/me")
 //    @PreAuthorize("hasRole('USER')")
 //    public MemberDTO getCurrentUser(@CurrentUser UserPrincipal userPrincipal) {
@@ -33,7 +36,8 @@ public class MemberController {
 
     @GetMapping("/user/me")
     public ResponseEntity<Member> getMyMemberInfo() {
-        Optional<Member> savedMember = memberRepository.findById(Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()));
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Member> savedMember = memberRepository.findByEmail(email);
         savedMember.map(Member::getEmail);
         return ResponseEntity.ok((savedMember.get()));
     }

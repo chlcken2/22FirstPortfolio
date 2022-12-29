@@ -27,7 +27,7 @@ public class Member extends BaseTimeEntity{
 
     private String email;
 
-    @NotNull
+//    @NotNull
     private String name;
 
 //    @NotNull

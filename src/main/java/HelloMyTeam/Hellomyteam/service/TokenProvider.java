@@ -20,9 +20,8 @@ import java.util.stream.Collectors;
 public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer ";
-    long ACCESS_TOKEN_VALIDATiON_SECOND = 60 * 60;              // 1시간
+    long ACCESS_TOKEN_VALIDATiON_SECOND = 60 * 60 * 24;              // 1시간
     long REFRESH_TOKEN_VALIDATiON_SECOND = 60 * 60 * 24 * 30;   // 1개월
-    long refreshPeriod = 1000L * 60L * 60L * 24L * 30L * 3L;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -40,7 +39,7 @@ public class TokenProvider {
         claims.put("role", role);
 
         String accessToken  = Jwts.builder()
-                                    .claim(AUTHORITIES_KEY, claims)
+                                    .setClaims(claims)
                                     .setIssuedAt(now)
                                     .setExpiration(accessTokenValidTime)
                                     .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
@@ -49,7 +48,7 @@ public class TokenProvider {
 
         //Refresh Token
         String refreshToken =  Jwts.builder()
-                .claim(AUTHORITIES_KEY, claims)
+                .setClaims(claims)
 //                .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(refreshTokenValidTime)
@@ -97,6 +96,8 @@ public class TokenProvider {
     }
 
     public String getUid(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        Claims claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token).getBody();
+
+        return claims.getSubject();
     }
 }

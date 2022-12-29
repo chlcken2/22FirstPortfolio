@@ -1,6 +1,8 @@
 package HelloMyTeam.Hellomyteam.jwt;
 
 import HelloMyTeam.Hellomyteam.entity.Member;
+import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
+import HelloMyTeam.Hellomyteam.exception.UserNotFoundException;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import HelloMyTeam.Hellomyteam.service.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return null;
     }
 
-    public Authentication getAuthentication(Member member) {
-        return new UsernamePasswordAuthenticationToken(member, "",
+    public Authentication getAuthentication(String email) {
+        return new UsernamePasswordAuthenticationToken(email, "",
                 Arrays.asList(new SimpleGrantedAuthority("ROLE_USER")));
     }
 
@@ -55,7 +57,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(token) && tokenProvider.verifyToken(token)) {
             String email = tokenProvider.getUid(token);
-            Authentication auth = getAuthentication(memberRepository.findByEmail(email).get());
+            Authentication auth = getAuthentication(email);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
