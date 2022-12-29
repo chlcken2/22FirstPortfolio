@@ -1,61 +1,61 @@
 package HelloMyTeam.Hellomyteam.controller;
 
-import HelloMyTeam.Hellomyteam.dto.MemberDTO;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.exception.BadRequestException;
+import HelloMyTeam.Hellomyteam.exception.UserNotFoundException;
+import HelloMyTeam.Hellomyteam.jwt.Token;
 import HelloMyTeam.Hellomyteam.payload.ApiResponse;
 import HelloMyTeam.Hellomyteam.payload.AuthResponse;
 import HelloMyTeam.Hellomyteam.payload.LoginRequest;
 import HelloMyTeam.Hellomyteam.payload.SignUpRequest;
-import HelloMyTeam.Hellomyteam.repository.UserRepository;
-import HelloMyTeam.Hellomyteam.security.TokenProvider;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import HelloMyTeam.Hellomyteam.repository.MemberRepository;
+import HelloMyTeam.Hellomyteam.service.TokenProvider;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private TokenProvider tokenProvider;
+
+    private final MemberRepository memberRepository;
+    private final TokenProvider tokenProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginRequest.getEmail()
-                , passwordEncoder.encode("12345"), Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"))
-        );
+    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        String email = loginRequest.getEmail();
+        memberRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenProvider.createToken(authentication);
-        return ResponseEntity.ok(new AuthResponse(token));
+        Token token = tokenProvider.generateToken(email, "ROLE_USER");
+
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                .maxAge(7 * 24 * 60 * 60)
+                .path("/")
+                .secure(true)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+        response.setHeader("Set-Cookie", cookie.toString());
+
+        return ResponseEntity.ok(token);
     }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if(userRepository.existsByEmail(signUpRequest.getEmail())) {
+        if(memberRepository.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Email address already in use.");
         }
 
@@ -64,12 +64,10 @@ public class AuthController {
                                 .email(signUpRequest.getEmail())
                                 .memberStatus(MemberStatus.NORMAL)
                                 .build();
+        memberRepository.save(member);
 
-        Member result = userRepository.save(member);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/user/me")
-                .buildAndExpand(result.getId()).toUri();
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "User registered successfully@"));
+        ApiResponse apiResponse = new ApiResponse(true, "User registered successfully");
+
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 }

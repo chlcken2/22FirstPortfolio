@@ -6,7 +6,7 @@ plugins {
 
 group = 'hellomyteam'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+sourceCompatibility = "1.9"
 
 jar {
 	enabled = false
@@ -46,3 +46,4 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+targetCompatibility = JavaVersion.VERSION_1_9
