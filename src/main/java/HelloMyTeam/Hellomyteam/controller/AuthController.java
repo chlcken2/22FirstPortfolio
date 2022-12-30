@@ -5,7 +5,7 @@ import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.exception.BadRequestException;
 import HelloMyTeam.Hellomyteam.exception.UserNotFoundException;
 import HelloMyTeam.Hellomyteam.jwt.Token;
-import HelloMyTeam.Hellomyteam.payload.ApiResponse;
+import HelloMyTeam.Hellomyteam.payload.CommonResponse;
 import HelloMyTeam.Hellomyteam.payload.LoginRequest;
 import HelloMyTeam.Hellomyteam.payload.SignUpRequest;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
@@ -31,10 +31,10 @@ public class AuthController {
 
     @ApiOperation(value = "login", notes = "로그인")
     @PostMapping("/login")
-    public ApiResponse<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public CommonResponse<?> authenticateUser(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         String email = loginRequest.getEmail();
         if (ObjectUtils.isEmpty(memberRepository.findByEmail(email))) {
-            return ApiResponse.createError(new UserNotFoundException(email).getMessage());
+            return CommonResponse.createError(new UserNotFoundException(email).getMessage());
         }
 
         Token token = tokenProvider.generateToken(email, "ROLE_USER");
@@ -48,15 +48,15 @@ public class AuthController {
                 .build();
         response.setHeader("Set-Cookie", cookie.toString());
 
-        return ApiResponse.createSuccess(token);
+        return CommonResponse.createSuccess(token);
 
 //        return ResponseEntity.ok(token);
     }
     @ApiOperation(value = "signup", notes = "회원가입")
     @PostMapping("/signup")
-    public ApiResponse<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
+    public CommonResponse<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
         if(memberRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ApiResponse.createError(new BadRequestException("Email address already in use.").getMessage());
+            return CommonResponse.createError(new BadRequestException("Email address already in use.").getMessage());
         }
 
         Member member = Member.builder()
@@ -66,6 +66,6 @@ public class AuthController {
                                 .build();
         memberRepository.save(member);
 
-        return ApiResponse.createSuccess(member, "User registered successfully");
+        return CommonResponse.createSuccess(member, "User registered successfully");
     }
 }

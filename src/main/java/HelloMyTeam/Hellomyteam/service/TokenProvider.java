@@ -1,27 +1,24 @@
 package HelloMyTeam.Hellomyteam.service;
 
 import HelloMyTeam.Hellomyteam.jwt.Token;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Base64;
+import java.util.Date;
 
 @Slf4j
 @Component
 public class TokenProvider {
-    private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_TYPE = "Bearer ";
-    long ACCESS_TOKEN_VALIDATiON_SECOND = 60 * 60 * 24;              // 1시간
-    long REFRESH_TOKEN_VALIDATiON_SECOND = 60 * 60 * 24 * 30;   // 1개월
+    long ACCESS_TOKEN_VALIDATiON_SECOND = 3600000L;              // 1시간
+    long REFRESH_TOKEN_VALIDATiON_SECOND = 3600000 * 24 * 30L;
     @Value("${jwt.secret}")
     private String secretKey;
 
@@ -80,19 +77,8 @@ public class TokenProvider {
 
 
     public boolean verifyToken(String token) {
-        try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token);
-            return claims.getBody().getExpiration().after(new Date());
-        } catch (MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-        }
-        return false;
+        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token);
+        return claims.getBody().getExpiration().after(new Date());
     }
 
     public String getUid(String token) {
