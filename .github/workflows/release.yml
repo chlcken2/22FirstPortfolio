@@ -32,7 +32,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Start Build with Gradle
-        run: ./gradlew bootJar -Dorg.gradle.java.home=JDK_PATH clean build
+        run: ./gradlew clean build
 
       - name: Setting for AWS          # AWS 권한셋팅
         uses: aws-actions/configure-aws-credentials@v1
