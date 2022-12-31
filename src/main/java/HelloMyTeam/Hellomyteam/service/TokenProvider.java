@@ -58,24 +58,6 @@ public class TokenProvider {
                 .build();
     }
 
-//    public Authentication getAuthentication(String accessToken) {
-//        Claims claims = this.parseClaims(accessToken);
-//
-//        if (claims.get(AUTHORITIES_KEY) == null) {
-//            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
-//        }
-//
-//        Collection<? extends GrantedAuthority> authorities =
-//                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-//                        .map(SimpleGrantedAuthority::new)
-//                        .collect(Collectors.toList());
-//
-//        UserDetails principal = new User(claims.getSubject(), "", authorities);
-//
-//        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-//    }
-
-
     public boolean verifyToken(String token) {
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token);
         return claims.getBody().getExpiration().after(new Date());

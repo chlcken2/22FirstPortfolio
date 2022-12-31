@@ -1,13 +1,11 @@
 package HelloMyTeam.Hellomyteam.jwt;
 
-import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import HelloMyTeam.Hellomyteam.service.TokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
