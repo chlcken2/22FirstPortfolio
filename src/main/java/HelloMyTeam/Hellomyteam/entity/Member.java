@@ -2,10 +2,7 @@ package HelloMyTeam.Hellomyteam.entity;
 
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -58,4 +55,7 @@ public class Member extends BaseTimeEntity{
 
     @OneToMany(mappedBy = "member")
     private List<TermsAndCond> termsAndConds = new ArrayList<>();
+
+    @Setter
+    private String refreshToken;
 }

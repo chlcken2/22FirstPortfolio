@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,9 @@ import java.util.Date;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class TokenProvider {
+
     private static final String BEARER_TYPE = "Bearer ";
     long ACCESS_TOKEN_VALIDATiON_SECOND = 3600000L;              // 1시간
     long REFRESH_TOKEN_VALIDATiON_SECOND = 3600000 * 24 * 30L;
@@ -42,15 +45,14 @@ public class TokenProvider {
                                     .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                                     .compact();
 
-
         //Refresh Token
         String refreshToken =  Jwts.builder()
-                .setClaims(claims)
-//                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(refreshTokenValidTime)
-                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())  // 사용할 암호화 알고리즘과
-                .compact();
+                                    .setClaims(claims)
+                    //                .setClaims(claims)
+                                    .setIssuedAt(now)
+                                    .setExpiration(refreshTokenValidTime)
+                                    .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())  // 사용할 암호화 알고리즘과
+                                    .compact();
 
         return Token.builder()
                 .accessToken(BEARER_TYPE + accessToken)

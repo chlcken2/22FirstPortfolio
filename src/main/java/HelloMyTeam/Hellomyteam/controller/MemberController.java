@@ -5,6 +5,7 @@ import HelloMyTeam.Hellomyteam.exception.JwtTokenException;
 import HelloMyTeam.Hellomyteam.exception.UserNotFoundException;
 import HelloMyTeam.Hellomyteam.payload.CommonResponse;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -21,7 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 public class MemberController {
     private final MemberRepository memberRepository;
 
-    @ApiOperation(value = "user/me", notes = "accessToken 통한 본인 확인")
+    @ApiOperation(value = "user/me", notes = "Access Token 통한 본인 확인")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token(접두사: Bearer) 입력 필요")
     @ApiResponses({
             @ApiResponse(code=496, message="잘못된 JWT 서명")
             , @ApiResponse(code=497, message="지원되지 않는 JWT 토큰")
