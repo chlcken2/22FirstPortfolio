@@ -2,7 +2,8 @@ package HelloMyTeam.Hellomyteam.entity;
 
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,6 +11,9 @@ import java.util.List;
 
 @Entity(name = "Member")
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member extends BaseTimeEntity{
     @Id
     @GeneratedValue
@@ -20,10 +24,10 @@ public class Member extends BaseTimeEntity{
 
     private String email;
 
-    @NotNull
-    private String memberName;
+//    @NotNull
+    private String name;
 
-    @NotNull
+//    @NotNull
     private LocalDate birthday;
 
     @Enumerated(EnumType.STRING)
@@ -52,4 +56,6 @@ public class Member extends BaseTimeEntity{
     @OneToMany(mappedBy = "member")
     private List<TermsAndCond> termsAndConds = new ArrayList<>();
 
+    @Setter
+    private String refreshToken;
 }
