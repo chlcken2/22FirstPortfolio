@@ -8,6 +8,6 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://{엔드포인트}:{포트번호}/{(초기)데이터베이스}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    url: jdbc:mysql://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: ckdgus988
     password: tyzm4060!
