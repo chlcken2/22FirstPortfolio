@@ -13,6 +13,9 @@ server:
 #      dev: dev
 #      prod: prod
 #    include: oauth
+spring:
+  profiles:
+    include: oauth
 
   #Swagger set
   mvc:
