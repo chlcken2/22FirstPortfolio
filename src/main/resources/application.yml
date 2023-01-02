@@ -5,14 +5,14 @@ server:
   tomcat:
     uri-encoding: UTF-8
 
-spring:
-  profiles:
-    active: local
-    group:
-      local: local
-      dev: dev
-      prod: prod
-    include: oauth
+#spring:
+#  profiles:
+#    active: local
+#    group:
+#      local: local
+#      dev: dev
+#      prod: prod
+#    include: oauth
 
   #Swagger set
   mvc:
