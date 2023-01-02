@@ -1,10 +1,8 @@
 env: prod
 
 spring:
-  config:
-    activate:
-      on-profile: prod
-      include: oauth
+  profiles: prod
+  include: oauth
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

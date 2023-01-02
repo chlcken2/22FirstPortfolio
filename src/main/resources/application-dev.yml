@@ -1,10 +1,8 @@
 env: dev
 
 spring:
-  config:
-    activate:
-      on-profile: dev
-      include: oauth
+  profiles: dev
+  include: oauth
 
   devtools:
     restart:
