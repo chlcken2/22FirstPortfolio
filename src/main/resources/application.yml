@@ -10,7 +10,7 @@ spring:
     active: local
     group:
       local: local
-      develop: develop
+      dev: dev
       prod: prod
     include: oauth
 
