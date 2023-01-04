@@ -7,6 +7,8 @@ server:
 
 
 spring:
+  pid:
+    file: /home/ec2-user/app/step2/hellomyteam.pid
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher  #Swagger set
