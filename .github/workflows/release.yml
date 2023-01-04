@@ -1,6 +1,11 @@
 ## release.yml의 최상단입니다.
-#
 env:
+  CLIENT_ID: ${{secrets.CLIENT_ID}}
+  CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
+  JWT_HEADER: ${{secrets.JWT_HEADER}}
+  JWT_SECRET: ${{secrets.JWT_SECRET}
+  JWT_TOKEN_SECONDS: ${{secrets.JWT_TOKEN_SECONDS}}
+  SCOPE: ${{secrets.SCOPE}}
   S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
   PROJECT_NAME: hellomyteam
   CODE_DEPLOY_APP_NAME: hellomyteam-webservice
@@ -28,21 +33,6 @@ jobs:
         with:
           java-version: '8'
           distribution: 'temurin'
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: application-oauth
-          path: application-oauth.yml
-
-      - name: Download artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: application-oauth
-
-      - name: Print contents of artifact
-        run: |
-            cat ${{ steps.download-artifact.outputs.path }}/application-oauth.yml
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew # (7)
