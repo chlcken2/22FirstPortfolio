@@ -5,12 +5,34 @@ server:
   tomcat:
     uri-encoding: UTF-8
 
-spring:
-  profiles:
-    active: local
-    include: oauth
 
-  #Swagger set
+spring:
   mvc:
     pathmatch:
-      matching-strategy: ant_path_matcher
+      matching-strategy: ant_path_matcher  #Swagger set
+  profiles:
+    group:
+      "local" : "local, oauth"
+      "dev" : "dev, oauth"
+      "prod" : "prod, oauth"
+
+---
+#로컬
+spring:
+  config:
+    activate:
+      on-profile: "local"
+
+---
+#개발
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+#운영
+spring:
+  config:
+    activate:
+      on-profile: prod

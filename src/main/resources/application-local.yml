@@ -1,9 +1,6 @@
 env: local
 
 spring:
-  profiles: local
-  include: oauth
-
   devtools:
     restart:
       enabled: true

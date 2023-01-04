@@ -1,17 +1,10 @@
 env: dev
 
 spring:
-  profiles: dev
-  include: oauth
-
   devtools:
     restart:
       enabled: true
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam_dev_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
