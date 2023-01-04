@@ -1,4 +1,4 @@
-env: default
+env: default-success
 
 server:
   port: 8080
@@ -11,28 +11,9 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher  #Swagger set
   profiles:
+    active: dev
     group:
-      "local" : "local, oauth"
-      "dev" : "dev, oauth"
-      "prod" : "prod, oauth"
+      local : local,oauth
+      dev : dev,oauth
+      prod : prod,oauth
 
----
-#로컬
-spring:
-  config:
-    activate:
-      on-profile: "local"
-
----
-#개발
-spring:
-  config:
-    activate:
-      on-profile: dev
-
----
-#운영
-spring:
-  config:
-    activate:
-      on-profile: prod
