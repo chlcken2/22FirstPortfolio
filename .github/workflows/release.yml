@@ -29,6 +29,21 @@ jobs:
           java-version: '8'
           distribution: 'temurin'
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: application-oauth
+          path: application-oauth.yml
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: application-oauth
+
+      - name: Print contents of artifact
+        run: |
+            cat ${{ steps.download-artifact.outputs.path }}/application-oauth.yml
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew # (7)
         shell: bash
