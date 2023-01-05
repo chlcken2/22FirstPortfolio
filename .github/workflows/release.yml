@@ -3,7 +3,7 @@ env:
   CLIENT_ID: ${{secrets.CLIENT_ID}}
   CLIENT_SECRET: ${{secrets.CLIENT_SECRET}}
   JWT_HEADER: ${{secrets.JWT_HEADER}}
-#  JWT_SECRET: ${{secrets.JWT_SECRET}}
+  JWT_SECRET: ${{secrets.JWT_SECRET}}
   JWT_TOKEN_SECONDS: ${{secrets.JWT_TOKEN_SECONDS}}
   SCOPE: ${{secrets.SCOPE}}
   S3_BUCKET_NAME: hellomyteam-github-action-s3-bucket
@@ -27,6 +27,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3  # (5) 프로젝트 코드를 CheckOut합니다.
+
+      - name: check secret key value
+        run: echo "CLIENT_ID= ${{secrets.CLIENT_ID}}"
+             echo "CLIENT_SECRET= ${{secrets.CLIENT_SECRET}}"
+             echo "JWT_HEADER= ${{secrets.JWT_HEADER}}"
+             echo "JWT_SECRET= ${{secrets.JWT_SECRET}}"
+             echo "JWT_TOKEN_SECONDS= ${{secrets.JWT_TOKEN_SECONDS}}"
+             echo "SCOPE= ${{secrets.SCOPE}}"
+
 
       - name: Set up JDK 8
         uses: actions/setup-java@v3 # (6)

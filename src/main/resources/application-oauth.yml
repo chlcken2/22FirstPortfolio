@@ -12,5 +12,5 @@ spring:
 
 jwt:
   header: ${JWT_HEADER}
-#  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET}
   token-validity-in-seconds: ${JWT_TOKEN_SECONDS}
