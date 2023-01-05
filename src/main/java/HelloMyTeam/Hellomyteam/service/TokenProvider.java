@@ -18,7 +18,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@PropertySource("classpath:config/oauth.yml")
+@PropertySource("classpath:config/application-oauth.yml")
 public class TokenProvider {
 
     private static final String BEARER_TYPE = "Bearer ";
