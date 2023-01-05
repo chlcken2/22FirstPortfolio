@@ -6,11 +6,11 @@ spring:
       client:
         registration:
           google:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
-            scope: ${SCOPE}
+            client-id: ${env.CLIENT_ID}
+            client-secret: ${env.CLIENT_SECRET}
+            scope: ${env.SCOPE}
 
 jwt:
-  header: ${JWT_HEADER}
-  secret: ${JWT_SECRET}
-  token-validity-in-seconds: ${JWT_TOKEN_SECONDS}
+  header: ${env.JWT_HEADER}
+  secret: ${env.JWT_SECRET}
+  token-validity-in-seconds: ${env.JWT_TOKEN_SECONDS}
