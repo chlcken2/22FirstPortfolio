@@ -8,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +18,7 @@ import java.util.Date;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@PropertySource("classpath:config/oauth.yml")
 public class TokenProvider {
 
     private static final String BEARER_TYPE = "Bearer ";
