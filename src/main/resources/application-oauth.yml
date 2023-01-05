@@ -1,0 +1,16 @@
+env-oauth: oauth-success
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
+            scope: ${SCOPE}
+
+jwt:
+  header: ${JWT_HEADER}
+  secret: ${JWT_SECRET}
+  token-validity-in-seconds: ${JWT_TOKEN_SECONDS}
