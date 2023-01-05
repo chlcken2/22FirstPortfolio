@@ -71,6 +71,7 @@ public class AuthController {
         Member member = Member.builder()
                                 .name(signUpRequest.getName())
                                 .email(signUpRequest.getEmail())
+                                .joinPurpose(signUpRequest.getJoinPurpose())
                                 .memberStatus(MemberStatus.NORMAL)
                                 .build();
         memberRepository.save(member);

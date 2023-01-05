@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.JoinPurpose;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import com.sun.istack.NotNull;
 import lombok.*;
@@ -33,6 +34,10 @@ public class Member extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     @NotNull
     private MemberStatus memberStatus;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private JoinPurpose joinPurpose;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
