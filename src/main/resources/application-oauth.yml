@@ -6,11 +6,11 @@ spring:
       client:
         registration:
           google:
-            client-id: ${env.CLIENT_ID}
-            client-secret: ${env.CLIENT_SECRET}
-            scope: ${env.SCOPE}
+            client-id: 756905357383-dji0bitgf687ad3sv2agu9dmu17sd2ij.apps.googleusercontent.com
+            client-secret: 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
+            scope: profile, email
 
 jwt:
-  header: ${env.JWT_HEADER}
-  secret: ${env.JWT_SECRET}
-  token-validity-in-seconds: ${env.JWT_TOKEN_SECONDS}
+  header: Authorization
+  secret: frontend_reactjs_backend_springboot_cicd_gitAction_aws_proejctName_helloMyTeam_from2022to2023_ing
+  token-validity-in-seconds: 86400
