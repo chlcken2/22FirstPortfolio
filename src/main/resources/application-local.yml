@@ -5,15 +5,18 @@ spring:
     restart:
       enabled: true
 
-  #  h2:
-  #    console:
-  #      enabled: true
-  #      path: /h2-console
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://hellomyteam-dev-db.cj1my6byvuun.ap-northeast-2.rds.amazonaws.com:3306/hellomyteam_dev_db?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: ckdgus988
-    password: tyzm4060!
+    driver-class-name: org.h2.Driver
+    #hehe
+    #    url: jdbc:h2:~/helloMyTeam
+    #john
+    url: jdbc:h2:tcp://localhost/~/hellomyteam
+    username: sa
+    password:
 
   jpa:
     open-in-view: true
