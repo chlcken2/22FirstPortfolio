@@ -14,6 +14,8 @@ public class Application {
 
 	@Value("${env}")
 	private String env;
+	@Value("${env-oauth}")
+	private String envOauth;
 
 	public static void main(String[] args) {
 		SpringApplication application = new SpringApplication(Application.class);
@@ -25,5 +27,8 @@ public class Application {
 	@PostConstruct
 	private void start() {
 		System.out.println("now-env = " + env);
+		System.out.println("now-env-oauth = " + envOauth);
 	}
+
+
 }

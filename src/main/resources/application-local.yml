@@ -1,11 +1,6 @@
-env: local
+env: local-success
 
 spring:
-  config:
-    activate:
-      on-profile: local
-      include: oauth
-
   devtools:
     restart:
       enabled: true

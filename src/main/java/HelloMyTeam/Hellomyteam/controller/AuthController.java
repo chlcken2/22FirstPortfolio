@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -71,6 +71,7 @@ public class AuthController {
         Member member = Member.builder()
                                 .name(signUpRequest.getName())
                                 .email(signUpRequest.getEmail())
+                                .joinPurpose(signUpRequest.getJoinPurpose())
                                 .memberStatus(MemberStatus.NORMAL)
                                 .build();
         memberRepository.save(member);
