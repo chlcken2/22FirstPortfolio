@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.controller;
+package HelloMyTeam.Hellomyteam.api;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;

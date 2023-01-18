@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.controller;
+package HelloMyTeam.Hellomyteam.api;
 
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
