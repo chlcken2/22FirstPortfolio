@@ -3,12 +3,14 @@ package HelloMyTeam.Hellomyteam.entity;
 import HelloMyTeam.Hellomyteam.entity.status.TeamPersonalityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
 import com.sun.istack.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Builder
 @Getter
 public class Team extends BaseTimeEntity {
     @Id
@@ -27,7 +29,7 @@ public class Team extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    private TacticalStyleStatus strategyStyle;
+    private TacticalStyleStatus tacticalStyleStatus;
 
     private int MemberCount;                               //팀원 수
 
@@ -41,4 +43,5 @@ public class Team extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "team")
     private List<Image> images = new ArrayList<>();
+
 }
