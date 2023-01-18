@@ -20,9 +20,6 @@ public class Team extends BaseTimeEntity {
     private String teamName;
 
     @NotNull
-    private TeamPersonalityStatus teamPersonality;
-
-    @NotNull
     private String oneIntro;
 
     @NotNull
@@ -32,12 +29,12 @@ public class Team extends BaseTimeEntity {
     @NotNull
     private TacticalStyleStatus strategyStyle;
 
-    private int MemberNo;                               //팀원 수
+    private int MemberCount;                               //팀원 수
 
-    private int mercenaryNo;                            //용병 수
+    private int mercenaryCount;                            //용병 수
 
-    @OneToMany(mappedBy = "team")
-    private List<Member> members = new ArrayList<>();
+//    @OneToMany(mappedBy = "team")
+//    private List<Member> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "team")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();

@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "Member")
+@Entity
 @Getter
 @Builder
 @NoArgsConstructor
@@ -39,9 +39,9 @@ public class Member extends BaseTimeEntity{
     @NotNull
     private JoinPurpose joinPurpose;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "team_id")
+//    private Team team;
 
     @OneToMany(mappedBy = "member")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
