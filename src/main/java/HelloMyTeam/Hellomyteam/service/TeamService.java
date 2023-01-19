@@ -9,10 +9,8 @@ import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
+
 
 @Transactional
 @Service
@@ -33,13 +31,12 @@ public class TeamService {
         return team;
     }
 
-    public void save(Team team) {
+    public void save(Team team, Member member) {
         TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
                 .authority(AuthorityStatus.LEADER)
                 .team(team)
-//                .member(member)
+                .member(member)
                 .build();
         teamMemberInfoRepository.save(teamMemberInfo);
-
     }
 }
