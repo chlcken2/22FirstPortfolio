@@ -6,10 +6,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Getter
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends RuntimeException {
+public class MemberNotFoundException extends RuntimeException {
     private String email;
-    public UserNotFoundException(String email) {
+    public MemberNotFoundException(String email, String msg) {
         super(String.format("not found user - email : %s", email));
         this.email = email;
+    }
+
+    public MemberNotFoundException(String msg) {
+        super(msg);
     }
 }

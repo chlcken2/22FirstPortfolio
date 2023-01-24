@@ -2,7 +2,7 @@ package HelloMyTeam.Hellomyteam.controller;
 
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.exception.JwtTokenException;
-import HelloMyTeam.Hellomyteam.exception.UserNotFoundException;
+import HelloMyTeam.Hellomyteam.exception.MemberNotFoundException;
 import HelloMyTeam.Hellomyteam.payload.CommonResponse;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import io.swagger.annotations.ApiImplicitParam;
@@ -45,7 +45,7 @@ public class MemberController {
                 case 499: return CommonResponse.createError(new JwtTokenException("Exception").getMessage());
             }
         } else if (ObjectUtils.isEmpty(savedMember)) {
-            return CommonResponse.createError(new UserNotFoundException(email).getMessage());
+            return CommonResponse.createError(new MemberNotFoundException(email, null).getMessage());
         }
 
         return CommonResponse.createSuccess(savedMember);

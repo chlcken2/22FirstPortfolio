@@ -1,10 +1,11 @@
 package HelloMyTeam.Hellomyteam.controller;
 
 import HelloMyTeam.Hellomyteam.entity.Member;
+import HelloMyTeam.Hellomyteam.entity.TermsAndCond;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.exception.BadRequestException;
 import HelloMyTeam.Hellomyteam.exception.JwtTokenException;
-import HelloMyTeam.Hellomyteam.exception.UserNotFoundException;
+import HelloMyTeam.Hellomyteam.exception.MemberNotFoundException;
 import HelloMyTeam.Hellomyteam.jwt.Token;
 import HelloMyTeam.Hellomyteam.payload.CommonResponse;
 import HelloMyTeam.Hellomyteam.payload.MemberRequest;
@@ -16,21 +17,27 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
+
 
     @ApiOperation(value = "login", notes = "로그인")
     @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
@@ -40,22 +47,20 @@ public class AuthController {
         Member savedMember = memberRepository.findByEmail(email);
         if (ObjectUtils.isEmpty(savedMember)) {
             response.setStatus(404);
-            return CommonResponse.createError(new UserNotFoundException(email).getMessage());
+            return CommonResponse.createError(new MemberNotFoundException(email, null).getMessage());
+        }
+
+        boolean checkPw = passwordEncoder.matches(memberRequest.getPassword(), savedMember.getPassword());
+
+        if (!checkPw) {
+            response.setStatus(404);
+            return CommonResponse.createError(new MemberNotFoundException("password do not match").getMessage());
         }
 
         Token token = tokenProvider.generateToken(email, "ROLE_USER");
 
         savedMember.setRefreshToken(token.getRefreshToken());
         memberRepository.save(savedMember);
-
-//        ResponseCookie cookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
-//                .maxAge(60 * 60 * 24 * 30)   // 쿠키 유효기간 30일
-//                .path("/")
-//                .secure(true)
-//                .sameSite("None")
-//                .httpOnly(true)
-//                .build();
-//        response.setHeader("Set-Cookie", cookie.toString());
 
         return CommonResponse.createSuccess(token);
     }
@@ -68,12 +73,23 @@ public class AuthController {
             return CommonResponse.createError(new BadRequestException("Email address already in use.").getMessage());
         }
 
+        String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
+
         Member member = Member.builder()
-                                .name(signUpRequest.getName())
                                 .email(signUpRequest.getEmail())
+                                .password(encodePassword)
+                                .name(signUpRequest.getName())
+                                .birthday(signUpRequest.getBirthday())
                                 .joinPurpose(signUpRequest.getJoinPurpose())
+                                .termsAndCond(new ArrayList<>())
                                 .memberStatus(MemberStatus.NORMAL)
                                 .build();
+
+        member.addTermsAndCond(TermsAndCond.builder()
+                .termsOfServiceYn(signUpRequest.getTermsOfServiceYn())
+                .privacyYn(signUpRequest.getPrivacyYn())
+                .build());
+
         memberRepository.save(member);
 
         return CommonResponse.createSuccess(member, "User registered successfully");
