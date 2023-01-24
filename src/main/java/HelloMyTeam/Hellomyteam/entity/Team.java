@@ -1,17 +1,15 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.entity.status.TeamPersonalityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
 import com.sun.istack.NotNull;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
+@Builder
 public class Team extends BaseTimeEntity {
     @Id
     @GeneratedValue
@@ -35,6 +33,7 @@ public class Team extends BaseTimeEntity {
 
     private int mercenaryCount;                            //용병 수
 
+    private Integer teamSerialNo;                          //팀 고유번호
 //    @OneToMany(mappedBy = "team")
 //    private List<Member> members = new ArrayList<>();
 

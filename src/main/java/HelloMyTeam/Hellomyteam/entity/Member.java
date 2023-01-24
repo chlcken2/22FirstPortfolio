@@ -4,7 +4,6 @@ import HelloMyTeam.Hellomyteam.entity.status.JoinPurpose;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import com.sun.istack.NotNull;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,8 +19,6 @@ public class Member extends BaseTimeEntity{
     @GeneratedValue
     @Column(name = "member_id")
     private Long id;
-
-    private String mobile;
 
     private String email;
 

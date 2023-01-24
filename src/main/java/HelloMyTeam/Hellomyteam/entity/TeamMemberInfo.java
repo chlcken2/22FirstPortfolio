@@ -5,17 +5,19 @@ import HelloMyTeam.Hellomyteam.entity.status.team.PersonalPositionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalStyleStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.SpecialBadgeStatus;
 import com.sun.istack.NotNull;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Builder
 @Entity
 @Getter
+@Builder
 public class TeamMemberInfo extends BaseTimeEntity {
+
+
     @Id
     @GeneratedValue
     @Column(name = "teamMemberInfo_id")
@@ -47,5 +49,6 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "teamMemberInfo")
     private List<Image> images = new ArrayList<>();    //background / profile
+
 
 }
