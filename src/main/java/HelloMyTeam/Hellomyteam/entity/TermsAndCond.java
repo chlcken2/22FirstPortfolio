@@ -1,12 +1,17 @@
 package HelloMyTeam.Hellomyteam.entity;
 
 import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
-import lombok.Getter;
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TermsAndCond {
     @Id
     @GeneratedValue
@@ -23,5 +28,10 @@ public class TermsAndCond {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private Member member;
+
+    public void updateMember(Member member) {
+        this.member = member;
+    }
 }
