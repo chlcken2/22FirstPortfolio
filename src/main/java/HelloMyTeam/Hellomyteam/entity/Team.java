@@ -10,6 +10,8 @@ import java.util.List;
 @Entity
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Team extends BaseTimeEntity {
     @Id
     @GeneratedValue

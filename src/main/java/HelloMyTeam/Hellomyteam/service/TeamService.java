@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.service;
 
+import HelloMyTeam.Hellomyteam.dto.TeamJoinParam;
 import HelloMyTeam.Hellomyteam.dto.TeamParam;
 import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
 import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
@@ -11,11 +12,13 @@ import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -25,7 +28,7 @@ public class TeamService {
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final TeamCustomImpl teamCustomImpl;
 
-    public Team create(TeamParam.TeamInfo teamInfo) {
+    public Team createTeamWithAuthNo(TeamParam.TeamInfo teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
         Team team = Team.builder()
                 .teamName(teamInfo.getTeamName())
@@ -38,7 +41,7 @@ public class TeamService {
         return team;
     }
 
-    public void teamMemberInfoSave(Team team, Member member) {
+    public void teamMemberInfoSaveAuthLeader(Team team, Member member) {
         TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
                 .authority(AuthorityStatus.LEADER)
                 .team(team)
@@ -47,8 +50,31 @@ public class TeamService {
         teamMemberInfoRepository.save(teamMemberInfo);
     }
 
-    public List<TeamSearchParam> findTeam(TeamSearchCond condition) {
+    public List<TeamSearchParam> findTeamBySearchCond(TeamSearchCond condition) {
         List<TeamSearchParam> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
         return team;
+    }
+
+    public Team findTeamById(TeamJoinParam teamJoinParam) {
+        Team team = teamRepository.findById(teamJoinParam.getTeamId())
+                .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
+        return team;
+    }
+
+    public boolean joinTeamAuthWait(Team team, Member member) {
+        List<TeamMemberInfo> result = teamCustomImpl.findByTeamMember(team, member);
+
+        if (result.size() > 0) {
+            log.info("중복 가입신청 체크..." + String.valueOf(result));
+            return false;
+        }
+
+        TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
+                .authority(AuthorityStatus.WAIT)
+                .team(team)
+                .member(member)
+                .build();
+        teamMemberInfoRepository.save(teamMemberInfo);
+        return true;
     }
 }

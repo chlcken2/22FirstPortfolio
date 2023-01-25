@@ -3,7 +3,9 @@ package HelloMyTeam.Hellomyteam.repository.custom.impl;
 import HelloMyTeam.Hellomyteam.dto.QTeamSearchParam;
 import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
 import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
+import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
+import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -41,6 +43,14 @@ public class TeamCustomImpl{
                 .leftJoin(teamMemberInfo.member, member)
                 .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
                 .where(builder)
+                .fetch();
+    }
+
+
+    public List<TeamMemberInfo> findByTeamMember(Team team, Member member) {
+        return queryFactory.selectFrom(teamMemberInfo)
+                .where(teamMemberInfo.team.eq(team)
+                        .and(teamMemberInfo.member.eq(member)))
                 .fetch();
     }
 }
