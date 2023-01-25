@@ -1,9 +1,6 @@
 package HelloMyTeam.Hellomyteam.service;
 
-import HelloMyTeam.Hellomyteam.dto.TeamJoinParam;
-import HelloMyTeam.Hellomyteam.dto.TeamParam;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
+import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
@@ -56,8 +53,8 @@ public class TeamService {
         return team;
     }
 
-    public Team findTeamById(TeamJoinParam teamJoinParam) {
-        Team team = teamRepository.findById(teamJoinParam.getTeamId())
+    public Team findTeamById(TeamMemberIdParam teamMemberIdParam) {
+        Team team = teamRepository.findById(teamMemberIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
     }
@@ -77,5 +74,9 @@ public class TeamService {
                 .build();
         teamMemberInfoRepository.save(teamMemberInfo);
         return true;
+    }
+
+    public void updateTeamMemberAuth(TeamMemberIdsParam teamMemberIdsParam) {
+        teamMemberInfoRepository.findTeamMemberIdsById(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
     }
 }

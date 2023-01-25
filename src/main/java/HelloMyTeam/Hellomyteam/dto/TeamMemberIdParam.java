@@ -6,7 +6,7 @@ import lombok.Getter;
 
 
 @Getter
-public class TeamJoinParam {
+public class TeamMemberIdParam {
     private Long teamId;
     private Long memberId;
 }

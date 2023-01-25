@@ -1,9 +1,6 @@
 package HelloMyTeam.Hellomyteam.api;
 
-import HelloMyTeam.Hellomyteam.dto.TeamJoinParam;
-import HelloMyTeam.Hellomyteam.dto.TeamParam;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
+import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.payload.CommonResponse;
@@ -49,11 +46,17 @@ public class TeamController {
         , message = "첫 신청시 true, 중복 신청시 false를 반환합니다."
     )
     @PostMapping("/join")
-    public CommonResponse<?> joinTeam(@RequestBody TeamJoinParam teamJoinParam) {
-        Member member = memberService.findMemberById(teamJoinParam);
-        Team team = teamService.findTeamById(teamJoinParam);
+    public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdParam teamMemberIdParam) {
+        Member member = memberService.findMemberById(teamMemberIdParam);
+        Team team = teamService.findTeamById(teamMemberIdParam);
         Boolean result = teamService.joinTeamAuthWait(team, member);
         return CommonResponse.createSuccess(result, "중복가입 체크, 리더 본인팀 가입 x, 가입신청 성공 = true, 가입 신청 실패 = false");
     }
-    //팀 수락
+
+    @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
+    @PostMapping("/accept")
+    public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsParam teamMemberIdsParam) {
+        teamService.updateTeamMemberAuth(teamMemberIdsParam);
+        return CommonResponse.createSuccess(true, "팀원 수락 성공");
+    }
 }

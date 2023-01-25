@@ -1,6 +1,7 @@
 package HelloMyTeam.Hellomyteam.service;
 
-import HelloMyTeam.Hellomyteam.dto.TeamJoinParam;
+
+import HelloMyTeam.Hellomyteam.dto.TeamMemberIdParam;
 import HelloMyTeam.Hellomyteam.dto.TeamParam;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
@@ -22,8 +23,8 @@ public class MemberService {
         return member;
     }
 
-    public Member findMemberById(TeamJoinParam teamJoinParam) {
-        Member member = memberRepository.findById(teamJoinParam.getMemberId())
+    public Member findMemberById(TeamMemberIdParam teamMemberIdParam) {
+        Member member = memberRepository.findById(teamMemberIdParam.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("memberId가 누락되었습니다."));
         return member;
     }
