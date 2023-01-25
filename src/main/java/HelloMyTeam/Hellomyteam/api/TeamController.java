@@ -41,10 +41,7 @@ public class TeamController {
 
 
     @ApiOperation(value = "팀 가입신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
-    @ApiResponse(
-        code = 200
-        , message = "첫 신청시 true, 중복 신청시 false를 반환합니다."
-    )
+    @ApiResponse(code = 200, message = "첫 신청시 true, 중복 신청시 false를 반환합니다.")
     @PostMapping("/join")
     public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdParam teamMemberIdParam) {
         Member member = memberService.findMemberById(teamMemberIdParam);
@@ -56,7 +53,7 @@ public class TeamController {
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
     @PostMapping("/accept")
     public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsParam teamMemberIdsParam) {
-        teamService.updateTeamMemberAuth(teamMemberIdsParam);
+        teamService.acceptTeamMemberById(teamMemberIdsParam);
         return CommonResponse.createSuccess(true, "팀원 수락 성공");
     }
 }

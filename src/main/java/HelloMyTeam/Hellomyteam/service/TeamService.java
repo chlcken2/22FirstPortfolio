@@ -22,8 +22,8 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final TeamCustomImpl teamCustomImpl;
+    private final TeamMemberInfoRepository teamMemberInfoRepository;
 
     public Team createTeamWithAuthNo(TeamParam.TeamInfo teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -76,7 +76,11 @@ public class TeamService {
         return true;
     }
 
-    public void updateTeamMemberAuth(TeamMemberIdsParam teamMemberIdsParam) {
-        teamMemberInfoRepository.findTeamMemberIdsById(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
+    public void acceptTeamMemberById(TeamMemberIdsParam teamMemberIdsParam) {
+        teamMemberInfoRepository.updateTeamMemberAuthById(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
+
+        int countMember = teamMemberInfoRepository.getMemberCountByTeamId(teamMemberIdsParam.getTeamId());
+        log.info("@@countMember= " + countMember);
+        teamMemberInfoRepository.updateTeamCount(teamMemberIdsParam.getTeamId(), countMember);
     }
 }
