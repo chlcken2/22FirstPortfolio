@@ -53,7 +53,7 @@ public class TeamController {
         Member member = memberService.findMemberById(teamJoinParam);
         Team team = teamService.findTeamById(teamJoinParam);
         Boolean result = teamService.joinTeamAuthWait(team, member);
-        return CommonResponse.createSuccess(result, "중복가입 체크적용, 가입신청 성공 = true, 가입 신청 실패 = false");
+        return CommonResponse.createSuccess(result, "중복가입 체크, 리더 본인팀 가입 x, 가입신청 성공 = true, 가입 신청 실패 = false");
     }
     //팀 수락
 }
