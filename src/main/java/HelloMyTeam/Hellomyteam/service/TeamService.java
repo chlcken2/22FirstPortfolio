@@ -35,6 +35,7 @@ public class TeamService {
                 .oneIntro(teamInfo.getOneIntro())
                 .detailIntro(teamInfo.getDetailIntro())
                 .tacticalStyleStatus(teamInfo.getTacticalStyleStatus())
+                .memberCount(1)
                 .teamSerialNo(authNo)
                 .build();
         teamRepository.save(team);

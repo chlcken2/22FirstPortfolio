@@ -31,7 +31,7 @@ public class Team extends BaseTimeEntity {
     @NotNull
     private TacticalStyleStatus tacticalStyleStatus;
 
-    private int MemberCount;                               //팀원 수
+    private int memberCount;                               //팀원 수
 
     private int mercenaryCount;                            //용병 수
 
