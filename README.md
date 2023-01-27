@@ -4,17 +4,3 @@
 <br>
 <br>
 
-
-# 기술 스택
-
-BackEnd
-- Language: Java 8, ES6,   
-- Framework: Springboot: 2.6.7
-- DB: Maria DB 10.6.10
-- CI/CD: git action 
-
-FrontEnd
-- 작성예정
-
-
-
