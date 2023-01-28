@@ -39,8 +39,8 @@ public class TeamCustomImpl{
         return queryFactory
                 .select(new QTeamSearchParam(team.teamName, team.oneIntro, team.teamSerialNo, member.name, team.memberCount))
                 .from(teamMemberInfo)
-                .leftJoin(teamMemberInfo.team, team)
-                .leftJoin(teamMemberInfo.member, member)
+                .join(teamMemberInfo.team, team)
+                .join(teamMemberInfo.member, member)
                 .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
                 .where(builder)
                 .fetch();
