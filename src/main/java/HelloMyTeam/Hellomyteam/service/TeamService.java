@@ -25,7 +25,7 @@ public class TeamService {
     private final TeamCustomImpl teamCustomImpl;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
 
-    public Team createTeamWithAuthNo(TeamParam.TeamInfo teamInfo) {
+    public Team createTeamWithAuthNo(TeamParam teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
         Team team = Team.builder()
                 .teamName(teamInfo.getTeamName())
@@ -53,8 +53,8 @@ public class TeamService {
         return team;
     }
 
-    public Team findTeamById(TeamMemberIdParam teamMemberIdParam) {
-        Team team = teamRepository.findById(teamMemberIdParam.getTeamId())
+    public Team findTeamById(TeamIdParam teamIdParam) {
+        Team team = teamRepository.findById(teamIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
     }
@@ -76,11 +76,24 @@ public class TeamService {
         return true;
     }
 
-    public void acceptTeamMemberById(TeamMemberIdsParam teamMemberIdsParam) {
+    public int acceptTeamMemberById(TeamMemberIdsParam teamMemberIdsParam) {
+        //수락 전 auth 상태 체크
+        Integer result = teamMemberInfoRepository.checkAuthWait(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
+        if (result == 0 || result == null) {
+            log.info("@result: " + result);
+            return 0;
+        }
+
         teamMemberInfoRepository.updateTeamMemberAuthById(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
 
         int countMember = teamMemberInfoRepository.getMemberCountByTeamId(teamMemberIdsParam.getTeamId());
-        log.info("@@countMember= " + countMember);
         teamMemberInfoRepository.updateTeamCount(teamMemberIdsParam.getTeamId(), countMember);
+        return result;
+    }
+
+    public Team findTeamByTeamMemberId(TeamMemberIdParam teamMemberIdParam) {
+        Team team = teamRepository.findById(teamMemberIdParam.getTeamId())
+                .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
+        return team;
     }
 }

@@ -1,9 +1,11 @@
 package HelloMyTeam.Hellomyteam.dto;
 
+
+
 import lombok.Getter;
 
+
 @Getter
-public class TeamMemberIdParam {
-    private Long teamId;
+public class MemberIdParam {
     private Long memberId;
 }

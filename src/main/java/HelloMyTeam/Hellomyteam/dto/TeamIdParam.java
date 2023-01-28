@@ -3,7 +3,6 @@ package HelloMyTeam.Hellomyteam.dto;
 import lombok.Getter;
 
 @Getter
-public class TeamMemberIdParam {
+public class TeamIdParam {
     private Long teamId;
-    private Long memberId;
 }
