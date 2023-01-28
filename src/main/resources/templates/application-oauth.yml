@@ -1,0 +1,5 @@
+env-oauth: oauth-success
+
+jwt:
+  header: Authorization
+  secret: frontend_reactjs_backend_springboot_cicd_gitAction_aws_proejctName_helloMyTeam_from2022to2023_ing

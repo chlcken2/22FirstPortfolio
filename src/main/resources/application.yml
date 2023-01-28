@@ -1,0 +1,21 @@
+env: default-success
+
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+
+
+spring:
+  pid:
+    file: /home/ec2-user/app/step2/hellomyteam.pid
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher  #Swagger set
+  profiles:
+    active: dev
+    group:
+      local : local,oauth
+      dev : dev,oauth
+      prod : prod,oauth
+
