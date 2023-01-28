@@ -1,6 +1,7 @@
 package HelloMyTeam.Hellomyteam.entity;
 
 import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class Team extends BaseTimeEntity {
 //    @OneToMany(mappedBy = "team")
 //    private List<Member> members = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "team")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
 
