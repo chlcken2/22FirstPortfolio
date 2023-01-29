@@ -39,13 +39,14 @@ public class TeamService {
         return team;
     }
 
-    public void teamMemberInfoSaveAuthLeader(Team team, Member member) {
+    public TeamMemberInfo teamMemberInfoSaveAuthLeader(Team team, Member member) {
         TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
                 .authority(AuthorityStatus.LEADER)
                 .team(team)
                 .member(member)
                 .build();
-        teamMemberInfoRepository.save(teamMemberInfo);
+        TeamMemberInfo savedteamMemberInfo = teamMemberInfoRepository.save(teamMemberInfo);
+        return savedteamMemberInfo;
     }
 
     public List<TeamSearchParam> findTeamBySearchCond(TeamSearchCond condition) {

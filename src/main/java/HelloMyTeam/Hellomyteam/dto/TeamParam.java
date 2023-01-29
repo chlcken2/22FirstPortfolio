@@ -5,6 +5,7 @@ import lombok.*;
 
 @Getter
 @ToString
+@Builder
 public class TeamParam {
     private Long memberId;
     private String teamName;
