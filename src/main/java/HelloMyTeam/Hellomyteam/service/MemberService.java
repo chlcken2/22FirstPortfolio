@@ -17,14 +17,14 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
 
-    public Member findMemberByTeamInfo(TeamParam.TeamInfo teamInfo) {
+    public Member findMemberByTeamInfo(TeamParam teamInfo) {
         Member member = memberRepository.findById(teamInfo.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("memberId가 누락되었습니다."));
         return member;
     }
 
-    public Member findMemberById(TeamMemberIdParam teamMemberIdParam) {
-        Member member = memberRepository.findById(teamMemberIdParam.getMemberId())
+    public Member findMemberByTeamMemberId(TeamMemberIdParam memberIdParam) {
+        Member member = memberRepository.findById(memberIdParam.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("memberId가 누락되었습니다."));
         return member;
     }

@@ -14,11 +14,11 @@ public class TeamSearchParam {
     private String oneIntro;
     private Integer teamSerialNo;
     private String name;
-    private int memberCount;
+    private Integer memberCount;
 
 
     @QueryProjection
-    public TeamSearchParam(String teamName, String oneIntro, Integer teamSerialNo, String name, int memberCount) {
+    public TeamSearchParam(String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount) {
         this.teamName = teamName;
         this.oneIntro = oneIntro;
         this.teamSerialNo = teamSerialNo;
