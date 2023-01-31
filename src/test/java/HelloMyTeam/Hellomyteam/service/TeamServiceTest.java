@@ -1,6 +1,9 @@
 package HelloMyTeam.Hellomyteam.service;
 
+import HelloMyTeam.Hellomyteam.dto.TeamMemberIdParam;
 import HelloMyTeam.Hellomyteam.dto.TeamParam;
+import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
+import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
@@ -8,18 +11,23 @@ import HelloMyTeam.Hellomyteam.entity.TermsAndCond;
 import HelloMyTeam.Hellomyteam.entity.status.JoinPurpose;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;
+import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
+import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 
 import static HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus.LEADER;
 
@@ -41,9 +49,14 @@ public class TeamServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    TeamCustomImpl teamCustomImpl;
 
 
-    @Test
+
+
+
+    @Before
     public void 팀생성_with_고유번호() throws Exception{
         //given
         //회원가입 정보 입력
@@ -93,28 +106,52 @@ public class TeamServiceTest {
         Assertions.assertThat(teamMemberInfo.getTeam().getTeamSerialNo()).isEqualTo(savedTeam.getTeamSerialNo());
     }
 
-    @Test
-    public void 팀생성시_팀리더_권한으로_teamMemberInfo저장() throws Exception {
 
+    @Test
+    public void 팀이름을_통한_찾기() {
+        //given
+        TeamSearchCond condition = TeamSearchCond.builder()
+                .teamName("테스트용 팀 이름")
+                .build();
+
+        //when
+        List<TeamSearchParam> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
+
+        //then
+        for (TeamSearchParam t : team) {
+            Assertions.assertThat(t.getTeamName()).isEqualTo("테스트용 팀 이름");
+            Assertions.assertThat(t.getTeamName()).isNotEqualTo("테스트용 팀 이름1");
+        }
     }
 
     @Test
-    public void 고유번호_팀이름을_통한_검색() {
-    }
+    public void 팀가입_신청() {
+        //given
+        //회원가입
+        Member member = Member.builder()
+                .mobile("010-2723-9885")
+                .joinPurpose(JoinPurpose.TEAM_CREATE)
+                .name("이창현")
+                .birthday("97-12-12")
+                .email("ckdgus988@naver.com")
+                .password("1234")
+                .memberStatus(MemberStatus.NORMAL)
+                .build();
+        Member savedMember = memberRepository.save(member);
 
-    @Test
-    public void findTeamById() {
-    }
+        //찾을 팀 정보 넘기기
+        TeamMemberIdParam teamMemberIdParam = TeamMemberIdParam.builder()
+                .teamId(1L)
+                .memberId(savedMember.getId())
+                .build();
+        //가입할 팀 찾기
+        Team team = teamService.findTeamByTeamMemberId(teamMemberIdParam);
 
-    @Test
-    public void joinTeamAuthWait() {
-    }
+        //when
+        TeamMemberInfo teamMemberInfo = teamService.joinTeamAuthWait(team, savedMember);
 
-    @Test
-    public void acceptTeamMemberById() {
-    }
-
-    @Test
-    public void findTeamByTeamMemberId() {
+        //then
+        Assertions.assertThat(teamMemberInfo.getAuthority()).isEqualTo(AuthorityStatus.WAIT);
+        Assertions.assertThat(teamMemberInfo.getMember()).isEqualTo(savedMember);
     }
 }

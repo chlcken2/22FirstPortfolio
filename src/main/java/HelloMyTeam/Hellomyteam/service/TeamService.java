@@ -60,12 +60,12 @@ public class TeamService {
         return team;
     }
 
-    public boolean joinTeamAuthWait(Team team, Member member) {
+    public TeamMemberInfo joinTeamAuthWait(Team team, Member member) {
         List<TeamMemberInfo> result = teamCustomImpl.findByTeamMember(team, member);
 
         if (result.size() > 0) {
             log.info("중복 가입신청 체크..." + String.valueOf(result));
-            return false;
+            return null;
         }
 
         TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
@@ -74,7 +74,7 @@ public class TeamService {
                 .member(member)
                 .build();
         teamMemberInfoRepository.save(teamMemberInfo);
-        return true;
+        return teamMemberInfo;
     }
 
     public int acceptTeamMemberById(TeamMemberIdsParam teamMemberIdsParam) {

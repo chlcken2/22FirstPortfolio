@@ -16,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MemberServiceTest {
 
 
     @Before
+    @Rollback
     public void 회원가입() throws Exception {
         //given
         String encodePassword = passwordEncoder.encode("test1234");
@@ -63,6 +65,7 @@ public class MemberServiceTest {
     }
 
     @Test
+    @Rollback
     public void 이메일_중복체크() throws Exception {
         //given
         String encodePassword = passwordEncoder.encode("test1234");

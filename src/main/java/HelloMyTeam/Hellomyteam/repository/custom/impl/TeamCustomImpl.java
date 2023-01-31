@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.List;
-
 import static HelloMyTeam.Hellomyteam.entity.QMember.member;
 import static HelloMyTeam.Hellomyteam.entity.QTeam.team;
 import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;

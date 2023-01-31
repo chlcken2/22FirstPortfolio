@@ -3,6 +3,7 @@ package HelloMyTeam.Hellomyteam.api;
 import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
+import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.payload.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.MemberService;
 import HelloMyTeam.Hellomyteam.service.TeamService;
@@ -55,8 +56,8 @@ public class TeamController {
     public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdParam teamMemberIdParam) {
         Member member = memberService.findMemberByTeamMemberId(teamMemberIdParam);
         Team team = teamService.findTeamByTeamMemberId(teamMemberIdParam);
-        Boolean result = teamService.joinTeamAuthWait(team, member);
-        return CommonResponse.createSuccess(result, "중복가입 체크, 리더 본인팀 가입 x, 가입신청 성공 = true, 가입 신청 실패 = false");
+        TeamMemberInfo result = teamService.joinTeamAuthWait(team, member);
+        return CommonResponse.createSuccess(result, "null일 경우 중복가입 체크, 리더 본인팀 가입 x");
     }
 
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")

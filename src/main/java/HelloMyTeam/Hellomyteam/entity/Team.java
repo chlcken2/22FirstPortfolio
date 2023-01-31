@@ -27,7 +27,7 @@ public class Team extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TacticalStyleStatus tacticalStyleStatus;
 
-    private int memberCount;                               //팀원 수
+    private Integer memberCount;                               //팀원 수
 
     private int mercenaryCount;                            //용병 수
 

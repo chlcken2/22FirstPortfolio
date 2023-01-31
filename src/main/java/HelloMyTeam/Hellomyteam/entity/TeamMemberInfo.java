@@ -4,6 +4,7 @@ import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalPositionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalStyleStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.SpecialBadgeStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
@@ -40,6 +41,7 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date withdrawalDate;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
