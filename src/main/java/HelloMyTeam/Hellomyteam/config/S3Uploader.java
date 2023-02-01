@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,8 +40,10 @@ public class S3Uploader {
         String uploadImageUrl = putS3(uploadFile, fileName);
 
         removeNewFile(uploadFile);  // 로컬에 생성된 File 삭제 (MultipartFile -> File 전환 하며 로컬에 파일 생성됨)
+
         Map<String, String> param = new HashMap<>();
-        param.put("fileName", uploadFile.getName());
+        String originFileName = uploadFile.getName().substring(uploadFile.getName().indexOf("_") +1);
+        param.put("fileName", originFileName);
         param.put("uploadImageUrl", uploadImageUrl);
         return param;      // 업로드된 파일의 S3 URL 주소 반환
     }
@@ -62,7 +65,8 @@ public class S3Uploader {
     }
 
     private Optional<File> convert(MultipartFile file) throws  IOException {
-        File convertFile = new File(file.getOriginalFilename());
+        UUID uuid = UUID.randomUUID();
+        File convertFile = new File(uuid.toString()+"_"+file.getOriginalFilename());
         if(convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
