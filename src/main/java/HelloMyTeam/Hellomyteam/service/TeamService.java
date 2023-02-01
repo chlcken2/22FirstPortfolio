@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -112,10 +113,16 @@ public class TeamService {
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         if (!multipartFile.isEmpty()) {
 
-            String storedFileURL = s3Uploader.upload(multipartFile, "teamLogo");
+            Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "teamLogo");
+            String fileName = storedFileURL.get("fileName");
+            String uploadImageUrl = storedFileURL.get("uploadImageUrl");
+            log.info("fileName:: " + fileName);
+            log.info("uploadImageUrl:: " + uploadImageUrl);
+
             Image image = Image.builder()
                     .team(team)
-                    .imageUrl(storedFileURL)
+                    .imageUrl(uploadImageUrl)
+                    .storeFilename(fileName)
                     .build();
             Image savedImage = fileUploadRepository.save(image);
             return savedImage;
