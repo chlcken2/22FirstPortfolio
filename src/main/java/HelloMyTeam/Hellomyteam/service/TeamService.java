@@ -1,18 +1,25 @@
 package HelloMyTeam.Hellomyteam.service;
 
+import HelloMyTeam.Hellomyteam.config.S3Uploader;
 import HelloMyTeam.Hellomyteam.dto.*;
+import HelloMyTeam.Hellomyteam.entity.Image;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
+import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 
 @Slf4j
@@ -24,6 +31,8 @@ public class TeamService {
     private final TeamRepository teamRepository;
     private final TeamCustomImpl teamCustomImpl;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
+    private final FileUploadRepository fileUploadRepository;
+    private final S3Uploader s3Uploader;
 
     public Team createTeamWithAuthNo(TeamParam teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -96,5 +105,21 @@ public class TeamService {
         Team team = teamRepository.findById(teamMemberIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
+    }
+
+    public Image saveLogo(MultipartFile multipartFile, TeamIdParam teamLogoRequest) throws IOException {
+        Team team = teamRepository.findById(teamLogoRequest.getTeamId())
+                .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
+        if (!multipartFile.isEmpty()) {
+
+            String storedFileURL = s3Uploader.upload(multipartFile, "teamLogo");
+            Image image = Image.builder()
+                    .team(team)
+                    .imageUrl(storedFileURL)
+                    .build();
+            Image savedImage = fileUploadRepository.save(image);
+            return savedImage;
+        }
+        return null;
     }
 }

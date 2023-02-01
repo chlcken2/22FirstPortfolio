@@ -37,7 +37,7 @@ cloud:
       secret-key: 9bpel2mvhJC3wak0EdwcY0Cn1ViQ4SSljLFoelLO
     region:
       static: ap-northeast-2
-        auto: false
+      auto: false
     stack:
       auto: false
 

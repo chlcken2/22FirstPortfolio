@@ -1,6 +1,7 @@
 package HelloMyTeam.Hellomyteam.api;
 
 import HelloMyTeam.Hellomyteam.dto.*;
+import HelloMyTeam.Hellomyteam.entity.Image;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
@@ -8,12 +9,18 @@ import HelloMyTeam.Hellomyteam.payload.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.MemberService;
 import HelloMyTeam.Hellomyteam.service.TeamService;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Parameter;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/team")
@@ -69,5 +76,13 @@ public class TeamController {
         String template = "총 %s 명이 반영되었습니다.";
         String message = String.format(template, stringResult);
         return CommonResponse.createSuccess(true, message);
+    }
+
+    @ApiOperation(value = "팀 로고 업데이트", notes = "Form Data/ json 타입 값을 받아와서 팀 로고를 업뎃", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "v1/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public CommonResponse<?> logoUpdate(@RequestPart TeamIdParam teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
+        log.info("id : {}, 이미지 : {}",  teamIdParam.getTeamId(), imgFile);
+        Image savedImage = teamService.saveLogo(imgFile, teamIdParam);
+        return CommonResponse.createSuccess(savedImage, "팀 로고 등록");
     }
 }

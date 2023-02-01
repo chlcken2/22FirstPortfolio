@@ -1,18 +1,26 @@
 package HelloMyTeam.Hellomyteam.entity;
 
 import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity(name = "Image")
 @Getter
+@NoArgsConstructor
 public class Image extends BaseTimeEntity {
     @Id
     @GeneratedValue
     @Column(name = "image_id")
     private Long id;
-    @NotNull
-    private String path;
+
+    private String imageUrl;
+
+    private String storeFilename;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
@@ -29,4 +37,12 @@ public class Image extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamMemberInfo_id")
     private TeamMemberInfo teamMemberInfo;
+
+
+    @Builder
+    public Image(String imageUrl, String storeFilename, Team team) {
+        this.imageUrl = imageUrl;
+        this.storeFilename = storeFilename;
+        this.team = team;
+    }
 }
