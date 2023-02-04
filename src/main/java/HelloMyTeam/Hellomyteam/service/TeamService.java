@@ -137,4 +137,10 @@ public class TeamService {
         List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
         return image;
     }
+
+    public List<Image> deleteLogoByTeamId(TeamIdParam teamIdParam) {
+        fileUploadCustomImpl.changeImageByTeamId(teamIdParam.getTeamId());
+        List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
+        return image;
+    }
 }

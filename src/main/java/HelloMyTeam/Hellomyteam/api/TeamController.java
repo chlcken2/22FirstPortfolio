@@ -85,10 +85,10 @@ public class TeamController {
         return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success:List");
     }
 
-//    @ApiOperation(value = "팀 로고 삭제",
-//            notes = "해당 API는 포스트맨에서 진행할 것, " +
-//                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})"
-//    )
-//    @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-//    public CommonResponse<?> logoUpdate(@RequestPart TeamIdParam teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
+    @ApiOperation(value = "팀 로고 삭제")
+    @PostMapping(value = "/logo/delete")
+    public CommonResponse<?> logoDelete(@RequestBody TeamIdParam teamIdParam) {
+        List<Image> image = teamService.deleteLogoByTeamId(teamIdParam);
+        return CommonResponse.createSuccess(image, "삭제 성공");
+    }
 }

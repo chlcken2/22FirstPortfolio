@@ -1,11 +1,9 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 
 @Entity(name = "Image")
@@ -21,7 +19,7 @@ public class Image extends BaseTimeEntity {
 
     private String storeFilename;
 
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;

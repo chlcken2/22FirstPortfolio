@@ -1,7 +1,6 @@
 package HelloMyTeam.Hellomyteam.repository;
 
 import HelloMyTeam.Hellomyteam.entity.Image;
-import HelloMyTeam.Hellomyteam.entity.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,8 +23,7 @@ public interface FileUploadRepository extends JpaRepository<Image, Long> {
                            @Param("imageUrl") String imageUrl,
                            @Param("storeFilename") String storeFilename);
 
-//    Image image findTeamLogoByTeamId(Long id);
-    Boolean existsImageByTeamId(Long id);
+    Boolean existsImageByTeamId(Long TeamId);
 
     List<Image> findImageByTeamId(Long teamId);
 }
