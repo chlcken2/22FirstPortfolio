@@ -108,16 +108,14 @@ public class TeamService {
         return team;
     }
 
-    public Image saveLogo(MultipartFile multipartFile, TeamIdParam teamLogoRequest) throws IOException {
-        Team team = teamRepository.findById(teamLogoRequest.getTeamId())
+    public Image saveLogo(MultipartFile multipartFile, TeamIdParam teamIdParam) throws IOException {
+        Team team = teamRepository.findById(teamIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         if (!multipartFile.isEmpty()) {
 
             Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "teamLogo");
             String fileName = storedFileURL.get("fileName");
             String uploadImageUrl = storedFileURL.get("uploadImageUrl");
-            log.info("fileName:: " + fileName);
-            log.info("uploadImageUrl:: " + uploadImageUrl);
 
             Image image = Image.builder()
                     .team(team)

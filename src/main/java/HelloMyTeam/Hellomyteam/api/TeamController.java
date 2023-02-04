@@ -11,12 +11,9 @@ import HelloMyTeam.Hellomyteam.service.TeamService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Parameter;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -78,11 +75,14 @@ public class TeamController {
         return CommonResponse.createSuccess(true, message);
     }
 
-    @ApiOperation(value = "팀 로고 업데이트", notes = "Form Data/ json 타입 값을 받아와서 팀 로고를 업뎃", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @PostMapping(value = "v1/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation(value = "팀 로고 단일 업데이트",
+            notes = "해당 API는 포스트맨에서 진행할 것, " +
+                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})"
+    )
+    @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> logoUpdate(@RequestPart TeamIdParam teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
-        log.info("id : {}, 이미지 : {}",  teamIdParam.getTeamId(), imgFile);
+
         Image savedImage = teamService.saveLogo(imgFile, teamIdParam);
-        return CommonResponse.createSuccess(savedImage, "팀 로고 등록");
+        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success:List, fail: null");
     }
 }
