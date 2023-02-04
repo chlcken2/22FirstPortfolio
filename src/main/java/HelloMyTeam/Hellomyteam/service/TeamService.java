@@ -10,17 +10,17 @@ import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
+import HelloMyTeam.Hellomyteam.repository.custom.impl.FileUploadCustomImpl;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
 
 
 @Slf4j
@@ -33,7 +33,9 @@ public class TeamService {
     private final TeamCustomImpl teamCustomImpl;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final FileUploadRepository fileUploadRepository;
+    private final FileUploadCustomImpl fileUploadCustomImpl;
     private final S3Uploader s3Uploader;
+
 
     public Team createTeamWithAuthNo(TeamParam teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -108,11 +110,11 @@ public class TeamService {
         return team;
     }
 
-    public Image saveLogo(MultipartFile multipartFile, TeamIdParam teamIdParam) throws IOException {
+    public List saveLogo(MultipartFile multipartFile, TeamIdParam teamIdParam) throws IOException {
         Team team = teamRepository.findById(teamIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
-        if (!multipartFile.isEmpty()) {
 
+        if (!multipartFile.isEmpty()) {
             Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "teamLogo");
             String fileName = storedFileURL.get("fileName");
             String uploadImageUrl = storedFileURL.get("uploadImageUrl");
@@ -122,9 +124,17 @@ public class TeamService {
                     .imageUrl(uploadImageUrl)
                     .storeFilename(fileName)
                     .build();
-            Image savedImage = fileUploadRepository.save(image);
-            return savedImage;
+
+            Boolean result = fileUploadRepository.existsImageByTeamId(teamIdParam.getTeamId());
+            //존재=true
+            if (result) {
+                fileUploadCustomImpl.updateLogoByTeam(teamIdParam.getTeamId(), image.getImageUrl(), image.getStoreFilename());
+            } else {
+                fileUploadRepository.save(image);
+            }
         }
-        return null;
+
+        List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
+        return image;
     }
 }
