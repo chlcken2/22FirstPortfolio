@@ -143,4 +143,10 @@ public class TeamService {
         List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
         return image;
     }
+
+
+    public Long deleteMemberByMemberId(TeamMemberIdParam teamMemberIdParam) {
+        Long count = teamCustomImpl.deleteMemberByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+        return count;
+    }
 }

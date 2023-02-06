@@ -52,4 +52,14 @@ public class TeamCustomImpl{
                         .and(teamMemberInfo.member.eq(member)))
                 .fetch();
     }
+
+    public Long deleteMemberByMemberId(Long teamId, Long memberId) {
+        Long count = queryFactory.delete(teamMemberInfo)
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .where(teamMemberInfo.authority.eq(AuthorityStatus.WAIT))
+                .execute();
+
+        return count;
+    }
 }

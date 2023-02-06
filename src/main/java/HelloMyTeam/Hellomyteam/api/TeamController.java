@@ -65,7 +65,7 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
-    @PostMapping("/accept")
+    @PostMapping("/member/accept")
     public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsParam teamMemberIdsParam) {
         int changeNo = teamService.acceptTeamMemberById(teamMemberIdsParam);
 
@@ -82,13 +82,24 @@ public class TeamController {
     @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> logoUpdate(@RequestPart TeamIdParam teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
         List<Image> savedImage = teamService.saveLogo(imgFile, teamIdParam);
-        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success:List");
+        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
     }
 
     @ApiOperation(value = "팀 로고 삭제")
     @PostMapping(value = "/logo/delete")
     public CommonResponse<?> logoDelete(@RequestBody TeamIdParam teamIdParam) {
         List<Image> image = teamService.deleteLogoByTeamId(teamIdParam);
-        return CommonResponse.createSuccess(image, "삭제 성공");
+        return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
+    }
+
+    @ApiOperation(value = "팀원 수락 거절")
+    @PostMapping(value = "/member/reject")
+    public CommonResponse<?> memberReject(@RequestBody TeamMemberIdParam teamMemberIdParam) {
+        Long count = teamService.deleteMemberByMemberId(teamMemberIdParam);
+
+        String stringResult = Long.toString(count);
+        String template = "총 %s 명이 삭제 되었습니다.";
+        String message = String.format(template, stringResult);
+        return CommonResponse.createSuccess(count, message);
     }
 }
