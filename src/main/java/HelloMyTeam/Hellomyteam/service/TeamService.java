@@ -149,4 +149,9 @@ public class TeamService {
         Long count = teamCustomImpl.deleteMemberByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
         return count;
     }
+
+    public Long withDrawTeamByMemberId(TeamMemberIdParam teamMemberIdParam) {
+        Long count = teamCustomImpl.withDrawTeamByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+        return count;
+    }
 }

@@ -96,10 +96,19 @@ public class TeamController {
     @PostMapping(value = "/member/reject")
     public CommonResponse<?> memberReject(@RequestBody TeamMemberIdParam teamMemberIdParam) {
         Long count = teamService.deleteMemberByMemberId(teamMemberIdParam);
-
+        if (count == 0) {
+            return CommonResponse.createSuccess(0, "선택 된 팀원이 없으므로 API 결과값이 0 입니다.");
+        }
         String stringResult = Long.toString(count);
         String template = "총 %s 명이 삭제 되었습니다.";
         String message = String.format(template, stringResult);
         return CommonResponse.createSuccess(count, message);
+    }
+
+    @ApiOperation(value = "팀 탈퇴")
+    @PostMapping(value = "/withDraw")
+    public CommonResponse<?> teamWithDraw(@RequestBody TeamMemberIdParam teamMemberIdParam) {
+        Long result = teamService.withDrawTeamByMemberId(teamMemberIdParam);
+        return CommonResponse.createSuccess(result, "1일 경우 탈퇴 성공");
     }
 }

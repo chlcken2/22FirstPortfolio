@@ -8,18 +8,21 @@ import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.List;
+
+import static HelloMyTeam.Hellomyteam.entity.QImage.image;
 import static HelloMyTeam.Hellomyteam.entity.QMember.member;
 import static HelloMyTeam.Hellomyteam.entity.QTeam.team;
 import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 
 @Repository
 @RequiredArgsConstructor
-public class TeamCustomImpl{
+public class TeamCustomImpl {
     private final JPAQueryFactory queryFactory;
 
     public List<TeamSearchParam> getInfoBySerialNoOrTeamName(TeamSearchCond condition) {
@@ -32,7 +35,6 @@ public class TeamCustomImpl{
         if (condition.getTeamSerialNo() != null) {
             builder.and(team.teamSerialNo.eq(condition.getTeamSerialNo()));
         }
-
 
 
         return queryFactory
@@ -62,4 +64,30 @@ public class TeamCustomImpl{
 
         return count;
     }
+
+    public Long withDrawTeamByMemberId(Long teamId, Long memberId) {
+        Long count = queryFactory
+                .update(teamMemberInfo)
+                .set(teamMemberInfo.authority, AuthorityStatus.WITHDRAW_FROM_TEAM)
+                .where(teamMemberInfo.authority.ne(AuthorityStatus.WITHDRAW_FROM_TEAM))
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .execute();
+
+        Long result = queryFactory
+                .update(team)
+                .set(team.memberCount, team.memberCount.subtract(count))
+                .where(team.id.eq(teamId))
+                .execute();
+        return result;
+    }
+
+//    public Long updateTeamCountSub(Long teamId, Long count) {
+//        Long result = queryFactory
+//                .update(team)
+//                .set(team.memberCount, team.memberCount.subtract(count))
+//                .where(team.id.eq(teamId))
+//                .execute();
+//        return result;
+//    }
 }

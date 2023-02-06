@@ -45,4 +45,7 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
             ,
             nativeQuery = true)
     Integer checkAuthWait(@Param("memberIds") List<Long> memberIds, @Param("teamId") Long teamId);
+
+
+
 }
