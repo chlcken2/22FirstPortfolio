@@ -2,6 +2,7 @@ package HelloMyTeam.Hellomyteam.entity.status.team;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,4 +16,7 @@ public enum AuthorityStatus {
     WITHDRAW_FROM_TEAM("팀 탈퇴자");
 
     private final String value;
+
+
+
 }

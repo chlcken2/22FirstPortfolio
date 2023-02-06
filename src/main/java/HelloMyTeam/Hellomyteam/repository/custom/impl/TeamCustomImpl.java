@@ -11,8 +11,11 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+
+import java.util.Date;
 import java.util.List;
 
 import static HelloMyTeam.Hellomyteam.entity.QImage.image;
@@ -65,29 +68,29 @@ public class TeamCustomImpl {
         return count;
     }
 
-    public Long withDrawTeamByMemberId(Long teamId, Long memberId) {
+    public void withDrawTeamByMemberId(Long teamId, Long memberId) {
         Long count = queryFactory
                 .update(teamMemberInfo)
                 .set(teamMemberInfo.authority, AuthorityStatus.WITHDRAW_FROM_TEAM)
+                .set(teamMemberInfo.withdrawalDate, new Date())
                 .where(teamMemberInfo.authority.ne(AuthorityStatus.WITHDRAW_FROM_TEAM))
                 .where(teamMemberInfo.member.id.eq(memberId))
                 .where(teamMemberInfo.team.id.eq(teamId))
                 .execute();
 
-        Long result = queryFactory
+        queryFactory
                 .update(team)
                 .set(team.memberCount, team.memberCount.subtract(count))
                 .where(team.id.eq(teamId))
                 .execute();
-        return result;
     }
 
-//    public Long updateTeamCountSub(Long teamId, Long count) {
-//        Long result = queryFactory
-//                .update(team)
-//                .set(team.memberCount, team.memberCount.subtract(count))
-//                .where(team.id.eq(teamId))
-//                .execute();
-//        return result;
-//    }
+    public AuthorityStatus getTeamMemberAuth(Long teamId, Long memberId) {
+        TeamMemberInfo result =  queryFactory
+                .selectFrom(teamMemberInfo)
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .fetchOne();
+        return result.getAuthority();
+    }
 }

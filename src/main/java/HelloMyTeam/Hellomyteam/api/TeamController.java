@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -108,7 +109,7 @@ public class TeamController {
     @ApiOperation(value = "팀 탈퇴")
     @PostMapping(value = "/withDraw")
     public CommonResponse<?> teamWithDraw(@RequestBody TeamMemberIdParam teamMemberIdParam) {
-        Long result = teamService.withDrawTeamByMemberId(teamMemberIdParam);
-        return CommonResponse.createSuccess(result, "1일 경우 탈퇴 성공");
+        Map<String, String> param = teamService.withDrawTeamByMemberId(teamMemberIdParam);
+        return CommonResponse.createSuccess(param.get("authorityStatus"), param.get("message"));
     }
 }

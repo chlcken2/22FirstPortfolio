@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -150,8 +151,25 @@ public class TeamService {
         return count;
     }
 
-    public Long withDrawTeamByMemberId(TeamMemberIdParam teamMemberIdParam) {
-        Long count = teamCustomImpl.withDrawTeamByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
-        return count;
+    public Map<String, String> withDrawTeamByMemberId(TeamMemberIdParam teamMemberIdParam) {
+        Map<String, String> param = new HashMap<>();
+        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+
+        if (!(authorityStatus.equals(AuthorityStatus.SUB_LEADER) || authorityStatus.equals(AuthorityStatus.TEAM_MEMBER))) {
+            String stringResult = String.valueOf(authorityStatus);
+            String template = "%s 의 권한일 경우 팀을 탈퇴 할 수 없습니다. 부팀장, 팀원으로 변경바랍니다.";
+            String message = String.format(template, stringResult);
+            param.put("message", message);
+            param.put("authorityStatus", String.valueOf(authorityStatus));
+            return param;
+        }
+        //팀 탈퇴
+        teamCustomImpl.withDrawTeamByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+        String stringResult = String.valueOf(authorityStatus);
+        String template = "현재 권한: %s, 해당 팀을 탈퇴하였습니다.";
+        String message = String.format(template, stringResult);
+        param.put("message", message);
+        param.put("authorityStatus", String.valueOf(authorityStatus));
+        return param;
     }
 }
