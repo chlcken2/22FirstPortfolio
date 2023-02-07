@@ -38,7 +38,7 @@ public class TeamService {
     private final S3Uploader s3Uploader;
 
 
-    public Team createTeamWithAuthNo(TeamParam teamInfo) {
+    public Team createTeamWithAuthNo(TeamDto teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
         Team team = Team.builder()
                 .teamName(teamInfo.getTeamName())
@@ -62,12 +62,12 @@ public class TeamService {
         return savedteamMemberInfo;
     }
 
-    public List<TeamSearchParam> findTeamBySearchCond(TeamSearchCond condition) {
-        List<TeamSearchParam> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
+    public List<TeamSearchDto> findTeamBySearchCond(TeamSearchCondDto condition) {
+        List<TeamSearchDto> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
         return team;
     }
 
-    public Team findTeamById(TeamIdParam teamIdParam) {
+    public Team findTeamById(TeamIdDto teamIdParam) {
         Team team = teamRepository.findById(teamIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
@@ -90,7 +90,7 @@ public class TeamService {
         return teamMemberInfo;
     }
 
-    public int acceptTeamMemberById(TeamMemberIdsParam teamMemberIdsParam) {
+    public int acceptTeamMemberById(TeamMemberIdsDto teamMemberIdsParam) {
         //수락 전 auth 상태 체크
         Integer result = teamMemberInfoRepository.checkAuthWait(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
         if (result == 0 || result == null) {
@@ -105,13 +105,13 @@ public class TeamService {
         return result;
     }
 
-    public Team findTeamByTeamMemberId(TeamMemberIdParam teamMemberIdParam) {
+    public Team findTeamByTeamMemberId(TeamMemberIdDto teamMemberIdParam) {
         Team team = teamRepository.findById(teamMemberIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
     }
 
-    public List saveLogo(MultipartFile multipartFile, TeamIdParam teamIdParam) throws IOException {
+    public List saveLogo(MultipartFile multipartFile, TeamIdDto teamIdParam) throws IOException {
         Team team = teamRepository.findById(teamIdParam.getTeamId())
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
 
@@ -139,19 +139,19 @@ public class TeamService {
         return image;
     }
 
-    public List<Image> deleteLogoByTeamId(TeamIdParam teamIdParam) {
+    public List<Image> deleteLogoByTeamId(TeamIdDto teamIdParam) {
         fileUploadCustomImpl.changeImageByTeamId(teamIdParam.getTeamId());
         List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
         return image;
     }
 
 
-    public Long deleteMemberByMemberId(TeamMemberIdParam teamMemberIdParam) {
+    public Long deleteMemberByMemberId(TeamMemberIdDto teamMemberIdParam) {
         Long count = teamCustomImpl.deleteMemberByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
         return count;
     }
 
-    public Map<String, String> withDrawTeamByMemberId(TeamMemberIdParam teamMemberIdParam) {
+    public Map<String, String> withDrawTeamByMemberId(TeamMemberIdDto teamMemberIdParam) {
         Map<String, String> param = new HashMap<>();
         AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
 

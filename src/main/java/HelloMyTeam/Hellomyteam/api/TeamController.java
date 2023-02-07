@@ -29,7 +29,7 @@ public class TeamController {
 
     @ApiOperation(value = "팀에 대한 데이터", notes = "Home 화면을 구성하는 팀 정보를 전달한다.")
     @PostMapping("/info")
-    public CommonResponse<?> getTeamInfo(@RequestBody TeamIdParam teamIdParam) {
+    public CommonResponse<?> getTeamInfo(@RequestBody TeamIdDto teamIdParam) {
         Team team = teamService.findTeamById(teamIdParam);
         return CommonResponse.createSuccess(team, "team 정보 전달");
     }
@@ -37,7 +37,7 @@ public class TeamController {
 
     @ApiOperation(value = "팀 생성", notes = "팀 생성: 회원테이블에 member_id가 존재해야한다.")
     @PostMapping("/create")
-    public CommonResponse<?> saveTeam(@RequestBody TeamParam teamInfo) {
+    public CommonResponse<?> saveTeam(@RequestBody TeamDto teamInfo) {
         Team team = teamService.createTeamWithAuthNo(teamInfo);
         Member member = memberService.findMemberByTeamInfo(teamInfo);
         teamService.teamMemberInfoSaveAuthLeader(team, member);
@@ -46,8 +46,8 @@ public class TeamController {
 
     @ApiOperation(value = "팀 찾기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @PostMapping("/find")
-    public CommonResponse<?> findTeam (@RequestBody TeamSearchCond condition) {
-        List<TeamSearchParam> findTeams = teamService.findTeamBySearchCond(condition);
+    public CommonResponse<?> findTeam (@RequestBody TeamSearchCondDto condition) {
+        List<TeamSearchDto> findTeams = teamService.findTeamBySearchCond(condition);
 
         if (findTeams.isEmpty()) {
             return CommonResponse.createSuccess(findTeams, "검색 결과가 없습니다.");
@@ -58,7 +58,7 @@ public class TeamController {
 
     @ApiOperation(value = "팀 가입신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
     @PostMapping("/join")
-    public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdParam teamMemberIdParam) {
+    public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Member member = memberService.findMemberByTeamMemberId(teamMemberIdParam);
         Team team = teamService.findTeamByTeamMemberId(teamMemberIdParam);
         TeamMemberInfo result = teamService.joinTeamAuthWait(team, member);
@@ -67,7 +67,7 @@ public class TeamController {
 
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
     @PostMapping("/member/accept")
-    public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsParam teamMemberIdsParam) {
+    public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsDto teamMemberIdsParam) {
         int changeNo = teamService.acceptTeamMemberById(teamMemberIdsParam);
 
         String stringResult = Integer.toString(changeNo);
@@ -81,21 +81,21 @@ public class TeamController {
                     "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})"
     )
     @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public CommonResponse<?> logoUpdate(@RequestPart TeamIdParam teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
+    public CommonResponse<?> logoUpdate(@RequestPart TeamIdDto teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
         List<Image> savedImage = teamService.saveLogo(imgFile, teamIdParam);
         return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
     }
 
     @ApiOperation(value = "팀 로고 삭제")
     @PostMapping(value = "/logo/delete")
-    public CommonResponse<?> logoDelete(@RequestBody TeamIdParam teamIdParam) {
+    public CommonResponse<?> logoDelete(@RequestBody TeamIdDto teamIdParam) {
         List<Image> image = teamService.deleteLogoByTeamId(teamIdParam);
         return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
     }
 
     @ApiOperation(value = "팀원 수락 거절")
     @PostMapping(value = "/member/reject")
-    public CommonResponse<?> memberReject(@RequestBody TeamMemberIdParam teamMemberIdParam) {
+    public CommonResponse<?> memberReject(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Long count = teamService.deleteMemberByMemberId(teamMemberIdParam);
         if (count == 0) {
             return CommonResponse.createSuccess(0, "선택 된 팀원이 없으므로 API 결과값이 0 입니다.");
@@ -108,7 +108,7 @@ public class TeamController {
 
     @ApiOperation(value = "팀 탈퇴")
     @PostMapping(value = "/withDraw")
-    public CommonResponse<?> teamWithDraw(@RequestBody TeamMemberIdParam teamMemberIdParam) {
+    public CommonResponse<?> teamWithDraw(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Map<String, String> param = teamService.withDrawTeamByMemberId(teamMemberIdParam);
         return CommonResponse.createSuccess(param.get("authorityStatus"), param.get("message"));
     }

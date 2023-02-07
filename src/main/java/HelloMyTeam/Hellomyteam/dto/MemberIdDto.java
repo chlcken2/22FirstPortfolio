@@ -6,6 +6,6 @@ import lombok.Getter;
 
 
 @Getter
-public class MemberIdParam {
+public class MemberIdDto {
     private Long memberId;
 }

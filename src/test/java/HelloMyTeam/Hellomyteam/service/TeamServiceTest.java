@@ -1,9 +1,9 @@
 package HelloMyTeam.Hellomyteam.service;
 
-import HelloMyTeam.Hellomyteam.dto.TeamMemberIdParam;
-import HelloMyTeam.Hellomyteam.dto.TeamParam;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
+import HelloMyTeam.Hellomyteam.dto.TeamMemberIdDto;
+import HelloMyTeam.Hellomyteam.dto.TeamDto;
+import HelloMyTeam.Hellomyteam.dto.TeamSearchCondDto;
+import HelloMyTeam.Hellomyteam.dto.TeamSearchDto;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -81,7 +80,7 @@ public class TeamServiceTest {
         Member savedMember = memberRepository.save(member);
 
         //팀 가입 정보 입력
-        TeamParam team = TeamParam.builder()
+        TeamDto team = TeamDto.builder()
                 .memberId(savedMember.getId())
                 .teamName("테스트용 팀 이름")
                 .oneIntro("팀에 대한 한 줄 소개입니다.")
@@ -110,15 +109,15 @@ public class TeamServiceTest {
     @Test
     public void 팀이름을_통한_찾기() {
         //given
-        TeamSearchCond condition = TeamSearchCond.builder()
+        TeamSearchCondDto condition = TeamSearchCondDto.builder()
                 .teamName("테스트용 팀 이름")
                 .build();
 
         //when
-        List<TeamSearchParam> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
+        List<TeamSearchDto> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
 
         //then
-        for (TeamSearchParam t : team) {
+        for (TeamSearchDto t : team) {
             Assertions.assertThat(t.getTeamName()).isEqualTo("테스트용 팀 이름");
             Assertions.assertThat(t.getTeamName()).isNotEqualTo("테스트용 팀 이름1");
         }
@@ -140,7 +139,7 @@ public class TeamServiceTest {
         Member savedMember = memberRepository.save(member);
 
         //찾을 팀 정보 넘기기
-        TeamMemberIdParam teamMemberIdParam = TeamMemberIdParam.builder()
+        TeamMemberIdDto teamMemberIdParam = TeamMemberIdDto.builder()
                 .teamId(1L)
                 .memberId(savedMember.getId())
                 .build();

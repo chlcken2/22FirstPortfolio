@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamMemberIdParam {
+public class TeamMemberIdDto {
     private Long teamId;
     private Long memberId;
 }

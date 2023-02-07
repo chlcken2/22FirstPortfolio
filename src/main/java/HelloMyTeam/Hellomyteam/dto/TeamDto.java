@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamParam {
+public class TeamDto {
     private Long memberId;
     private String teamName;
     private String oneIntro;

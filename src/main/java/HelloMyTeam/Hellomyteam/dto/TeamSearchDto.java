@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class TeamSearchParam {
+public class TeamSearchDto {
     // 검색조건 결과 반환 데이터
     private String teamName;
     private String oneIntro;
@@ -18,7 +18,7 @@ public class TeamSearchParam {
 
 
     @QueryProjection
-    public TeamSearchParam(String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount) {
+    public TeamSearchDto(String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount) {
         this.teamName = teamName;
         this.oneIntro = oneIntro;
         this.teamSerialNo = teamSerialNo;

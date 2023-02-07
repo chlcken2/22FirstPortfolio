@@ -7,7 +7,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamSearchCond {
+public class TeamSearchCondDto {
     //검색조건으로 넘어오는 데이터
     @ApiModelProperty(notes = "팀이름", required = true, example = "헬로우마이팀")
     private String teamName;

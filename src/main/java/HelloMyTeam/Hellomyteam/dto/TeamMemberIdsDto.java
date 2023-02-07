@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class TeamMemberIdsParam {
+public class TeamMemberIdsDto {
     private Long teamId;
     private List<Long> memberId;
 }

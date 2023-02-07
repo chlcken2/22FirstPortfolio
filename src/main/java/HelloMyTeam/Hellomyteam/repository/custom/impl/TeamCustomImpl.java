@@ -1,24 +1,21 @@
 package HelloMyTeam.Hellomyteam.repository.custom.impl;
 
-import HelloMyTeam.Hellomyteam.dto.QTeamSearchParam;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchCond;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchParam;
+import HelloMyTeam.Hellomyteam.dto.QTeamSearchDto;
+import HelloMyTeam.Hellomyteam.dto.TeamSearchCondDto;
+import HelloMyTeam.Hellomyteam.dto.TeamSearchDto;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.LocalDateTime;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
 
-import static HelloMyTeam.Hellomyteam.entity.QImage.image;
 import static HelloMyTeam.Hellomyteam.entity.QMember.member;
 import static HelloMyTeam.Hellomyteam.entity.QTeam.team;
 import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
@@ -28,7 +25,7 @@ import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 public class TeamCustomImpl {
     private final JPAQueryFactory queryFactory;
 
-    public List<TeamSearchParam> getInfoBySerialNoOrTeamName(TeamSearchCond condition) {
+    public List<TeamSearchDto> getInfoBySerialNoOrTeamName(TeamSearchCondDto condition) {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (StringUtils.hasText(condition.getTeamName())) {
@@ -41,7 +38,7 @@ public class TeamCustomImpl {
 
 
         return queryFactory
-                .select(new QTeamSearchParam(team.teamName, team.oneIntro, team.teamSerialNo, member.name, team.memberCount))
+                .select(new QTeamSearchDto(team.teamName, team.oneIntro, team.teamSerialNo, member.name, team.memberCount))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
                 .join(teamMemberInfo.member, member)
