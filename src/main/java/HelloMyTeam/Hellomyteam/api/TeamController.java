@@ -78,7 +78,8 @@ public class TeamController {
 
     @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트",
             notes = "해당 API는 포스트맨에서 진행할 것, " +
-                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})"
+                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})" +
+                    "참고 링크: https://smooth-foxtrot-e11.notion.site/swagger-mine-6f0e4ca8ad964f56b0c23d86d6780b98"
     )
     @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public CommonResponse<?> logoUpdate(@RequestPart TeamIdDto teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {

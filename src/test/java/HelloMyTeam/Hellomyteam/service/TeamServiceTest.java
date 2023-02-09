@@ -2,8 +2,6 @@ package HelloMyTeam.Hellomyteam.service;
 
 import HelloMyTeam.Hellomyteam.dto.TeamMemberIdDto;
 import HelloMyTeam.Hellomyteam.dto.TeamDto;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchCondDto;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchDto;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
@@ -26,7 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.List;
 
 import static HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus.LEADER;
 
