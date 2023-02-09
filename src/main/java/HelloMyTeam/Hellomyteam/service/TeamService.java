@@ -12,6 +12,7 @@ import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.FileUploadCustomImpl;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,13 +63,13 @@ public class TeamService {
         return savedteamMemberInfo;
     }
 
-    public List<TeamSearchDto> findTeamBySearchCond(TeamSearchCondDto condition) {
-        List<TeamSearchDto> team = teamCustomImpl.getInfoBySerialNoOrTeamName(condition);
+    public List<TeamSearchDto> findTeamBySearchCond(String teamName, Integer teamSerialNo) {
+        List<TeamSearchDto> team = teamCustomImpl.getInfoBySerialNoOrTeamName(teamName, teamSerialNo);
         return team;
     }
 
-    public Team findTeamById(TeamIdDto teamIdParam) {
-        Team team = teamRepository.findById(teamIdParam.getTeamId())
+    public Team findTeamById(Long id) {
+        Team team = teamRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
     }

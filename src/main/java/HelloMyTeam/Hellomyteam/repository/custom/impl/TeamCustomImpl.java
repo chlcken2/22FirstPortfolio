@@ -1,7 +1,6 @@
 package HelloMyTeam.Hellomyteam.repository.custom.impl;
 
 import HelloMyTeam.Hellomyteam.dto.QTeamSearchDto;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchCondDto;
 import HelloMyTeam.Hellomyteam.dto.TeamSearchDto;
 import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
@@ -11,10 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-
 import java.util.Date;
 import java.util.List;
-
 import static HelloMyTeam.Hellomyteam.entity.QImage.image;
 import static HelloMyTeam.Hellomyteam.entity.QMember.member;
 import static HelloMyTeam.Hellomyteam.entity.QTeam.team;
@@ -26,15 +23,15 @@ import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 public class TeamCustomImpl {
     private final JPAQueryFactory queryFactory;
 
-    public List<TeamSearchDto> getInfoBySerialNoOrTeamName(TeamSearchCondDto condition) {
+    public List<TeamSearchDto> getInfoBySerialNoOrTeamName(String teamName, Integer teamSerialNo) {
         BooleanBuilder builder = new BooleanBuilder();
 
-        if (StringUtils.hasText(condition.getTeamName())) {
-            builder.and(team.teamName.eq(condition.getTeamName()));
+        if (StringUtils.hasText(teamName)) {
+            builder.and(team.teamName.eq(teamName));
         }
 
-        if (condition.getTeamSerialNo() != null) {
-            builder.and(team.teamSerialNo.eq(condition.getTeamSerialNo()));
+        if (teamSerialNo != null) {
+            builder.and(team.teamSerialNo.eq(teamSerialNo));
         }
 
          return queryFactory
@@ -98,4 +95,5 @@ public class TeamCustomImpl {
                 .fetchOne();
         return result.getAuthority();
     }
+
 }

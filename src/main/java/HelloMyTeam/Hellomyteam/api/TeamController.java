@@ -27,13 +27,12 @@ public class TeamController {
     private final TeamService teamService;
     private final MemberService memberService;
 
-    @ApiOperation(value = "팀에 대한 데이터", notes = "Home 화면을 구성하는 팀 정보를 전달한다.")
-    @PostMapping("/info")
-    public CommonResponse<?> getTeamInfo(@RequestBody TeamIdDto teamIdParam) {
-        Team team = teamService.findTeamById(teamIdParam);
+    @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
+    @GetMapping("/{id}")
+    public CommonResponse<?> getTeamInfo(@PathVariable Long id) {
+        Team team = teamService.findTeamById(id);
         return CommonResponse.createSuccess(team, "team 정보 전달");
     }
-
 
     @ApiOperation(value = "팀 생성", notes = "팀 생성: 회원테이블에 member_id가 존재해야한다.")
     @PostMapping("/create")
@@ -45,9 +44,10 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀 찾기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
-    @PostMapping("/find")
-    public CommonResponse<?> findTeam (@RequestBody TeamSearchCondDto condition) {
-        List<TeamSearchDto> findTeams = teamService.findTeamBySearchCond(condition);
+    @GetMapping("/find")
+    public CommonResponse<?> findTeam (@RequestParam(value = "teamName", required = false) String teamName,
+                                       @RequestParam(value = "teamSerialNo", required = false) Integer teamSerialNo) {
+        List<TeamSearchDto> findTeams = teamService.findTeamBySearchCond(teamName, teamSerialNo);
 
         if (findTeams.isEmpty()) {
             return CommonResponse.createSuccess(findTeams, "검색 결과가 없습니다.");
