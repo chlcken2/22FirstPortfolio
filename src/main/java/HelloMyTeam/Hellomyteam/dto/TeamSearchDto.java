@@ -1,10 +1,9 @@
 package HelloMyTeam.Hellomyteam.dto;
 
-import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
-import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.ToString;
+
 
 @Getter
 @ToString
@@ -15,14 +14,16 @@ public class TeamSearchDto {
     private Integer teamSerialNo;
     private String name;
     private Integer memberCount;
+    private String imageUrl;
 
 
     @QueryProjection
-    public TeamSearchDto(String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount) {
+    public TeamSearchDto(String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount, String imageUrl) {
         this.teamName = teamName;
         this.oneIntro = oneIntro;
         this.teamSerialNo = teamSerialNo;
         this.name = name;
         this.memberCount = memberCount;
+        this.imageUrl = imageUrl;
     }
 }

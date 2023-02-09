@@ -20,7 +20,7 @@ public class Image extends BaseTimeEntity {
     private String storeFilename;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 

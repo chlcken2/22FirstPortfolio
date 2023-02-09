@@ -40,7 +40,7 @@ public class Team extends BaseTimeEntity {
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "team")
-    private List<Image> teamLogo = new ArrayList<>();
+    @OneToOne(mappedBy = "team")
+    private Image teamLogo;
 
 }
