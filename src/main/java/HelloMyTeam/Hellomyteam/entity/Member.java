@@ -5,9 +5,7 @@ import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +21,8 @@ public class Member extends BaseTimeEntity{
     @Column(name = "member_id")
     private Long id;
 
-    @Nullable
-    private String mobile;
+//    @Nullable
+//    private String mobile;
 
     @NotNull
     private String email;

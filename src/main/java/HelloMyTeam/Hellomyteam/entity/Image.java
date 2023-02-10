@@ -32,7 +32,7 @@ public class Image extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamMemberInfo_id")
     private TeamMemberInfo teamMemberInfo;
 
