@@ -17,7 +17,8 @@ public enum PersonalPositionStatus {
     RCB("우측 센터백"),
     LCB("좌측 센터백"),
     LB("좌측 수비수"),
-    GK("골키퍼");
+    GK("골키퍼"),
+    NONE("등록된 포지션이 없습니다.");
 
     private final String value;
 
