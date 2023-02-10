@@ -45,7 +45,7 @@ public class TeamCustomImpl {
         ))
         .from(teamMemberInfo)
         .join(teamMemberInfo.team, team)
-        .join(team.teamLogo, image)
+        .leftJoin(team.teamLogo, image)
         .join(teamMemberInfo.member, member)
         .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
         .where(builder)

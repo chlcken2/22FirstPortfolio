@@ -102,7 +102,7 @@ public class TeamController {
             return CommonResponse.createSuccess(0, "선택 된 팀원이 없으므로 API 결과값이 0 입니다.");
         }
         String stringResult = Long.toString(count);
-        String template = "총 %s 명이 삭제 되었습니다.";
+        String template = "총 %s 명이 수락 거절 되었습니다.";
         String message = String.format(template, stringResult);
         return CommonResponse.createSuccess(count, message);
     }
