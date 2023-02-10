@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.entity;
 
+import HelloMyTeam.Hellomyteam.entity.status.ConditionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalPositionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalStyleStatus;
@@ -8,17 +9,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+@Setter
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeamMemberInfo extends BaseTimeEntity {
-
 
     @Id
     @GeneratedValue
@@ -41,6 +40,21 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date withdrawalDate;
 
+    @Enumerated(EnumType.STRING)
+    private ConditionStatus conditionStatus;
+
+    private Integer backNumber;
+
+    private String memberOneIntro;
+
+    private String address;
+
+    private String leftRightFoot;
+
+    private Integer conditionIndicator;
+
+    private Integer drinkingCapacity;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -50,8 +64,7 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToMany(mappedBy = "teamMemberInfo")
-    private List<Image> images = new ArrayList<>();    //background / profile
-
+    @OneToOne(mappedBy = "teamMemberInfo")
+    private Image image;
 
 }
