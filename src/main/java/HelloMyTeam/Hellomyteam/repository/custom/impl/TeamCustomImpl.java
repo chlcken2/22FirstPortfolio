@@ -1,7 +1,6 @@
 package HelloMyTeam.Hellomyteam.repository.custom.impl;
 
-import HelloMyTeam.Hellomyteam.dto.QTeamSearchDto;
-import HelloMyTeam.Hellomyteam.dto.TeamSearchDto;
+import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import com.querydsl.core.BooleanBuilder;
@@ -10,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import static HelloMyTeam.Hellomyteam.entity.QImage.image;
@@ -35,21 +35,21 @@ public class TeamCustomImpl {
         }
 
          return queryFactory
-        .select(new QTeamSearchDto(
-                team.teamName
-                , team.oneIntro
-                , team.teamSerialNo
-                , member.name
-                , team.memberCount
-                , image.imageUrl
-        ))
-        .from(teamMemberInfo)
-        .join(teamMemberInfo.team, team)
-        .leftJoin(team.teamLogo, image)
-        .join(teamMemberInfo.member, member)
-        .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
-        .where(builder)
-         .fetch();
+                .select(new QTeamSearchDto(
+                        team.teamName
+                        , team.oneIntro
+                        , team.teamSerialNo
+                        , member.name
+                        , team.memberCount
+                        , image.imageUrl
+                ))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
+                .where(builder)
+                 .fetch();
     }
 
 
@@ -96,4 +96,43 @@ public class TeamCustomImpl {
         return result.getAuthority();
     }
 
+    public TeamMemberInfoDto findTeamMemberInfo(Long memberId, Long teamId) {
+        return queryFactory.
+                select(new QTeamMemberInfoDto(
+                        member.name,
+                        teamMemberInfo.address,
+                        member.birthday,
+                        teamMemberInfo.conditionStatus,
+                        teamMemberInfo.backNumber,
+                        teamMemberInfo.memberOneIntro,
+                        teamMemberInfo.leftRightFoot,
+                        teamMemberInfo.conditionIndicator,
+                        teamMemberInfo.drinkingCapacity,
+                        image.imageUrl,
+                        teamMemberInfo.preferPosition))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .join(teamMemberInfo.member, member)
+                .leftJoin(teamMemberInfo.image, image)
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .fetchOne();
+    }
+
+    public void updateTeamMemberInfo(TeamInfoUpdateDto teamInfoUpdateDto, Long memberId, Long teamId) {
+        queryFactory
+                .update(teamMemberInfo)
+                .set(teamMemberInfo.address, teamInfoUpdateDto.getAddress())
+//                .set(member.birthday, teamInfoUpdateDto.getBirthday())
+                .set(teamMemberInfo.conditionStatus, teamInfoUpdateDto.getConditionStatus())
+                .set(teamMemberInfo.backNumber, teamInfoUpdateDto.getBackNumber())
+                .set(teamMemberInfo.memberOneIntro, teamInfoUpdateDto.getMemberOneIntro())
+                .set(teamMemberInfo.leftRightFoot, teamInfoUpdateDto.getLeftRightFoot())
+                .set(teamMemberInfo.conditionIndicator, teamInfoUpdateDto.getConditionIndicator())
+                .set(teamMemberInfo.drinkingCapacity, teamInfoUpdateDto.getDrinkingCapacity())
+                .set(teamMemberInfo.preferPosition, teamInfoUpdateDto.getPreferPosition())
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .execute();
+    }
 }

@@ -52,7 +52,7 @@ public class TeamController {
         if (findTeams.isEmpty()) {
             return CommonResponse.createSuccess(findTeams, "검색 결과가 없습니다.");
         }
-        return CommonResponse.createSuccess(findTeams);
+        return CommonResponse.createSuccess(findTeams, "검색 결과 success");
     }
 
 
@@ -82,21 +82,21 @@ public class TeamController {
                     "참고 링크: https://smooth-foxtrot-e11.notion.site/swagger-mine-6f0e4ca8ad964f56b0c23d86d6780b98"
     )
     @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public CommonResponse<?> logoUpdate(@RequestPart TeamIdDto teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
+    public CommonResponse<?> updateLogo(@RequestPart TeamIdDto teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
         List<Image> savedImage = teamService.saveLogo(imgFile, teamIdParam);
         return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
     }
 
     @ApiOperation(value = "팀 로고 삭제")
     @PostMapping(value = "/logo/delete")
-    public CommonResponse<?> logoDelete(@RequestBody TeamIdDto teamIdParam) {
+    public CommonResponse<?> deleteLogo(@RequestBody TeamIdDto teamIdParam) {
         List<Image> image = teamService.deleteLogoByTeamId(teamIdParam);
         return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
     }
 
     @ApiOperation(value = "팀원 수락 거절")
     @PostMapping(value = "/member/reject")
-    public CommonResponse<?> memberReject(@RequestBody TeamMemberIdDto teamMemberIdParam) {
+    public CommonResponse<?> rejectMember(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Long count = teamService.deleteMemberByMemberId(teamMemberIdParam);
         if (count == 0) {
             return CommonResponse.createSuccess(0, "선택 된 팀원이 없으므로 API 결과값이 0 입니다.");
@@ -109,8 +109,27 @@ public class TeamController {
 
     @ApiOperation(value = "팀 탈퇴")
     @PostMapping(value = "/withDraw")
-    public CommonResponse<?> teamWithDraw(@RequestBody TeamMemberIdDto teamMemberIdParam) {
+    public CommonResponse<?> withDrawTeam(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Map<String, String> param = teamService.withDrawTeamByMemberId(teamMemberIdParam);
         return CommonResponse.createSuccess(param.get("authorityStatus"), param.get("message"));
+    }
+
+    @ApiOperation(value = "팀원 정보 가져오기")
+    @GetMapping(value = "/member/{memberId}")
+    public CommonResponse<?> getTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
+                                                @RequestParam(required = true, value = "teamId") Long teamId) {
+        TeamMemberInfoDto teamMemberInfoDto = teamService.getTeamMemberInfo(memberId, teamId);
+
+        return CommonResponse.createSuccess(teamMemberInfoDto, "팀원 정보 가져오기 success");
+    }
+
+    @ApiOperation(value = "내 정보 수정")
+    @PutMapping(value = "/member/{memberId}")
+    public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
+                                                @RequestParam(required = true, value = "teamId") Long teamId,
+                                                @RequestBody TeamInfoUpdateDto teamInfoUpdateDto
+    ) {
+        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
+        return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
     }
 }

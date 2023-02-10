@@ -6,13 +6,13 @@ import HelloMyTeam.Hellomyteam.entity.Image;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
+import HelloMyTeam.Hellomyteam.entity.status.ConditionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.FileUploadCustomImpl;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
-import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 
 @Slf4j
@@ -37,7 +36,6 @@ public class TeamService {
     private final FileUploadRepository fileUploadRepository;
     private final FileUploadCustomImpl fileUploadCustomImpl;
     private final S3Uploader s3Uploader;
-
 
     public Team createTeamWithAuthNo(TeamDto teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -84,6 +82,11 @@ public class TeamService {
 
         TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
                 .authority(AuthorityStatus.WAIT)
+                .conditionStatus(ConditionStatus.PASSTION)
+                .backNumber(0)
+                .leftRightFoot("오른발")
+                .conditionIndicator(50)
+                .drinkingCapacity(1)
                 .team(team)
                 .member(member)
                 .build();
@@ -172,5 +175,18 @@ public class TeamService {
         param.put("message", message);
         param.put("authorityStatus", String.valueOf(authorityStatus));
         return param;
+    }
+
+    public TeamMemberInfoDto getTeamMemberInfo(Long memberId, Long teamId) {
+        TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfo(memberId, teamId);
+        return teamMemberInfoDto;
+    }
+
+    @Transactional
+    public TeamMemberInfoDto editTeamMemberInfo(TeamInfoUpdateDto teamInfoUpdateDto, Long memberId, Long teamId) {
+        teamCustomImpl.updateTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
+
+        TeamMemberInfoDto findTeamMemberInfoDto = teamCustomImpl.findTeamMemberInfo(memberId, teamId);
+        return findTeamMemberInfoDto;
     }
 }
