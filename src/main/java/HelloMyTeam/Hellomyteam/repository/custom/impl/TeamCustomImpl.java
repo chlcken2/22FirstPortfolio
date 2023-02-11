@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import static HelloMyTeam.Hellomyteam.entity.QImage.image;
@@ -120,10 +119,15 @@ public class TeamCustomImpl {
     }
 
     public void updateTeamMemberInfo(TeamInfoUpdateDto teamInfoUpdateDto, Long memberId, Long teamId) {
+        if (teamInfoUpdateDto.getBirthday().equals(null) || teamInfoUpdateDto.getBirthday().equals("")) {
+            queryFactory.update(member)
+                    .set(member.birthday, teamInfoUpdateDto.getBirthday())
+                    .where(member.id.eq(memberId))
+                    .execute();
+        }
         queryFactory
                 .update(teamMemberInfo)
                 .set(teamMemberInfo.address, teamInfoUpdateDto.getAddress())
-//                .set(member.birthday, teamInfoUpdateDto.getBirthday())
                 .set(teamMemberInfo.conditionStatus, teamInfoUpdateDto.getConditionStatus())
                 .set(teamMemberInfo.backNumber, teamInfoUpdateDto.getBackNumber())
                 .set(teamMemberInfo.memberOneIntro, teamInfoUpdateDto.getMemberOneIntro())
