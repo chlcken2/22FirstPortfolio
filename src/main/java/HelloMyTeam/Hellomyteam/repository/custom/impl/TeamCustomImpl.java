@@ -139,4 +139,17 @@ public class TeamCustomImpl {
                 .where(teamMemberInfo.member.id.eq(memberId))
                 .execute();
     }
+
+    public List<ApplicantDto> getApplyTeamMember(Long teamId) {
+        return queryFactory
+                .select(new QApplicantDto(
+                        member.name,
+                        member.id
+                ))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.member, member)
+                .where(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("WAIT")))
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .fetch();
+    }
 }

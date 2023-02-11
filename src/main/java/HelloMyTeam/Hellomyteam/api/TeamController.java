@@ -65,6 +65,13 @@ public class TeamController {
         return CommonResponse.createSuccess(result, "null일 경우 중복가입 체크, 리더 본인팀 가입 x");
     }
 
+    @ApiOperation(value = "팀 가입신청자 정보 가져오기", notes = "알림페이지에 띄어질 정보, 가입 수락 전 권한 = WAIT")
+    @GetMapping("/join/{teamId}")
+    public CommonResponse<?> getApplicant(@PathVariable(value = "teamId") Long teamId) {
+        List<ApplicantDto> applicantDto = teamService.findAppliedTeamMember(teamId);
+        return CommonResponse.createSuccess(applicantDto, "팀 가입 신청한 회원 정보 가져오기");
+    }
+
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
     @PostMapping("/member/accept")
     public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsDto teamMemberIdsParam) {

@@ -189,4 +189,9 @@ public class TeamService {
         TeamMemberInfoDto findTeamMemberInfoDto = teamCustomImpl.findTeamMemberInfo(memberId, teamId);
         return findTeamMemberInfoDto;
     }
+
+    public List<ApplicantDto> findAppliedTeamMember(Long teamId) {
+        List<ApplicantDto> applicantDto = teamCustomImpl.getApplyTeamMember(teamId);
+        return applicantDto;
+    }
 }
