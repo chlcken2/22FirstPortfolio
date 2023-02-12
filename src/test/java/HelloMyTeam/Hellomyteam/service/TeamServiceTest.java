@@ -58,7 +58,6 @@ public class TeamServiceTest {
         //회원가입 정보 입력
         String encodePassword = passwordEncoder.encode("test1234");
         Member member = Member.builder()
-                .mobile("010-0000-0000")
                 .email("test@email.com")
                 .password(encodePassword)
                 .name("test")
@@ -125,7 +124,6 @@ public class TeamServiceTest {
         //given
         //회원가입
         Member member = Member.builder()
-                .mobile("010-2723-9885")
                 .joinPurpose(JoinPurpose.TEAM_CREATE)
                 .name("이창현")
                 .birthday("97-12-12")
