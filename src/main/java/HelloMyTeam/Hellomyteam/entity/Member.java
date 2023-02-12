@@ -45,10 +45,7 @@ public class Member extends BaseTimeEntity{
     @NotNull
     private JoinPurpose joinPurpose;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
 

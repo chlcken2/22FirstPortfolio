@@ -35,7 +35,7 @@ public class MemberController {
     @GetMapping("/user/me")
     public CommonResponse<?> getMyMemberInfo(HttpServletResponse response) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Member savedMember = memberRepository.findByEmail(email);
+        Member savedMember = memberRepository.findMemberByEmail(email);
 
         if ("anonymousUser".equals(email)) {
             switch (response.getStatus()) {
