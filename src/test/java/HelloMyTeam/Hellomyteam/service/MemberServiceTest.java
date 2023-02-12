@@ -39,7 +39,6 @@ public class MemberServiceTest {
         //given
         String encodePassword = passwordEncoder.encode("test1234");
         Member member = Member.builder()
-                .mobile("010-0000-0000")
                 .email("test@email.com")
                 .password(encodePassword)
                 .name("test")
@@ -70,7 +69,6 @@ public class MemberServiceTest {
         //given
         String encodePassword = passwordEncoder.encode("test1234");
         Member member1 = Member.builder()
-                .mobile("010-0000-0000")
                 .email("test@email.com")
                 .password(encodePassword)
                 .name("test")
