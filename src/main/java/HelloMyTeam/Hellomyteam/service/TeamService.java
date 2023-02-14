@@ -182,10 +182,8 @@ public class TeamService {
         return teamMemberInfoDto;
     }
 
-    @Transactional
     public TeamMemberInfoDto editTeamMemberInfo(TeamInfoUpdateDto teamInfoUpdateDto, Long memberId, Long teamId) {
         teamCustomImpl.updateTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
-
         TeamMemberInfoDto findTeamMemberInfoDto = teamCustomImpl.findTeamMemberInfo(memberId, teamId);
         return findTeamMemberInfoDto;
     }

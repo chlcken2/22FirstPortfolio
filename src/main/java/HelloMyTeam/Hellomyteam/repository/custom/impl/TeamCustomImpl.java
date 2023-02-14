@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import static HelloMyTeam.Hellomyteam.entity.QImage.image;
@@ -20,6 +21,7 @@ import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 @Repository
 @RequiredArgsConstructor
 public class TeamCustomImpl {
+    LocalDateTime nowDateTime = LocalDateTime.now();
     private final JPAQueryFactory queryFactory;
 
     public List<TeamSearchDto> getInfoBySerialNoOrTeamName(String teamName, Integer teamSerialNo) {
@@ -122,6 +124,7 @@ public class TeamCustomImpl {
         if (teamInfoUpdateDto.getBirthday().equals(null) || teamInfoUpdateDto.getBirthday().equals("")) {
             queryFactory.update(member)
                     .set(member.birthday, teamInfoUpdateDto.getBirthday())
+                    .set(member.modifiedDate, nowDateTime)
                     .where(member.id.eq(memberId))
                     .execute();
         }

@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.api;
 
+import HelloMyTeam.Hellomyteam.dto.BoardUpdateDto;
 import HelloMyTeam.Hellomyteam.dto.BoardWriteDto;
 import HelloMyTeam.Hellomyteam.entity.Board;
 import HelloMyTeam.Hellomyteam.entity.BoardCategory;
@@ -43,22 +44,23 @@ public class BoardController {
     }
 
 
-    @ApiOperation(value = "게시판 상세보기", notes = "팀별 상세 보드 정보")
+    @ApiOperation(value = "게시판 상세보기", notes = "boardId로 게시판 상세 조회")
     @GetMapping("/board/{boardId}")
     public CommonResponse<?> detailBoard(@PathVariable Long boardId){
         Board board = boardService.getBoard(boardId);
         return CommonResponse.createSuccess(board, "게시판 상세정보 가져오기 success");
     }
-//
-//    //게시판 수정
-//    @PutMapping("/write/{boardId}")
-//    public CommonResponse<?> updateBoard(){
-//
-//        return CommonResponse.createSuccess("게시판 수정하기 success");
-//    }
+
+    //더티체킹 적용
+    @ApiOperation(value = "게시판 상세 수정하기", notes = "boardId로 게시판 수정하기")
+    @PutMapping("/board/{boardId}")
+    public CommonResponse<?> updateBoard(@PathVariable Long boardId, @RequestBody BoardUpdateDto boardUpdateDto){
+        Board board = boardService.updateBoard(boardId, boardUpdateDto);
+        return CommonResponse.createSuccess(board, "게시판 수정하기 success");
+    }
 //
 //    //게시판 삭제
-//    @DeleteMapping("/write/{boardId}")
+//    @DeleteMapping("/board/{boardId}")
 //    public CommonResponse<?> deleteBoard(){
 //
 //        return CommonResponse.createSuccess("보드 삭제 success");

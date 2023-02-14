@@ -3,10 +3,7 @@ package HelloMyTeam.Hellomyteam.entity;
 import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Getter
+@Setter
 public class Board extends BaseTimeEntity {
     @Id
     @GeneratedValue

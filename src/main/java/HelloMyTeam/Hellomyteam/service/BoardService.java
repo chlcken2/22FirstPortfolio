@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.service;
 
+import HelloMyTeam.Hellomyteam.dto.BoardUpdateDto;
 import HelloMyTeam.Hellomyteam.dto.BoardWriteDto;
 import HelloMyTeam.Hellomyteam.entity.Board;
 import HelloMyTeam.Hellomyteam.entity.BoardCategory;
@@ -11,6 +12,7 @@ import HelloMyTeam.Hellomyteam.repository.custom.impl.BoardCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final BoardCustomImpl boardCustomImpl;
-
+    private final EntityManager em;
 
     public Board createBoard(BoardWriteDto boardWriteDto) {
         log.info("boardWriteDto" + boardWriteDto);
@@ -49,7 +51,16 @@ public class BoardService {
     }
 
     public Board getBoard(Long id) {
-        Board board = boardRepository.findBoardById(id);
-        return board;
+        Board findBoard = boardRepository.findBoardById(id);
+        return findBoard;
+    }
+
+
+    public Board updateBoard(Long boardId, BoardUpdateDto boardUpdateDto) {
+        Board findBoard = em.find(Board.class, boardId);
+        findBoard.setBoardCategory(boardUpdateDto.getBoardCategory());
+        findBoard.setContents(boardUpdateDto.getContents());
+        findBoard.setTitle(boardUpdateDto.getTitle());
+        return findBoard;
     }
 }

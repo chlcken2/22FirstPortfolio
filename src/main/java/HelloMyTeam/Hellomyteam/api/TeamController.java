@@ -130,6 +130,7 @@ public class TeamController {
         return CommonResponse.createSuccess(teamMemberInfoDto, "팀원 정보 가져오기 success");
     }
 
+    //TODO 더티체킹 적용되지 않음
     @ApiOperation(value = "내 정보 수정")
     @PutMapping(value = "/member/{memberId}")
     public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
@@ -139,4 +140,15 @@ public class TeamController {
         TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
         return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
     }
+
+    //TODO 팀 관리/정보 수정
+//    @ApiOperation(value = "팀 관리 / 정보 수정")
+//    @PutMapping(value = "/member/{memberId}")
+//    public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
+//                                                @RequestParam(required = true, value = "teamId") Long teamId,
+//                                                @RequestBody TeamInfoUpdateDto teamInfoUpdateDto
+//    ) {
+//        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
+//        return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
+//    }
 }
