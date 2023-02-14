@@ -17,7 +17,8 @@ public class BoardCustomImpl {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<Board> findBoardByTeamId(Long teamId, BoardCategory boardCategory) {
+
+    public List<Board> findBoardsByTeamId(Long teamId, BoardCategory boardCategory) {
         return queryFactory.selectFrom(board)
                 .where(board.teamMemberInfo.team.id.eq(teamId))
                 .where(board.boardStatus.eq(BoardAndCommentStatus.NORMAL))

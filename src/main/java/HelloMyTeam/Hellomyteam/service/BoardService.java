@@ -44,7 +44,12 @@ public class BoardService {
     }
 
     public List<Board> getBoards(Long teamId, BoardCategory boardCategory) {
-        List<Board> boards = boardCustomImpl.findBoardByTeamId(teamId, boardCategory);
+        List<Board> boards = boardCustomImpl.findBoardsByTeamId(teamId, boardCategory);
         return boards;
+    }
+
+    public Board getBoard(Long id) {
+        Board board = boardRepository.findBoardById(id);
+        return board;
     }
 }

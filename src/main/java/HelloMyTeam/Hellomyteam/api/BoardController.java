@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
+@RequestMapping("/api")
 public class BoardController {
 
     private final BoardService boardService;
@@ -28,7 +28,7 @@ public class BoardController {
      */
 
     @ApiOperation(value = "게시판 목록 가져오기", notes = "teamId로 팀 별 게시판을 조회한다.")
-    @GetMapping("/{teamId}")
+    @GetMapping("/boards/{teamId}")
     public CommonResponse<?> getBoards(@PathVariable Long teamId,
                                        @RequestParam(value = "boardCategory") BoardCategory boardCategory) {
         List<Board> boards = boardService.getBoards(teamId, boardCategory);
@@ -36,18 +36,19 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시판 작성", notes = "teamMemberInfo_id가 존재해야한다, 게시판을 생성한다.")
-    @PostMapping("/write")
+    @PostMapping("/board/write")
     public CommonResponse<?> writeBoard(@RequestBody BoardWriteDto boardWriteDto){
         Board board = boardService.createBoard(boardWriteDto);
         return CommonResponse.createSuccess(board, "게시판 작성 success");
     }
 
-//    //게시판 상세 보기
-//    @GetMapping("/{boardId}")
-//    public CommonResponse<?> detailBoard(){
-//
-//        return CommonResponse.createSuccess("게시판 상세정보 가져오기 success");
-//    }
+
+    @ApiOperation(value = "게시판 상세보기", notes = "팀별 상세 보드 정보")
+    @GetMapping("/board/{boardId}")
+    public CommonResponse<?> detailBoard(@PathVariable Long boardId){
+        Board board = boardService.getBoard(boardId);
+        return CommonResponse.createSuccess(board, "게시판 상세정보 가져오기 success");
+    }
 //
 //    //게시판 수정
 //    @PutMapping("/write/{boardId}")
