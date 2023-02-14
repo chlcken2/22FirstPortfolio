@@ -21,9 +21,6 @@ public class Member extends BaseTimeEntity{
     @Column(name = "member_id")
     private Long id;
 
-//    @Nullable
-//    private String mobile;
-
     @NotNull
     private String email;
 
@@ -48,18 +45,6 @@ public class Member extends BaseTimeEntity{
     @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<CommentReply> commentReplies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<TermsAndCond> termsAndCond = new ArrayList<>();

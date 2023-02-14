@@ -20,6 +20,9 @@ public class Board extends BaseTimeEntity {
     private BoardCategory boardCategory;
 
     @NotNull
+    private String writer;
+
+    @NotNull
     private String title;
 
     @Lob
@@ -35,8 +38,8 @@ public class Board extends BaseTimeEntity {
     private int viewNo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "teamMemberInfo_id")
+    private TeamMemberInfo teamMemberInfo;
 
     @OneToMany(mappedBy = "board")
     private List<Comment> comments = new ArrayList<>();

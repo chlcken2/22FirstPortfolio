@@ -28,14 +28,9 @@ public class Image extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teamMemberInfo_id")
     private TeamMemberInfo teamMemberInfo;
-
 
     @Builder
     public Image(String imageUrl, String storeFilename, Team team) {

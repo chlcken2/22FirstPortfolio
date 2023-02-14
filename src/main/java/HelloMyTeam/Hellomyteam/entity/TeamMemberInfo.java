@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Entity
@@ -67,4 +69,12 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @OneToOne(mappedBy = "teamMemberInfo")
     private Image image;
 
+    @OneToMany(mappedBy = "teamMemberInfo")
+    private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teamMemberInfo")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teamMemberInfo")
+    private List<CommentReply> commentReplies = new ArrayList<>();
 }
