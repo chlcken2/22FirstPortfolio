@@ -57,7 +57,7 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     private Integer drinkingCapacity;
 
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

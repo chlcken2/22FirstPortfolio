@@ -28,9 +28,9 @@ public class TeamController {
     private final MemberService memberService;
 
     @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
-    @GetMapping("/{id}")
-    public CommonResponse<?> getTeamInfo(@PathVariable Long id) {
-        Team team = teamService.findTeamById(id);
+    @GetMapping("/{teamId}")
+    public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {
+        Team team = teamService.findTeamById(teamId);
         return CommonResponse.createSuccess(team, "team 정보 전달");
     }
 
@@ -66,16 +66,16 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀 가입신청자 정보 가져오기", notes = "알림페이지에 띄어질 정보, 가입 수락 전 권한 = WAIT")
-    @GetMapping("/join/{teamId}")
-    public CommonResponse<?> getApplicant(@PathVariable(value = "teamId") Long teamId) {
+    @GetMapping("/{teamId}/join")
+    public CommonResponse<?> getApplicant(@PathVariable Long teamId) {
         List<ApplicantDto> applicantDto = teamService.findAppliedTeamMember(teamId);
         return CommonResponse.createSuccess(applicantDto, "팀 가입 신청한 회원 정보 가져오기");
     }
 
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
-    @PostMapping("/member/accept")
-    public CommonResponse<?> acceptTeamMember(@RequestBody TeamMemberIdsDto teamMemberIdsParam) {
-        int changeNo = teamService.acceptTeamMemberById(teamMemberIdsParam);
+    @PostMapping("/{teamId}/member/accept")
+    public CommonResponse<?> acceptTeamMember(@PathVariable Long teamId, @RequestBody MemberIdDto memberIdDto) {
+        int changeNo = teamService.acceptTeamMemberById(teamId, memberIdDto);
 
         String stringResult = Integer.toString(changeNo);
         String template = "총 %s 명이 반영되었습니다.";
@@ -83,28 +83,10 @@ public class TeamController {
         return CommonResponse.createSuccess(true, message);
     }
 
-    @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트",
-            notes = "해당 API는 포스트맨에서 진행할 것, " +
-                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})" +
-                    "참고 링크: https://smooth-foxtrot-e11.notion.site/swagger-mine-6f0e4ca8ad964f56b0c23d86d6780b98"
-    )
-    @PostMapping(value = "/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public CommonResponse<?> updateLogo(@RequestPart TeamIdDto teamIdParam, @RequestPart MultipartFile imgFile) throws IOException {
-        List<Image> savedImage = teamService.saveLogo(imgFile, teamIdParam);
-        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
-    }
-
-    @ApiOperation(value = "팀 로고 삭제")
-    @PostMapping(value = "/logo/delete")
-    public CommonResponse<?> deleteLogo(@RequestBody TeamIdDto teamIdParam) {
-        List<Image> image = teamService.deleteLogoByTeamId(teamIdParam);
-        return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
-    }
-
     @ApiOperation(value = "팀원 수락 거절")
-    @PostMapping(value = "/member/reject")
-    public CommonResponse<?> rejectMember(@RequestBody TeamMemberIdDto teamMemberIdParam) {
-        Long count = teamService.deleteMemberByMemberId(teamMemberIdParam);
+    @PostMapping(value = "/{teamId}/member/reject")
+    public CommonResponse<?> rejectMember(@PathVariable Long teamId, @RequestBody MemberIdDto memberIdParam) {
+        Long count = teamService.deleteMemberByMemberId(teamId, memberIdParam);
         if (count == 0) {
             return CommonResponse.createSuccess(0, "선택 된 팀원이 없으므로 API 결과값이 0 입니다.");
         }
@@ -114,30 +96,52 @@ public class TeamController {
         return CommonResponse.createSuccess(count, message);
     }
 
+    @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트",
+            notes = "해당 API는 포스트맨에서 진행할 것, " +
+                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})" +
+                    "참고 링크: https://smooth-foxtrot-e11.notion.site/swagger-mine-6f0e4ca8ad964f56b0c23d86d6780b98"
+    )
+    @PostMapping(value = "/{teamId}/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public CommonResponse<?> updateLogo(@PathVariable Long teamId, @RequestPart MultipartFile imgFile) throws IOException {
+        List<Image> savedImage = teamService.saveLogo(imgFile, teamId);
+        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
+    }
+
+    @ApiOperation(value = "팀 로고 삭제")
+    @PostMapping(value = "/{teamId}/logo/delete")
+    public CommonResponse<?> deleteLogo(@PathVariable Long teamId) {
+        List<Image> image = teamService.deleteLogoByTeamId(teamId);
+        return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
+    }
+
+
     @ApiOperation(value = "팀 탈퇴")
-    @PostMapping(value = "/withDraw")
-    public CommonResponse<?> withDrawTeam(@RequestBody TeamMemberIdDto teamMemberIdParam) {
-        Map<String, String> param = teamService.withDrawTeamByMemberId(teamMemberIdParam);
+    @PostMapping(value = "/{teamId}/withDraw")
+    public CommonResponse<?> withDrawTeam(@PathVariable Long teamId, @RequestBody MemberIdDto memberIdParam) {
+        Map<String, String> param = teamService.withDrawTeamByMemberId(teamId, memberIdParam);
         return CommonResponse.createSuccess(param.get("authorityStatus"), param.get("message"));
     }
 
-    @ApiOperation(value = "팀원 정보 가져오기")
-    @GetMapping(value = "/member/{memberId}")
-    public CommonResponse<?> getTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
-                                                @RequestParam(required = true, value = "teamId") Long teamId) {
-        TeamMemberInfoDto teamMemberInfoDto = teamService.getTeamMemberInfo(memberId, teamId);
+    @ApiOperation(value = "팀원 리스트 정보 가져오기", notes = "team_id를 통한 팀원 리스트 가져오기")
+    @GetMapping(value = "/{teamId}/members")
+    public CommonResponse<?> getTeamMemberInfos(@PathVariable Long teamId) {
+        List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamService.getTeamMemberInfos(teamId);
+        return CommonResponse.createSuccess(teamMemberInfosResDtos, "팀원 정보 가져오기 success");
+    }
 
+    @ApiOperation(value = "팀원 상세 정보 가져오기")
+    @GetMapping(value = "/member/{teamMemberInfoId}")
+    public CommonResponse<?> getTeamMemberInfo(@PathVariable Long teamMemberInfoId) {
+        TeamMemberInfoDto teamMemberInfoDto = teamService.getTeamMemberInfo(teamMemberInfoId);
         return CommonResponse.createSuccess(teamMemberInfoDto, "팀원 정보 가져오기 success");
     }
 
-    //TODO 더티체킹 적용되지 않음
-    @ApiOperation(value = "내 정보 수정")
-    @PutMapping(value = "/member/{memberId}")
-    public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
-                                                @RequestParam(required = true, value = "teamId") Long teamId,
+    @ApiOperation(value = "팀원 상세 정보 수정", notes = "본인일 경우에만 수정 가능")
+    @PutMapping(value = "/member/{teamMemberInfoId}")
+    public CommonResponse<?> editTeamMemberInfo(@PathVariable Long teamMemberInfoId,
                                                 @RequestBody TeamInfoUpdateDto teamInfoUpdateDto
     ) {
-        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
+        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamMemberInfoId, teamInfoUpdateDto);
         return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
     }
 

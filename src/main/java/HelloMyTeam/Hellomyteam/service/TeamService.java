@@ -2,10 +2,7 @@ package HelloMyTeam.Hellomyteam.service;
 
 import HelloMyTeam.Hellomyteam.config.S3Uploader;
 import HelloMyTeam.Hellomyteam.dto.*;
-import HelloMyTeam.Hellomyteam.entity.Image;
-import HelloMyTeam.Hellomyteam.entity.Member;
-import HelloMyTeam.Hellomyteam.entity.Team;
-import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
+import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.ConditionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
@@ -17,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TeamService {
 
+    private final EntityManager em;
     private final TeamRepository teamRepository;
     private final TeamCustomImpl teamCustomImpl;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
@@ -94,18 +94,18 @@ public class TeamService {
         return teamMemberInfo;
     }
 
-    public int acceptTeamMemberById(TeamMemberIdsDto teamMemberIdsParam) {
+    public int acceptTeamMemberById(Long teamId, MemberIdDto memberIdDto) {
         //수락 전 auth 상태 체크
-        Integer result = teamMemberInfoRepository.checkAuthWait(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
+        Integer result = teamMemberInfoRepository.checkAuthWait(memberIdDto.getMemberId(), teamId);
         if (result == 0 || result == null) {
             log.info("@result: " + result);
             return 0;
         }
 
-        teamMemberInfoRepository.updateTeamMemberAuthById(teamMemberIdsParam.getMemberId(), teamMemberIdsParam.getTeamId());
+        teamMemberInfoRepository.updateTeamMemberAuthById(memberIdDto.getMemberId(), teamId);
 
-        int countMember = teamMemberInfoRepository.getMemberCountByTeamId(teamMemberIdsParam.getTeamId());
-        teamMemberInfoRepository.updateTeamCount(teamMemberIdsParam.getTeamId(), countMember);
+        int countMember = teamMemberInfoRepository.getMemberCountByTeamId(teamId);
+        teamMemberInfoRepository.updateTeamCount(teamId, countMember);
         return result;
     }
 
@@ -115,8 +115,8 @@ public class TeamService {
         return team;
     }
 
-    public List saveLogo(MultipartFile multipartFile, TeamIdDto teamIdParam) throws IOException {
-        Team team = teamRepository.findById(teamIdParam.getTeamId())
+    public List saveLogo(MultipartFile multipartFile, Long teamId) throws IOException {
+        Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
 
         if (!multipartFile.isEmpty()) {
@@ -130,34 +130,34 @@ public class TeamService {
                     .storeFilename(fileName)
                     .build();
 
-            Boolean result = fileUploadRepository.existsImageByTeamId(teamIdParam.getTeamId());
+            Boolean result = fileUploadRepository.existsImageByTeamId(teamId);
             //존재=true
             if (result) {
-                fileUploadCustomImpl.updateLogoByTeam(teamIdParam.getTeamId(), image.getImageUrl(), image.getStoreFilename());
+                fileUploadCustomImpl.updateLogoByTeam(teamId, image.getImageUrl(), image.getStoreFilename());
             } else {
                 fileUploadRepository.save(image);
             }
         }
 
-        List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
+        List<Image> image =  fileUploadRepository.findImageByTeamId(teamId);
         return image;
     }
 
-    public List<Image> deleteLogoByTeamId(TeamIdDto teamIdParam) {
-        fileUploadCustomImpl.changeImageByTeamId(teamIdParam.getTeamId());
-        List<Image> image =  fileUploadRepository.findImageByTeamId(teamIdParam.getTeamId());
+    public List<Image> deleteLogoByTeamId(Long teamId) {
+        fileUploadCustomImpl.changeImageByTeamId(teamId);
+        List<Image> image =  fileUploadRepository.findImageByTeamId(teamId);
         return image;
     }
 
 
-    public Long deleteMemberByMemberId(TeamMemberIdDto teamMemberIdParam) {
-        Long count = teamCustomImpl.deleteMemberByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+    public Long deleteMemberByMemberId(Long teamId, MemberIdDto memberIdParam) {
+        Long count = teamCustomImpl.deleteMemberByMemberId(teamId, memberIdParam.getMemberId());
         return count;
     }
 
-    public Map<String, String> withDrawTeamByMemberId(TeamMemberIdDto teamMemberIdParam) {
+    public Map<String, String> withDrawTeamByMemberId(Long teamId, MemberIdDto memberIdParam) {
         Map<String, String> param = new HashMap<>();
-        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, memberIdParam.getMemberId());
 
         if (!(authorityStatus.equals(AuthorityStatus.SUB_LEADER) || authorityStatus.equals(AuthorityStatus.TEAM_MEMBER))) {
             String stringResult = String.valueOf(authorityStatus);
@@ -168,7 +168,7 @@ public class TeamService {
             return param;
         }
         //팀 탈퇴
-        teamCustomImpl.withDrawTeamByMemberId(teamMemberIdParam.getTeamId(), teamMemberIdParam.getMemberId());
+        teamCustomImpl.withDrawTeamByMemberId(teamId, memberIdParam.getMemberId());
         String stringResult = String.valueOf(authorityStatus);
         String template = "현재 권한: %s, 해당 팀을 탈퇴하였습니다.";
         String message = String.format(template, stringResult);
@@ -177,19 +177,39 @@ public class TeamService {
         return param;
     }
 
-    public TeamMemberInfoDto getTeamMemberInfo(Long memberId, Long teamId) {
-        TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfo(memberId, teamId);
+    public TeamMemberInfoDto getTeamMemberInfo(Long teamMemberInfoId) {
+        TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfoAndMember(teamMemberInfoId);
         return teamMemberInfoDto;
     }
 
-    public TeamMemberInfoDto editTeamMemberInfo(TeamInfoUpdateDto teamInfoUpdateDto, Long memberId, Long teamId) {
-        teamCustomImpl.updateTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
-        TeamMemberInfoDto findTeamMemberInfoDto = teamCustomImpl.findTeamMemberInfo(memberId, teamId);
-        return findTeamMemberInfoDto;
+    public TeamMemberInfoDto editTeamMemberInfo(Long teamMemberInfoId, TeamInfoUpdateDto teamInfoUpdateDto) {
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+
+        TeamMemberInfo findTeamMemberInfo = em.find(TeamMemberInfo.class, teamMemberInfoId);
+        Member findMember = em.find(Member.class, teamMemberInfo.getMember().getId());
+
+        findTeamMemberInfo.setAddress(teamInfoUpdateDto.getChangeAddress());
+        findTeamMemberInfo.setConditionStatus(teamInfoUpdateDto.getChangeConditionStatus());
+        findTeamMemberInfo.setBackNumber(teamInfoUpdateDto.getChangeBackNumber());
+        findTeamMemberInfo.setMemberOneIntro(teamInfoUpdateDto.getChangeMemberOneIntro());
+        findTeamMemberInfo.setLeftRightFoot(teamInfoUpdateDto.getChangeLeftRightFoot());
+        findTeamMemberInfo.setConditionIndicator(teamInfoUpdateDto.getChangeConditionIndicator());
+        findTeamMemberInfo.setDrinkingCapacity(teamInfoUpdateDto.getChangeDrinkingCapacity());
+        findTeamMemberInfo.setPreferPosition(teamInfoUpdateDto.getChangePreferPosition());
+        findMember.setBirthday(teamInfoUpdateDto.getChangeBirthday());
+        findMember.setName(teamInfoUpdateDto.getChangeName());
+
+        TeamMemberInfoDto result = teamCustomImpl.findTeamMemberInfoAndMember(teamMemberInfoId);
+        return result;
     }
 
     public List<ApplicantDto> findAppliedTeamMember(Long teamId) {
         List<ApplicantDto> applicantDto = teamCustomImpl.getApplyTeamMember(teamId);
         return applicantDto;
+    }
+
+    public List<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId) {
+        List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId);
+        return teamMemberInfosResDtos;
     }
 }

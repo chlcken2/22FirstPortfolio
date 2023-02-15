@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import static HelloMyTeam.Hellomyteam.entity.QImage.image;
@@ -21,7 +20,7 @@ import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 @Repository
 @RequiredArgsConstructor
 public class TeamCustomImpl {
-    LocalDateTime nowDateTime = LocalDateTime.now();
+
     private final JPAQueryFactory queryFactory;
 
     public List<TeamSearchDto> getInfoBySerialNoOrTeamName(String teamName, Integer teamSerialNo) {
@@ -97,7 +96,7 @@ public class TeamCustomImpl {
         return result.getAuthority();
     }
 
-    public TeamMemberInfoDto findTeamMemberInfo(Long memberId, Long teamId) {
+    public TeamMemberInfoDto findTeamMemberInfoAndMember(Long teamMemberInfoId) {
         return queryFactory.
                 select(new QTeamMemberInfoDto(
                         member.name,
@@ -115,32 +114,8 @@ public class TeamCustomImpl {
                 .join(teamMemberInfo.team, team)
                 .join(teamMemberInfo.member, member)
                 .leftJoin(teamMemberInfo.image, image)
-                .where(teamMemberInfo.member.id.eq(memberId))
-                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.id.eq(teamMemberInfoId))
                 .fetchOne();
-    }
-
-    public void updateTeamMemberInfo(TeamInfoUpdateDto teamInfoUpdateDto, Long memberId, Long teamId) {
-        if (teamInfoUpdateDto.getBirthday().equals(null) || teamInfoUpdateDto.getBirthday().equals("")) {
-            queryFactory.update(member)
-                    .set(member.birthday, teamInfoUpdateDto.getBirthday())
-                    .set(member.modifiedDate, nowDateTime)
-                    .where(member.id.eq(memberId))
-                    .execute();
-        }
-        queryFactory
-                .update(teamMemberInfo)
-                .set(teamMemberInfo.address, teamInfoUpdateDto.getAddress())
-                .set(teamMemberInfo.conditionStatus, teamInfoUpdateDto.getConditionStatus())
-                .set(teamMemberInfo.backNumber, teamInfoUpdateDto.getBackNumber())
-                .set(teamMemberInfo.memberOneIntro, teamInfoUpdateDto.getMemberOneIntro())
-                .set(teamMemberInfo.leftRightFoot, teamInfoUpdateDto.getLeftRightFoot())
-                .set(teamMemberInfo.conditionIndicator, teamInfoUpdateDto.getConditionIndicator())
-                .set(teamMemberInfo.drinkingCapacity, teamInfoUpdateDto.getDrinkingCapacity())
-                .set(teamMemberInfo.preferPosition, teamInfoUpdateDto.getPreferPosition())
-                .where(teamMemberInfo.team.id.eq(teamId))
-                .where(teamMemberInfo.member.id.eq(memberId))
-                .execute();
     }
 
     public List<ApplicantDto> getApplyTeamMember(Long teamId) {
@@ -153,6 +128,34 @@ public class TeamCustomImpl {
                 .join(teamMemberInfo.member, member)
                 .where(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("WAIT")))
                 .where(teamMemberInfo.team.id.eq(teamId))
+                .fetch();
+    }
+
+    public List<TeamMemberInfosResDto> getTeamMemberInfoById(Long teamId) {
+        return queryFactory.select(new QTeamMemberInfosResDto(
+                teamMemberInfo.id
+                ,teamMemberInfo.authority
+                ,teamMemberInfo.preferPosition
+                ,teamMemberInfo.preferStyle
+                ,teamMemberInfo.specialTitleStatus
+                ,teamMemberInfo.conditionStatus
+                ,teamMemberInfo.backNumber
+                ,teamMemberInfo.memberOneIntro
+                ,teamMemberInfo.address
+                ,teamMemberInfo.leftRightFoot
+                ,teamMemberInfo.conditionIndicator
+                ,teamMemberInfo.drinkingCapacity
+                ,member.name
+                ,member.birthday
+                ,image.imageUrl
+                ))
+                .from(teamMemberInfo)
+                .leftJoin(teamMemberInfo.image, image)
+                .join(teamMemberInfo.member, member)
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
+                        .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))
+                        .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)))
                 .fetch();
     }
 }

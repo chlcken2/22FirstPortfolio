@@ -15,14 +15,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeamInfoUpdateDto {
-    private String address;
-    private String birthday;
-    private ConditionStatus conditionStatus;
-    private Integer backNumber;
-    private String memberOneIntro;
-    private String leftRightFoot;
-    private Integer conditionIndicator;
-    private Integer drinkingCapacity;
-    private PersonalPositionStatus preferPosition;
+    private String changeName;
+    private String changeAddress;
+    private String changeBirthday;
+    private ConditionStatus changeConditionStatus;
+    private Integer changeBackNumber;
+    private String changeMemberOneIntro;
+    private String changeLeftRightFoot;
+    private Integer changeConditionIndicator;
+    private Integer changeDrinkingCapacity;
+    private PersonalPositionStatus changePreferPosition;
     
 }

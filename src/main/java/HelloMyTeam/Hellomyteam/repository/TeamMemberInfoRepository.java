@@ -14,11 +14,11 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
     @Query(value =
             "update team_member_info tmi " +
             "set tmi.authority = 'TEAM_MEMBER' " +
-            "where tmi.member_id in :memberIds " +
+            "where tmi.member_id = :memberId " +
             "and tmi.team_id = :teamId "
             ,
     nativeQuery = true)
-    void updateTeamMemberAuthById(@Param("memberIds") List<Long> memberIds, @Param("teamId") Long teamId);
+    void updateTeamMemberAuthById(@Param("memberId") Long memberId, @Param("teamId") Long teamId);
 
 
     @Query(value =
@@ -41,11 +41,11 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
             "select count(*) from team_member_info tmi " +
             "where tmi.authority = 'WAIT' " +
             "and tmi.team_id = :teamId " +
-            "and tmi.member_id in :memberIds "
+            "and tmi.member_id = :memberId "
             ,
             nativeQuery = true)
-    Integer checkAuthWait(@Param("memberIds") List<Long> memberIds, @Param("teamId") Long teamId);
+    Integer checkAuthWait(@Param("memberId") Long memberId, @Param("teamId") Long teamId);
 
 
-
+    TeamMemberInfo findTeamMemberInfoById(Long teamMemberInfoId);
 }
