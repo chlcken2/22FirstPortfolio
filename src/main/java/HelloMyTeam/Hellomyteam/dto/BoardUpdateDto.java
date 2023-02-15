@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class BoardUpdateDto {
-    private BoardCategory boardCategory;
+    private BoardCategory changeBoardCategory;
 
-    private String title;
+    private String changeTitle;
 
-    private String contents;
+    private String changeContents;
 }

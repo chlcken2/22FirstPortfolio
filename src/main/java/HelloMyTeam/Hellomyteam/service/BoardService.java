@@ -58,9 +58,9 @@ public class BoardService {
 
     public Board updateBoard(Long boardId, BoardUpdateDto boardUpdateDto) {
         Board findBoard = em.find(Board.class, boardId);
-        findBoard.setBoardCategory(boardUpdateDto.getBoardCategory());
-        findBoard.setContents(boardUpdateDto.getContents());
-        findBoard.setTitle(boardUpdateDto.getTitle());
+        findBoard.setBoardCategory(boardUpdateDto.getChangeBoardCategory());
+        findBoard.setContents(boardUpdateDto.getChangeContents());
+        findBoard.setTitle(boardUpdateDto.getChangeTitle());
         return findBoard;
     }
 }
