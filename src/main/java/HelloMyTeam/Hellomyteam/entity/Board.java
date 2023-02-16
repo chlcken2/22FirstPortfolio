@@ -38,11 +38,14 @@ public class Board extends BaseTimeEntity {
     @NotNull
     private BoardAndCommentStatus boardStatus;
 
-    private int viewNo;
+    private Integer viewNo;
+
+    private Integer commentCount;
 
 //    @OneToMany(mappedBy = "board")
 //    private List<LikeNumber> likeNo;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "board") // , TODO 댓글 구현시 orphanRemoval = true  추가
     private List<Comment> comments = new ArrayList<>();
 

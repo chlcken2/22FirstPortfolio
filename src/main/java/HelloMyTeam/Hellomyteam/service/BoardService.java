@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.service;
 
+import HelloMyTeam.Hellomyteam.dto.BoardResDto;
 import HelloMyTeam.Hellomyteam.dto.BoardUpdateDto;
 import HelloMyTeam.Hellomyteam.dto.BoardWriteDto;
 import HelloMyTeam.Hellomyteam.entity.Board;
@@ -11,10 +12,11 @@ import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.BoardCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.List;
 
 
 @Slf4j
@@ -45,8 +47,8 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public List<Board> getBoards(Long teamId, BoardCategory boardCategory) {
-        List<Board> boards = boardCustomImpl.findBoardsByTeamId(teamId, boardCategory);
+    public Page<BoardResDto> getBoards(Long teamId, BoardCategory boardCategory, Pageable pageable) {
+        Page<BoardResDto> boards = boardCustomImpl.findBoardsByTeamId(teamId, boardCategory, pageable);
         return boards;
     }
 
@@ -62,5 +64,9 @@ public class BoardService {
         findBoard.setContents(boardUpdateDto.getChangeContents());
         findBoard.setTitle(boardUpdateDto.getChangeTitle());
         return findBoard;
+    }
+
+    public void deleteBoard(Long boardId) {
+        boardRepository.deleteById(boardId);
     }
 }
