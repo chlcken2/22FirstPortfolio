@@ -4,11 +4,11 @@ import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -42,8 +42,8 @@ public class Board extends BaseTimeEntity {
 
     private Integer commentCount;
 
-//    @OneToMany(mappedBy = "board")
-//    private List<LikeNumber> likeNo;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    Set<Like> likes = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "board") // , TODO 댓글 구현시 orphanRemoval = true  추가

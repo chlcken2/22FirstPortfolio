@@ -5,13 +5,10 @@ import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalPositionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalStyleStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.SpecialBadgeStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Setter
 @Entity
@@ -77,4 +74,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "teamMemberInfo")
     private List<CommentReply> commentReplies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teamMemberInfo", cascade = CascadeType.ALL)
+    Set<Like> likes = new HashSet<>();
+
 }
