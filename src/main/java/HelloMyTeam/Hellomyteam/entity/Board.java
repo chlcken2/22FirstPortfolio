@@ -43,6 +43,7 @@ public class Board extends BaseTimeEntity {
 
     private Integer commentCount;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     Set<Like> likes = new HashSet<>();
 
