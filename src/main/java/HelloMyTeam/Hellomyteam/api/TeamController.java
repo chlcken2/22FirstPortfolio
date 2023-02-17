@@ -155,4 +155,7 @@ public class TeamController {
 //        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
 //        return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
 //    }
+
+    //TODO 팀원 프로필 등록
+
 }

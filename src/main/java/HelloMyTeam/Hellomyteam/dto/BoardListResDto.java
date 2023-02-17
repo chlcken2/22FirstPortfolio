@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 
 @Getter
-public class BoardResDto {
+public class BoardListResDto {
     private String writer;
     private String title;
     private BoardAndCommentStatus boardStatus;
@@ -16,7 +16,7 @@ public class BoardResDto {
     private Integer commentCount;
 
     @QueryProjection
-    public BoardResDto(String writer, String title, BoardAndCommentStatus boardStatus, Integer viewNo, LocalDateTime createdDate, Integer commentCount) {
+    public BoardListResDto(String writer, String title, BoardAndCommentStatus boardStatus, Integer viewNo, LocalDateTime createdDate, Integer commentCount) {
         this.writer = writer;
         this.title = title;
         this.boardStatus = boardStatus;

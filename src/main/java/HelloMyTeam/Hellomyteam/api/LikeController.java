@@ -22,4 +22,6 @@ public class LikeController {
         Boolean bool = likeService.checkLike(teamMemberInfoId, boardId);
         return CommonResponse.createSuccess(bool, "보드 삭제 success");
     }
+
+    //댓글 좋아요/취소
 }

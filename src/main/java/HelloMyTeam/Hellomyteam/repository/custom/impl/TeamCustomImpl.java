@@ -96,7 +96,7 @@ public class TeamCustomImpl {
         return result.getAuthority();
     }
 
-    public TeamMemberInfoDto findTeamMemberInfoAndMember(Long teamMemberInfoId) {
+    public TeamMemberInfoDto findTeamMemberInfoById(Long teamMemberInfoId) {
         return queryFactory.
                 select(new QTeamMemberInfoDto(
                         member.name,

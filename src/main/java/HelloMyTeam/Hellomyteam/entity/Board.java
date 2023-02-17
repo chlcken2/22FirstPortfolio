@@ -38,7 +38,8 @@ public class Board extends BaseTimeEntity {
     @NotNull
     private BoardAndCommentStatus boardStatus;
 
-    private Integer viewNo;
+    @Column(columnDefinition = "integer default 0", nullable = false)
+    private int viewCount; //조회수
 
     private Integer commentCount;
 
@@ -55,14 +56,14 @@ public class Board extends BaseTimeEntity {
     private TeamMemberInfo teamMemberInfo;
 
     @Builder
-    public Board(Long id, BoardCategory boardCategory, String writer, String title, String contents, BoardAndCommentStatus boardStatus, int viewNo, List<Comment> comments, TeamMemberInfo teamMemberInfo) {
+    public Board(Long id, BoardCategory boardCategory, String writer, String title, String contents, BoardAndCommentStatus boardStatus, int viewCount, List<Comment> comments, TeamMemberInfo teamMemberInfo) {
         this.id = id;
         this.boardCategory = boardCategory;
         this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.boardStatus = boardStatus;
-        this.viewNo = viewNo;
+        this.viewCount = viewCount;
         this.comments = comments;
         this.teamMemberInfo = teamMemberInfo;
     }

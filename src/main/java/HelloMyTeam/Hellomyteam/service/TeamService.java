@@ -178,7 +178,7 @@ public class TeamService {
     }
 
     public TeamMemberInfoDto getTeamMemberInfo(Long teamMemberInfoId) {
-        TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfoAndMember(teamMemberInfoId);
+        TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
         return teamMemberInfoDto;
     }
 
@@ -199,7 +199,7 @@ public class TeamService {
         findMember.setBirthday(teamInfoUpdateDto.getChangeBirthday());
         findMember.setName(teamInfoUpdateDto.getChangeName());
 
-        TeamMemberInfoDto result = teamCustomImpl.findTeamMemberInfoAndMember(teamMemberInfoId);
+        TeamMemberInfoDto result = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
         return result;
     }
 

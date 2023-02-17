@@ -1,7 +1,10 @@
 package HelloMyTeam.Hellomyteam.repository.custom.impl;
 
-import HelloMyTeam.Hellomyteam.dto.BoardResDto;
-import HelloMyTeam.Hellomyteam.dto.QBoardResDto;
+;
+import HelloMyTeam.Hellomyteam.dto.BoardDetailResDto;
+import HelloMyTeam.Hellomyteam.dto.BoardListResDto;
+import HelloMyTeam.Hellomyteam.dto.QBoardDetailResDto;
+import HelloMyTeam.Hellomyteam.dto.QBoardListResDto;
 import HelloMyTeam.Hellomyteam.entity.BoardCategory;
 import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -23,13 +26,13 @@ public class BoardCustomImpl {
     private final JPAQueryFactory queryFactory;
 
 
-    public Page<BoardResDto> findBoardsByTeamId(Long teamId, BoardCategory boardCategory, Pageable pageable) {
-        List<BoardResDto> contents = queryFactory
-                .select(new QBoardResDto(
+    public Page<BoardListResDto> findBoardsByTeamId(Long teamId, BoardCategory boardCategory, Pageable pageable) {
+        List<BoardListResDto> contents = queryFactory
+                .select(new QBoardListResDto(
                         board.writer,
                         board.title,
                         board.boardStatus,
-                        board.viewNo,
+                        board.viewCount,
                         board.createdDate,
                         board.commentCount
                 )).from(board)
@@ -49,5 +52,27 @@ public class BoardCustomImpl {
                 .where(board.boardCategory.eq(boardCategory));
 
         return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+    }
+
+    public BoardDetailResDto findBoardById(Long id) {
+        return queryFactory.select(new QBoardDetailResDto(
+                        board.writer
+                        , board.title
+                        , board.boardStatus
+                        , board.boardCategory
+                        , board.contents
+                        , board.viewCount
+                        , board.createdDate))
+                .from(board)
+                .where(board.id.eq(id))
+                .where(board.boardStatus.eq(BoardAndCommentStatus.NORMAL))
+                .fetchOne();
+    }
+
+    public int updateView(Long boardId) {
+        return (int) queryFactory.update(board)
+                .set(board.viewCount, board.viewCount.add(1))
+                .where(board.id.eq(boardId))
+                .execute();
     }
 }
