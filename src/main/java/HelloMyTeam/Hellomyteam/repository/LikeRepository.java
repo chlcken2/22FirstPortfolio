@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 
 @Transactional
 public interface LikeRepository extends JpaRepository<Like, Long> {
+
     void deleteLikeByTeamMemberInfoAndBoard(TeamMemberInfo teamMemberInfo, Board board);
 
     Integer countLikeByBoardId(Long boardId);

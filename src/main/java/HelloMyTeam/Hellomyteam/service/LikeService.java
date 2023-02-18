@@ -10,6 +10,8 @@ import HelloMyTeam.Hellomyteam.repository.custom.impl.LikeCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -21,6 +23,7 @@ public class LikeService {
     private final BoardRepository boardRepository;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final LikeCustomImpl likeCustomImpl;
+    private final EntityManager em;
 
     public boolean checkLike(Long teamMemberInfoId, Long boardId) {
         TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findById(teamMemberInfoId)
@@ -31,9 +34,11 @@ public class LikeService {
 
         if (isNotAlreadyLike(teamMemberInfo, board)) {
             likeRepository.save(new Like(teamMemberInfo, board));
+            setLikeCount(boardId);
             return true;
         }
         likeRepository.deleteLikeByTeamMemberInfoAndBoard(teamMemberInfo, board);
+        setLikeCount(boardId);
         return false;
     }
 
@@ -43,6 +48,12 @@ public class LikeService {
             return false;
         }
         return true;
+    }
+
+    private void setLikeCount(Long boardId) {
+        Integer count = likeRepository.countLikeByBoardId(boardId);
+        Board findBoard = em.find(Board.class, boardId);
+        findBoard.setLikeCount(count);
     }
 }
 

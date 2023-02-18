@@ -3,6 +3,7 @@ package HelloMyTeam.Hellomyteam.entity;
 import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
+import io.swagger.models.auth.In;
 import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -39,9 +40,13 @@ public class Board extends BaseTimeEntity {
     private BoardAndCommentStatus boardStatus;
 
     @Column(columnDefinition = "integer default 0", nullable = false)
-    private int viewCount; //조회수
+    private Integer viewCount; //조회수
 
+//    @Column(columnDefinition = "integer default 0", nullable = false)
     private Integer commentCount;
+
+//    @Column(columnDefinition = "integer default 0", nullable = false)
+    private Integer likeCount;
 
     @JsonIgnore
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)

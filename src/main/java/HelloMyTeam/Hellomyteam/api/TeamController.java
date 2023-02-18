@@ -5,7 +5,7 @@ import HelloMyTeam.Hellomyteam.entity.Image;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
-import HelloMyTeam.Hellomyteam.payload.CommonResponse;
+import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.MemberService;
 import HelloMyTeam.Hellomyteam.service.TeamService;
 import io.swagger.annotations.ApiOperation;

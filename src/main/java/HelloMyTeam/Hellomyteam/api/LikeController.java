@@ -1,6 +1,6 @@
 package HelloMyTeam.Hellomyteam.api;
 
-import HelloMyTeam.Hellomyteam.payload.CommonResponse;
+import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.LikeService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class LikeController {
     public CommonResponse<?> addLike(@PathVariable Long boardId,
                                      @RequestParam(required = true, value = "teamMemberInfoId") Long teamMemberInfoId) {
         Boolean bool = likeService.checkLike(teamMemberInfoId, boardId);
-        return CommonResponse.createSuccess(bool, "보드 삭제 success");
+        return CommonResponse.createSuccess(bool, "좋아요 true/false");
     }
 
     //댓글 좋아요/취소

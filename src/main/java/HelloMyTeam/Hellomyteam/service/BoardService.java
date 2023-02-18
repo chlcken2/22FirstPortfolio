@@ -1,9 +1,6 @@
 package HelloMyTeam.Hellomyteam.service;
 
-import HelloMyTeam.Hellomyteam.dto.BoardDetailResDto;
-import HelloMyTeam.Hellomyteam.dto.BoardListResDto;
-import HelloMyTeam.Hellomyteam.dto.BoardUpdateDto;
-import HelloMyTeam.Hellomyteam.dto.BoardWriteDto;
+import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.Board;
 import HelloMyTeam.Hellomyteam.entity.BoardCategory;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
@@ -15,7 +12,9 @@ import HelloMyTeam.Hellomyteam.repository.custom.impl.BoardCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
@@ -40,7 +39,6 @@ public class BoardService {
 
 
     public Board createBoard(BoardWriteDto boardWriteDto) {
-        log.info("boardWriteDto" + boardWriteDto);
         TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findById(boardWriteDto.getTeamMemberInfoId())
                 .orElseThrow(()-> new IllegalStateException("teamMemberInfo id가 누락되었습니다."));
 
@@ -55,10 +53,20 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public Page<BoardListResDto> getBoards(Long teamId, BoardCategory boardCategory, Pageable pageable) {
-        Page<BoardListResDto> boards = boardCustomImpl.findBoardsByTeamId(teamId, boardCategory, pageable);
-        return boards;
-    }
+//    public Page<BoardListResDto> getBoards(Long teamId, BoardCategory boardCategory, BoardSearchReqDto boardSearchReqDto, BoardSearch2ReqDto boardSearch2ReqDto, Pageable pageable) {
+//        //TODO pageable 값 설정 하고 레포에 전달
+//        log.info("start service");
+////        PageRequest pageRequest = PageRequest.of(15, 15, Sort.by(Sort.Direction.fromString(boardSearchReqDto.getOrderBy()), boardSearchReqDto.getSortBy()));
+////        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, boardSearchReqDto.getOrderBy()));
+////        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(), Sort.by(boardSearchReqDto.getOrderBy()).descending());
+////        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(),
+////                Sort.by(Sort.Direction.fromString(boardSearchReqDto.getOrderBy()), boardSearch2ReqDto.getSortBy()));
+//        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(),
+//                Sort.by(Sort.Direction.fromString(boardSearchReqDto.getOrderBy()), String.valueOf(pageable.getSort())));
+//        log.info("page request");
+//        Page<BoardListResDto> boards = boardCustomImpl.findBoardsByTeamId(teamId, boardCategory, boardSearchReqDto, pageRequest);
+//        return boards;
+//    }
 
     public BoardDetailResDto getBoard(Long id) {
         BoardDetailResDto findBoard = boardCustomImpl.findBoardById(id);
@@ -77,14 +85,8 @@ public class BoardService {
         boardRepository.deleteById(boardId);
     }
 
-    public Integer findBoardLikeCount(Long boardId) {
-        Integer count = likeRepository.countLikeByBoardId(boardId);
-        return count;
-    }
-
     public int updateView(Long boardId, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
-        log.info("@@cookies:" + cookies);
         boolean checkCookie = false;
         int result = 0;
         if(cookies != null){
@@ -106,6 +108,7 @@ public class BoardService {
         return result;
     }
 
+    //TODO utils로 옮기기
     private Cookie createCookieForForNotOverlap(Long boardId) {
         Cookie cookie = new Cookie(VIEWCOOKIENAME+boardId, String.valueOf(boardId));
         cookie.setComment("조회수 중복 증가 방지 쿠키");	// 쿠키 용도 설명 기재

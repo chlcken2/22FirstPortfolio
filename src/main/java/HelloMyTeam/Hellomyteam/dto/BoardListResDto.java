@@ -14,14 +14,16 @@ public class BoardListResDto {
     private Integer viewNo;
     private LocalDateTime createdDate;
     private Integer commentCount;
+    private Integer likeCount;
 
     @QueryProjection
-    public BoardListResDto(String writer, String title, BoardAndCommentStatus boardStatus, Integer viewNo, LocalDateTime createdDate, Integer commentCount) {
+    public BoardListResDto(String writer, String title, BoardAndCommentStatus boardStatus, Integer viewNo, LocalDateTime createdDate, Integer commentCount, Integer likeCount) {
         this.writer = writer;
         this.title = title;
         this.boardStatus = boardStatus;
         this.viewNo = viewNo;
         this.createdDate = createdDate;
         this.commentCount = commentCount;
+        this.likeCount = likeCount;
     }
 }
