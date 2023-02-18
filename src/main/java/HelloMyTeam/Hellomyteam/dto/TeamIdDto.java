@@ -2,10 +2,7 @@ package HelloMyTeam.Hellomyteam.dto;
 
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
-public class TeamMemberIdsParam {
+public class TeamIdDto {
     private Long teamId;
-    private List<Long> memberId;
 }

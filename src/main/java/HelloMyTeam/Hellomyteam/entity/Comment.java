@@ -18,6 +18,9 @@ public class Comment extends BaseTimeEntity {
     @NotNull
     private String contents;
 
+    @NotNull
+    private String writer;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private BoardAndCommentStatus commentStatus;
@@ -30,6 +33,6 @@ public class Comment extends BaseTimeEntity {
     private List<CommentReply> commentReply = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "teamMemberInfo_id")
+    private TeamMemberInfo teamMemberInfo;
 }

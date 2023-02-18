@@ -3,7 +3,7 @@ package HelloMyTeam.Hellomyteam.api;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.exception.JwtTokenException;
 import HelloMyTeam.Hellomyteam.exception.MemberNotFoundException;
-import HelloMyTeam.Hellomyteam.payload.CommonResponse;
+import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

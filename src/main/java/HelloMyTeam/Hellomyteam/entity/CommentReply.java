@@ -26,6 +26,6 @@ public class CommentReply extends BaseTimeEntity {
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "teamMemberInfo_id")
+    private TeamMemberInfo teamMemberInfo;
 }

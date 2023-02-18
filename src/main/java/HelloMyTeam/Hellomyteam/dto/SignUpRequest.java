@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.payload;
+package HelloMyTeam.Hellomyteam.dto;
 
 import HelloMyTeam.Hellomyteam.entity.status.JoinPurpose;
 import HelloMyTeam.Hellomyteam.entity.status.TermsAndCondStatus;

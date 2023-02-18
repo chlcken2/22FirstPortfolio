@@ -1,4 +1,4 @@
-package HelloMyTeam.Hellomyteam.payload;
+package HelloMyTeam.Hellomyteam.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,28 +1,29 @@
 package HelloMyTeam.Hellomyteam.dto;
 
-import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
-import HelloMyTeam.Hellomyteam.entity.status.team.TacticalStyleStatus;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.ToString;
 
+
 @Getter
 @ToString
-public class TeamSearchParam {
+public class TeamSearchDto {
     // 검색조건 결과 반환 데이터
     private String teamName;
     private String oneIntro;
     private Integer teamSerialNo;
     private String name;
-    private int memberCount;
+    private Integer memberCount;
+    private String imageUrl;
 
 
     @QueryProjection
-    public TeamSearchParam(String teamName, String oneIntro, Integer teamSerialNo, String name, int memberCount) {
+    public TeamSearchDto(String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount, String imageUrl) {
         this.teamName = teamName;
         this.oneIntro = oneIntro;
         this.teamSerialNo = teamSerialNo;
         this.name = name;
         this.memberCount = memberCount;
+        this.imageUrl = imageUrl;
     }
 }

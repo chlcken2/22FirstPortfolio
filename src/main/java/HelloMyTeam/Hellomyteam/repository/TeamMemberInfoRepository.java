@@ -1,7 +1,6 @@
 package HelloMyTeam.Hellomyteam.repository;
 
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
-import jdk.internal.org.objectweb.asm.tree.analysis.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,12 +13,12 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
 
     @Query(value =
             "update team_member_info tmi " +
-            "set tmi.authority = \"TEAM_MEMBER\" " +
-            "where tmi.member_id in :memberIds " +
+            "set tmi.authority = 'TEAM_MEMBER' " +
+            "where tmi.member_id = :memberId " +
             "and tmi.team_id = :teamId "
             ,
     nativeQuery = true)
-    void updateTeamMemberAuthById(@Param("memberIds") List<Long> memberIds, @Param("teamId") Long teamId);
+    void updateTeamMemberAuthById(@Param("memberId") Long memberId, @Param("teamId") Long teamId);
 
 
     @Query(value =
@@ -37,4 +36,16 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
             ,
             nativeQuery = true)
     void updateTeamCount(@Param("teamId") Long teamId, @Param("countMember") int countMember);
+
+    @Query(value =
+            "select count(*) from team_member_info tmi " +
+            "where tmi.authority = 'WAIT' " +
+            "and tmi.team_id = :teamId " +
+            "and tmi.member_id = :memberId "
+            ,
+            nativeQuery = true)
+    Integer checkAuthWait(@Param("memberId") Long memberId, @Param("teamId") Long teamId);
+
+
+    TeamMemberInfo findTeamMemberInfoById(Long teamMemberInfoId);
 }

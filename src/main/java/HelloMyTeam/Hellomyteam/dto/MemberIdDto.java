@@ -6,7 +6,6 @@ import lombok.Getter;
 
 
 @Getter
-public class TeamMemberIdParam {
-    private Long teamId;
+public class MemberIdDto {
     private Long memberId;
 }

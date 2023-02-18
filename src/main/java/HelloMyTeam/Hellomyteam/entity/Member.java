@@ -5,14 +5,13 @@ import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
-import com.sun.istack.Nullable;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Member")
+@Setter
 @Getter
 @Builder
 @AllArgsConstructor
@@ -22,9 +21,6 @@ public class Member extends BaseTimeEntity{
     @GeneratedValue
     @Column(name = "member_id")
     private Long id;
-
-    @Nullable
-    private String mobile;
 
     @NotNull
     private String email;
@@ -47,24 +43,9 @@ public class Member extends BaseTimeEntity{
     @NotNull
     private JoinPurpose joinPurpose;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<CommentReply> commentReplies = new ArrayList<>();
-
-    @OneToMany(mappedBy = "member")
-    private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<TermsAndCond> termsAndCond = new ArrayList<>();
