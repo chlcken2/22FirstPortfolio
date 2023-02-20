@@ -20,12 +20,13 @@
 - release: 개발 서버용, 테스트용 브런치
 - develop : 코드 병합 및 테스트용 브런치
 - feature : 새로운 기능 개발 브런치
+<br> 
 
 - Feature 브랜치 네이밍 규칙
-- {브랜치 종류}/{이름}/{{기능이름}}
-- ex) feature/cahnghyeon/login
+    - {브랜치 종류}/{이름}/{{기능이름}}
+    - ex) feature/cahnghyeon/login
 
-<br>
+
 <br>
 
 
