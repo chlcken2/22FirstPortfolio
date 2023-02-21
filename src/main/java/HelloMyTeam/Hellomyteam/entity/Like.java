@@ -24,6 +24,15 @@ public class Like {
     @JoinColumn(name = "board_id")
     private Board board;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
+    public Like(TeamMemberInfo teamMemberInfo, Comment comment) {
+        this.teamMemberInfo = teamMemberInfo;
+        this.comment = comment;
+    }
+
     public Like(TeamMemberInfo teamMemberInfo, Board board) {
         this.teamMemberInfo = teamMemberInfo;
         this.board = board;

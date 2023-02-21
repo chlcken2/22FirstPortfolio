@@ -53,8 +53,9 @@ public class Board extends BaseTimeEntity {
     Set<Like> likes = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "board") // , TODO 댓글 구현시 orphanRemoval = true  추가
-    private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) // , TODO 댓글 구현시 orphanRemoval = true  추가
+    @OrderBy("id asc")
+    private List<Comment> comments;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
