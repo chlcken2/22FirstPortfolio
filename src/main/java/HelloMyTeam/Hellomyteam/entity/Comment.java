@@ -40,7 +40,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "comment")
+    @JsonIgnore
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
     private List<CommentReply> commentReply = new ArrayList<>();
 
     @JsonIgnore

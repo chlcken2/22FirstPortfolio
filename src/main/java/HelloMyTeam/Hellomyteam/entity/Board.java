@@ -49,11 +49,11 @@ public class Board extends BaseTimeEntity {
     private Integer likeCount;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Like> likes = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) // , TODO 댓글 구현시 orphanRemoval = true  추가
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id asc")
     private List<Comment> comments;
 

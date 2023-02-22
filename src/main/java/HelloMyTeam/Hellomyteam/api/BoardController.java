@@ -80,7 +80,7 @@ public class BoardController {
 
     @ApiOperation(value = "게시판 좋아요/취소", notes = "좋아요 클릭시 true 리턴, 이후 클릭시 좋아요 해제하고 false리턴")
     @PostMapping("/board/like/{boardId}/")
-    public CommonResponse<?> boolLikeBoard(@PathVariable Long boardId,
+    public CommonResponse<?> isLikeBoard(@PathVariable Long boardId,
                                           @RequestBody LikeReqDto likeReqDto) {
         Boolean bool = likeService.checkLikeBoard(likeReqDto.getTeamMemberInfoId(), boardId);
         return CommonResponse.createSuccess(bool, "좋아요 true/false");
