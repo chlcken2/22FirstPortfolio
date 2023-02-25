@@ -14,6 +14,7 @@
 
 <br>
 <br>
+
 ## ⚡ 기술 스택
 - **Web backend:** Java, Gradle, Spring boot, Spring Security, JPA, Spring Data JPA,  Querydsl, Mysql
 - **Infra:** EC2, CodeDeploy RDS, Mardia DB
