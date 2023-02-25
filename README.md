@@ -9,7 +9,11 @@
 <br>
 <br>
 
+## ⚡ 서비스 아키텍쳐 구성도
+<img width="449" alt="2023-02-25_17-13-54" src="https://user-images.githubusercontent.com/67785225/221346699-d6c1aafb-7a70-4dd6-96a6-9618639d9e47.png">
 
+<br>
+<br>
 ## ⚡ 기술 스택
 - **Web backend:** Java, Gradle, Spring boot, Spring Security, JPA, Spring Data JPA,  Querydsl, Mysql
 - **Infra:** EC2, CodeDeploy RDS, Mardia DB
