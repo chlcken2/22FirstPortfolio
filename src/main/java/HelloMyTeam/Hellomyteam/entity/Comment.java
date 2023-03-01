@@ -1,14 +1,10 @@
 package HelloMyTeam.Hellomyteam.entity;
 
-import HelloMyTeam.Hellomyteam.dto.CommentResDto;
 import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.istack.NotNull;
 import lombok.*;
-
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +42,7 @@ public class Comment extends BaseTimeEntity {
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parent")
     private Comment parent;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent", orphanRemoval = true)
@@ -65,5 +61,4 @@ public class Comment extends BaseTimeEntity {
         this.parent = parent;
 //        parent.getChildren().add(parent);
     }
-
 }
