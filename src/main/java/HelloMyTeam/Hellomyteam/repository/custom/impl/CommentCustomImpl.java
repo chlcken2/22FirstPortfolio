@@ -2,7 +2,7 @@ package HelloMyTeam.Hellomyteam.repository.custom.impl;
 
 import HelloMyTeam.Hellomyteam.dto.CommentResDto;
 import HelloMyTeam.Hellomyteam.dto.QBoardDetailResDto;
-import HelloMyTeam.Hellomyteam.dto.QCommentResDto;
+import HelloMyTeam.Hellomyteam.entity.Board;
 import HelloMyTeam.Hellomyteam.entity.Comment;
 import HelloMyTeam.Hellomyteam.entity.CommentReply;
 import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
@@ -23,29 +23,12 @@ import static HelloMyTeam.Hellomyteam.entity.QCommentReply.commentReply;
 public class CommentCustomImpl {
     private final JPAQueryFactory queryFactory;
 
-//    public List<Comment> findCommentByBoardId(Long boardId) {
-//        return queryFactory.selectFrom(comment)
-//                .leftJoin(comment.parent)
-//                .fetchJoin()
-//                .where(comment.board.id.eq(boardId))
-//                .orderBy(
-//                        comment.parent.id.asc().nullsFirst(),
-//                        comment.createdDate.asc()
-//                ).fetch();
-//    }
-
-//    public List<CommentResDto> findCommentsByBoardId(Long boardId) {
-//        return queryFactory.select(new QCommentResDto(
-//                        comment.id
-//                        , comment.commentReply
-//                        , comment.content
-//                        , comment.writer
-//                        , comment.createdDate
-//                ))
-//                .from(comment)
-//                .where(comment.board.id.eq(boardId))
-//                .where(comment.commentStatus.eq(BoardAndCommentStatus.NORMAL))
-//                .orderBy(comment.createdDate.asc())
-//                .fetch();
-//    }
+    public List<Comment> findAllByBoard(Board findBoard) {
+        return queryFactory.selectFrom(comment)
+                .leftJoin(comment.parent)
+                .fetchJoin()
+                .where(comment.board.id.eq(findBoard.getId()))
+                .orderBy(comment.parent.id.asc().nullsFirst(), comment.createdDate.asc())
+                .fetch();
+    }
 }

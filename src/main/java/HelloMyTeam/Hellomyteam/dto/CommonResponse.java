@@ -25,6 +25,10 @@ public class CommonResponse<T> {
         return new CommonResponse<>(SUCCESS_STATUS, data, message);
     }
 
+//    public static <T> CommonResponse<T> createFail(T data, String message) {
+//        return new CommonResponse<>(FAIL_STATUS, data, message);
+//    }
+
 //    public static CommonResponse<?> createSuccessWithNoContent() {
 //        return new CommonResponse<>(SUCCESS_STATUS, null, null);
 //    }
