@@ -24,7 +24,7 @@ public class CommentController {
         return commentService.findCommentsByBoard(boardId);
     }
 
-    @ApiOperation(value = "댓글 작성", notes = "teamMemberInfo Id 존재해야한다. *Id로 이름 매핑")
+    @ApiOperation(value = "댓글 작성", notes = "parentId가 null일 경우: 부모, parentId존재: 자식 댓글")
     @PostMapping("/board/{boardId}/comment")
     public CommonResponse<?> writeBoardComment(@PathVariable Long boardId, @RequestBody CommentCreateReqDto commentCreateReqDto) {
         return commentService.createComment(boardId, commentCreateReqDto);
