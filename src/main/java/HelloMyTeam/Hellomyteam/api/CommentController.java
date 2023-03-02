@@ -33,9 +33,8 @@ public class CommentController {
     @ApiOperation(value = "댓글 수정", notes = "teamMemberInfo Id 존재해야한다. *Id로 이름 매핑")
     @PutMapping("/comment/{commentId}")
     public CommonResponse<?> updateBoardComment(@PathVariable Long commentId,
-                                                @RequestBody CommentCreateReqDto commentCreateReqDto) {
-        Comment comment = commentService.updateComment(commentId, commentCreateReqDto);
-        return CommonResponse.createSuccess(comment, "게시판 작성 success");
+                                                @RequestBody CommentUpdateReqDto commentUpdateReqDto) {
+        return commentService.updateComment(commentId, commentUpdateReqDto);
     }
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글 삭제 '관리자 삭제'로 상태 변경")

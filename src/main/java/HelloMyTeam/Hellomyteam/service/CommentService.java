@@ -1,9 +1,6 @@
 package HelloMyTeam.Hellomyteam.service;
 
-import HelloMyTeam.Hellomyteam.dto.CommentCreateResDto;
-import HelloMyTeam.Hellomyteam.dto.CommentCreateReqDto;
-import HelloMyTeam.Hellomyteam.dto.CommentResDto;
-import HelloMyTeam.Hellomyteam.dto.CommonResponse;
+import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.BoardAndCommentStatus;
 import HelloMyTeam.Hellomyteam.repository.BoardRepository;
@@ -109,13 +106,17 @@ public class CommentService {
         return CommonResponse.createSuccess(commentCreateResDto, "댓글 작성 success");
     }
 
-    public Comment updateComment(Long commentId, CommentCreateReqDto commentCreateReqDto) {
+    public CommonResponse<?> updateComment(Long commentId, CommentUpdateReqDto commentUpdateReqDto) {
         Comment findComment = em.find(Comment.class, commentId);
-        if (findComment.getTeamMemberInfo().getId() != commentCreateReqDto.getTeamMemberInfoId()) {
-            return null;
+        if (findComment.getTeamMemberInfo().getId() != commentUpdateReqDto.getTeamMemberInfoId()) {
+            return CommonResponse.createError("수정 권한이 없습니다.");
         }
-        findComment.setContent(commentCreateReqDto.getContent());
-        return findComment;
+        if (findComment.getCommentStatus().equals(BoardAndCommentStatus.DELETE_USER)) {
+            return CommonResponse.createError("삭제된 댓글은 수정할 수 없습니다.");
+        }
+
+        findComment.setContent(commentUpdateReqDto.getContent());
+        return CommonResponse.createSuccess("수정되었습니다.");
     }
 
     public void deleteComment(Long commentId) {
