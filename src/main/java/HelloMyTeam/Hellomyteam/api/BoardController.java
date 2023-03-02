@@ -2,9 +2,9 @@ package HelloMyTeam.Hellomyteam.api;
 
 import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.Board;
-import HelloMyTeam.Hellomyteam.entity.BoardCategory;
 import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.BoardService;
+import HelloMyTeam.Hellomyteam.service.LikeService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class BoardController {
      */
 
     private final BoardService boardService;
-
+    private final LikeService likeService;
     //TODO 검색 정렬 조건 추가 필
 //    @ApiOperation(value = "게시판 목록 조회", notes = "teamId로 팀 별 게시판을 조회한다. baseUrl/?page={page}&size={size}&sort={sort},DESC")
 //    @GetMapping("/team/{teamId}/boards")
@@ -76,5 +76,13 @@ public class BoardController {
     public CommonResponse<?> deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
         return CommonResponse.createSuccess("보드 삭제 success");
+    }
+
+    @ApiOperation(value = "게시판 좋아요/취소", notes = "좋아요 클릭시 true 리턴, 이후 클릭시 좋아요 해제하고 false리턴")
+    @PostMapping("/board/like/{boardId}/")
+    public CommonResponse<?> isLikeBoard(@PathVariable Long boardId,
+                                          @RequestBody LikeReqDto likeReqDto) {
+        Boolean bool = likeService.checkLikeBoard(likeReqDto.getTeamMemberInfoId(), boardId);
+        return CommonResponse.createSuccess(bool, "좋아요 true/false");
     }
 }

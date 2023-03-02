@@ -72,9 +72,6 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @OneToMany(mappedBy = "teamMemberInfo")
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "teamMemberInfo")
-    private List<CommentReply> commentReplies = new ArrayList<>();
-
     @OneToMany(mappedBy = "teamMemberInfo", cascade = CascadeType.ALL)
     Set<Like> likes = new HashSet<>();
 

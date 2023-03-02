@@ -122,4 +122,14 @@ public class BoardService {
         LocalDateTime tommorow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
         return (int) now.until(tommorow, ChronoUnit.SECONDS);
     }
+
+    public Board getBoardById(Long boardId) {
+        Board board = boardRepository.getBoardById(boardId);
+        return board;
+    }
+
+//    public Board getBoard(Long id) {
+//        Board board = boardRepository.findById(id).get();
+//        return board;
+//    }
 }

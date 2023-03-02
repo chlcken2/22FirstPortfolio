@@ -1,6 +1,7 @@
 package HelloMyTeam.Hellomyteam.repository.custom.impl;
 
 import HelloMyTeam.Hellomyteam.entity.Board;
+import HelloMyTeam.Hellomyteam.entity.Comment;
 import HelloMyTeam.Hellomyteam.entity.Like;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,10 +17,17 @@ public class LikeCustomImpl {
 
     private final JPAQueryFactory queryFactory;
 
-    public Like existsLikeByIds(TeamMemberInfo teamMemberInfo, Board board) {
+    public Like existsBoardLikeByIds(TeamMemberInfo teamMemberInfo, Board board) {
         return queryFactory.selectFrom(like)
                 .where(like.teamMemberInfo.eq(teamMemberInfo))
                 .where(like.board.eq(board))
+                .fetchOne();
+    }
+
+    public Like existsCommentLikeByIds(TeamMemberInfo teamMemberInfo, Comment comment) {
+        return queryFactory.selectFrom(like)
+                .where(like.teamMemberInfo.eq(teamMemberInfo))
+                .where(like.comment.eq(comment))
                 .fetchOne();
     }
 }
