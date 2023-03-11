@@ -43,4 +43,6 @@ public class Team extends BaseTimeEntity {
     @OneToOne(mappedBy = "team")
     private Image teamLogo;
 
+    @OneToMany(mappedBy = "team")
+    private List<Board> boards = new ArrayList<>();
 }

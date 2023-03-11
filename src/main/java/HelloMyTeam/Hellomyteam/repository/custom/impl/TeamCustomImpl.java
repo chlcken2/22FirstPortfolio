@@ -158,4 +158,22 @@ public class TeamCustomImpl {
                         .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)))
                 .fetch();
     }
+
+    public List<Long> findTeamMemberInfoIdsByMemberId(Long memberId) {
+        return queryFactory.select(teamMemberInfo.id)
+                .from(teamMemberInfo)
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
+                        .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))
+                        .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)))
+                .fetch();
+    }
+
+    public Team findTeamByTeamMemberInfoId(Long teamMemberInfoId) {
+        return queryFactory.select(team)
+                .from(team, teamMemberInfo)
+                .where(team.id.eq(teamMemberInfo.team.id))
+                .where(teamMemberInfo.id.eq(teamMemberInfoId))
+                .fetchOne();
+    }
 }

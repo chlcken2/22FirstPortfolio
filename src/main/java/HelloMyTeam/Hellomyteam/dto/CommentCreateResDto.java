@@ -15,4 +15,5 @@ public class CommentCreateResDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private Long parentId;
+    private Integer likeCount;
 }
