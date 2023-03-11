@@ -27,6 +27,12 @@ public class TeamController {
     private final TeamService teamService;
     private final MemberService memberService;
 
+    @ApiOperation(value = "teamMemberInfo_id 가져오기", notes = "teamId와 memberId를 통해 팀 회원 id를 가져온다.")
+    @GetMapping("/teamMemberInfoId")
+    public CommonResponse<?> getTeamMemberInfoId(@RequestParam Long teamId, @RequestParam Long memberId) {
+        return teamService.getTeamMemberInfoId(teamId, memberId);
+    }
+
     @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
     @GetMapping("/{teamId}")
     public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {

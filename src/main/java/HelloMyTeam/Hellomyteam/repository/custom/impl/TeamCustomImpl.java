@@ -159,13 +159,17 @@ public class TeamCustomImpl {
                 .fetch();
     }
 
-    public List<Long> findTeamMemberInfoIdsByMemberId(Long memberId) {
-        return queryFactory.select(teamMemberInfo.id)
+    public List<TeamNameIdDto> findTeamMemberInfoIdsByMemberId(Long memberId) {
+        return queryFactory.select(new QTeamNameIdDto(
+                team.teamName
+                ,team.id
+                ))
                 .from(teamMemberInfo)
                 .where(teamMemberInfo.member.id.eq(memberId))
                 .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
                         .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))
                         .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)))
+                .orderBy(teamMemberInfo.createdDate.asc())
                 .fetch();
     }
 
@@ -175,5 +179,14 @@ public class TeamCustomImpl {
                 .where(team.id.eq(teamMemberInfo.team.id))
                 .where(teamMemberInfo.id.eq(teamMemberInfoId))
                 .fetchOne();
+    }
+
+    public Long getTeamMemberInfoIdByIds(Long teamId, Long memberId) {
+        return queryFactory.select(teamMemberInfo.id)
+                .from(teamMemberInfo)
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.member.id.eq(memberId))
+                .fetchOne();
+
     }
 }

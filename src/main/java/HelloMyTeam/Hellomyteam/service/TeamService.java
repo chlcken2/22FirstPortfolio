@@ -6,6 +6,7 @@ import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.ConditionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
+import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.FileUploadCustomImpl;
@@ -14,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Slf4j
@@ -36,6 +37,7 @@ public class TeamService {
     private final FileUploadRepository fileUploadRepository;
     private final FileUploadCustomImpl fileUploadCustomImpl;
     private final S3Uploader s3Uploader;
+    private final MemberRepository memberRepository;
 
     public Team createTeamWithAuthNo(TeamDto teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -211,5 +213,29 @@ public class TeamService {
     public List<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId) {
         List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId);
         return teamMemberInfosResDtos;
+    }
+
+    public CommonResponse<?> getTeamMemberInfoId(Long teamId, Long memberId) {
+
+        Optional<Team> team = teamRepository.findById(teamId);
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        if (!team.isPresent()) {
+            return CommonResponse.createError("가입한 팀이 없습니다. teamId를 확인해주세요.");
+        }
+
+        if (!member.isPresent()) {
+            return CommonResponse.createError("가입한 회원이 아닙니다. memberId를 확인해주세요.");
+        }
+
+        boolean checkResult = teamMemberInfoRepository.existsByTeamIdAndMemberId(teamId, memberId);
+
+        if (!checkResult) {
+            return CommonResponse.createError("팀에 가입한 회원이 아닙니다. teamId와 memberId를 확인해주세요.");
+        }
+
+        Long teamMemberInfoId = teamCustomImpl.getTeamMemberInfoIdByIds(teamId, memberId);
+
+        return CommonResponse.createSuccess(teamMemberInfoId, "teamMemberInfo_Id 값 success");
     }
 }
