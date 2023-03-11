@@ -49,6 +49,10 @@ public class BoardService {
                 .contents(boardWriteDto.getContents())
                 .boardStatus(BoardAndCommentStatus.NORMAL)
                 .teamMemberInfo(findTeamMemberInfo)
+                .team(findTeamMemberInfo.getTeam())
+                .viewCount(0)
+                .commentCount(0)
+                .likeCount(0)
                 .build();
         return boardRepository.save(board);
     }

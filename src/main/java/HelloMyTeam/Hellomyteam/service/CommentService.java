@@ -51,8 +51,14 @@ public class CommentService {
     }
 
     public CommonResponse<?> createComment(Long boardId, CommentCreateReqDto commentCreateReqDto) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("boardId가 누락되었습니다."));
+        if (boardId == null) {
+            return CommonResponse.createError("boardId가 누락되었습니다.");
+        }
+
+        Board board = em.find(Board.class, boardId);
+//        Board board = boardRepository.findById(boardId)
+//                .orElseThrow(() -> new IllegalArgumentException("boardId가 누락되었습니다."));
+        log.info("@@boarD:" + board);
         if (board == null) {
             return CommonResponse.createError("존재하지 않는 게시글입니다.");
         }
@@ -77,6 +83,7 @@ public class CommentService {
                 .writer(teamMemberInfo.getMember().getName())
                 .commentStatus(BoardAndCommentStatus.NORMAL)
                 .content(commentCreateReqDto.getContent())
+                .likeCount(0)
                 .build();
 
         if (null != parent) {
@@ -90,6 +97,7 @@ public class CommentService {
                     .commentId(comment.getId())
                     .writer(comment.getWriter())
                     .content(comment.getContent())
+                    .likeCount(comment.getLikeCount())
                     .createdDate(comment.getCreatedDate())
                     .modifiedDate(comment.getModifiedDate())
                     .parentId(comment.getParent().getId())
@@ -99,10 +107,13 @@ public class CommentService {
                     .commentId(comment.getId())
                     .writer(comment.getWriter())
                     .content(comment.getContent())
+                    .likeCount(comment.getLikeCount())
                     .createdDate(comment.getCreatedDate())
                     .modifiedDate(comment.getModifiedDate())
                     .build();
         }
+
+        board.setCommentCount(board.getCommentCount() +1);
         return CommonResponse.createSuccess(commentCreateResDto, "댓글 작성 success");
     }
 

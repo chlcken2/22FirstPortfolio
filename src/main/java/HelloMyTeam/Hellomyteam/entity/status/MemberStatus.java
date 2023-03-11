@@ -7,11 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MemberStatus  {
     NORMAL("정상"),
-    PAUSE("중지"),
     WITHDRAW("탈퇴"),
     WARNING("경고"),
-    EXIT("강퇴"),
-    Illegal("불법");
+    EXIT("강퇴");
 
     private final String value;
 

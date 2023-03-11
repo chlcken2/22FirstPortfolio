@@ -62,8 +62,13 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "teamMemberInfo_id")
     private TeamMemberInfo teamMemberInfo;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
+
     @Builder
-    public Board(Long id, BoardCategory boardCategory, String writer, String title, String contents, BoardAndCommentStatus boardStatus, int viewCount, List<Comment> comments, TeamMemberInfo teamMemberInfo) {
+    public Board(Long id, BoardCategory boardCategory, String writer, String title, String contents, BoardAndCommentStatus boardStatus, Integer viewCount, Integer commentCount, Integer likeCount, Set<Like> likes, List<Comment> comments, TeamMemberInfo teamMemberInfo, Team team) {
         this.id = id;
         this.boardCategory = boardCategory;
         this.writer = writer;
@@ -71,8 +76,12 @@ public class Board extends BaseTimeEntity {
         this.contents = contents;
         this.boardStatus = boardStatus;
         this.viewCount = viewCount;
+        this.commentCount = commentCount;
+        this.likeCount = likeCount;
+        this.likes = likes;
         this.comments = comments;
         this.teamMemberInfo = teamMemberInfo;
+        this.team = team;
     }
 }
 
