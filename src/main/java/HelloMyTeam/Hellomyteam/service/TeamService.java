@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
@@ -210,15 +209,22 @@ public class TeamService {
         return result;
     }
 
-    public List<ApplicantDto> findAppliedTeamMember(Long teamId) {
-        List<ApplicantDto> applicantDto = teamCustomImpl.getApplyTeamMember(teamId);
-        return applicantDto;
+    public CommonResponse<?> findAppliedTeamMember(Long teamMemberInfoId, Long teamId) {
+        Optional<TeamMemberInfo> findTeamMemberInfo = teamMemberInfoRepository.findById(teamMemberInfoId);
+        AuthorityStatus teamMemberStatus = findTeamMemberInfo.get().getAuthority();
+        Long findTeamId = findTeamMemberInfo.get().getTeam().getId();
+
+        if (findTeamId != teamId) {
+            return CommonResponse.createSuccess(teamId, "가입한 팀이 아닙니다.");
+        }
+
+        if (teamMemberStatus.equals(AuthorityStatus.LEADER)) {
+            List<ApplicantDto> applicantDto = teamCustomImpl.getApplyTeamMember(teamId);
+            return CommonResponse.createSuccess(applicantDto, "리더의 경우 보여지는 팀 가입 신청 데이터입니다.");
+        }
+        return CommonResponse.createSuccess("데이터가 없습니다.");
     }
 
-//    public Page<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId, int pageNum) {
-//        Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId, pageable);
-//        return teamMemberInfosResDtos;
-//    }
     public Page<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId, int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("created_date").descending());
         Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId, pageable);
@@ -226,7 +232,6 @@ public class TeamService {
     }
 
     public CommonResponse<?> getTeamMemberInfoId(Long teamId, Long memberId) {
-
         Optional<Team> team = teamRepository.findById(teamId);
         Optional<Member> member = memberRepository.findById(memberId);
 
