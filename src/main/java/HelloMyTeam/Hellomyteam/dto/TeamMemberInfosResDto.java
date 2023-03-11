@@ -6,9 +6,13 @@ import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalPositionStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.PersonalStyleStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.SpecialBadgeStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -43,8 +47,13 @@ public class TeamMemberInfosResDto {
 
     private String imageUrl;
 
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDateTime joinDate;
+
     @QueryProjection
-    public TeamMemberInfosResDto(Long teamMemberInfoId, AuthorityStatus authorityStatus, PersonalPositionStatus preferPosition, PersonalStyleStatus preferStyle, SpecialBadgeStatus specialTitleStatus, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String address, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String memberName, String birthday, String imageUrl) {
+    public TeamMemberInfosResDto(Long teamMemberInfoId, AuthorityStatus authorityStatus, PersonalPositionStatus preferPosition, PersonalStyleStatus preferStyle, SpecialBadgeStatus specialTitleStatus, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String address, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String memberName, String birthday, String imageUrl, LocalDateTime joinDate) {
         this.teamMemberInfoId = teamMemberInfoId;
         this.authorityStatus = authorityStatus;
         this.preferPosition = preferPosition;
@@ -60,5 +69,6 @@ public class TeamMemberInfosResDto {
         this.memberName = memberName;
         this.birthday = birthday;
         this.imageUrl = imageUrl;
+        this.joinDate = joinDate;
     }
 }

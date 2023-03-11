@@ -3,10 +3,15 @@ package HelloMyTeam.Hellomyteam.repository.custom.impl;
 import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
+import HelloMyTeam.Hellomyteam.repository.custom.TeamJpaRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import java.util.Date;
@@ -19,7 +24,7 @@ import static HelloMyTeam.Hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class TeamCustomImpl {
+public class TeamCustomImpl implements TeamJpaRepository {
 
     private final JPAQueryFactory queryFactory;
 
@@ -131,23 +136,25 @@ public class TeamCustomImpl {
                 .fetch();
     }
 
-    public List<TeamMemberInfosResDto> getTeamMemberInfoById(Long teamId) {
-        return queryFactory.select(new QTeamMemberInfosResDto(
-                teamMemberInfo.id
-                ,teamMemberInfo.authority
-                ,teamMemberInfo.preferPosition
-                ,teamMemberInfo.preferStyle
-                ,teamMemberInfo.specialTitleStatus
-                ,teamMemberInfo.conditionStatus
-                ,teamMemberInfo.backNumber
-                ,teamMemberInfo.memberOneIntro
-                ,teamMemberInfo.address
-                ,teamMemberInfo.leftRightFoot
-                ,teamMemberInfo.conditionIndicator
-                ,teamMemberInfo.drinkingCapacity
-                ,member.name
-                ,member.birthday
-                ,image.imageUrl
+    @Override
+    public Page<TeamMemberInfosResDto> getTeamMemberInfoById(Long teamId, Pageable pageable) {
+        List<TeamMemberInfosResDto> content =  queryFactory.select(new QTeamMemberInfosResDto(
+                        teamMemberInfo.id
+                        ,teamMemberInfo.authority
+                        ,teamMemberInfo.preferPosition
+                        ,teamMemberInfo.preferStyle
+                        ,teamMemberInfo.specialTitleStatus
+                        ,teamMemberInfo.conditionStatus
+                        ,teamMemberInfo.backNumber
+                        ,teamMemberInfo.memberOneIntro
+                        ,teamMemberInfo.address
+                        ,teamMemberInfo.leftRightFoot
+                        ,teamMemberInfo.conditionIndicator
+                        ,teamMemberInfo.drinkingCapacity
+                        ,member.name
+                        ,member.birthday
+                        ,image.imageUrl
+                        ,teamMemberInfo.modifiedDate
                 ))
                 .from(teamMemberInfo)
                 .leftJoin(teamMemberInfo.image, image)
@@ -156,8 +163,48 @@ public class TeamCustomImpl {
                 .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
                         .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))
                         .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(teamMemberInfo.count())
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.member, member)
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
+                        .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))
+                        .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)));
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
+//    public List<TeamMemberInfosResDto> getTeamMemberInfoById(Long teamId) {
+//        return queryFactory.select(new QTeamMemberInfosResDto(
+//                teamMemberInfo.id
+//                ,teamMemberInfo.authority
+//                ,teamMemberInfo.preferPosition
+//                ,teamMemberInfo.preferStyle
+//                ,teamMemberInfo.specialTitleStatus
+//                ,teamMemberInfo.conditionStatus
+//                ,teamMemberInfo.backNumber
+//                ,teamMemberInfo.memberOneIntro
+//                ,teamMemberInfo.address
+//                ,teamMemberInfo.leftRightFoot
+//                ,teamMemberInfo.conditionIndicator
+//                ,teamMemberInfo.drinkingCapacity
+//                ,member.name
+//                ,member.birthday
+//                ,image.imageUrl
+//                ))
+//                .from(teamMemberInfo)
+//                .leftJoin(teamMemberInfo.image, image)
+//                .join(teamMemberInfo.member, member)
+//                .where(teamMemberInfo.team.id.eq(teamId))
+//                .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
+//                        .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))
+//                        .or(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER)))
+//                .fetch();
+//    }
 
     public List<TeamNameIdDto> findTeamMemberInfoIdsByMemberId(Long memberId) {
         return queryFactory.select(new QTeamNameIdDto(
@@ -189,4 +236,6 @@ public class TeamCustomImpl {
                 .fetchOne();
 
     }
+
+
 }

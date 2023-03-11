@@ -13,6 +13,11 @@ import HelloMyTeam.Hellomyteam.repository.custom.impl.FileUploadCustomImpl;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
@@ -210,8 +215,13 @@ public class TeamService {
         return applicantDto;
     }
 
-    public List<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId) {
-        List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId);
+//    public Page<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId, int pageNum) {
+//        Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId, pageable);
+//        return teamMemberInfosResDtos;
+//    }
+    public Page<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("created_date").descending());
+        Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId, pageable);
         return teamMemberInfosResDtos;
     }
 

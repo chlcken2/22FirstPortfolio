@@ -8,12 +8,17 @@ import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.MemberService;
 import HelloMyTeam.Hellomyteam.service.TeamService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -129,10 +134,14 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀원 리스트 정보 가져오기", notes = "team_id를 통한 팀원 리스트 가져오기")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "pageSize", value = "들고올 데이터 수(API 사용시 메인홈과 팀원 페이지에 적절한 숫자 넣기", required = true, dataType = "string", paramType = "query", defaultValue = "10"),
+    })
     @GetMapping(value = "/{teamId}/members")
-    public CommonResponse<?> getTeamMemberInfos(@PathVariable Long teamId) {
-        List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamService.getTeamMemberInfos(teamId);
-        return CommonResponse.createSuccess(teamMemberInfosResDtos, "팀원 정보 가져오기 success");
+    public CommonResponse<?> getTeamMemberInfos(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam int pageSize) {
+        Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamService.getTeamMemberInfos(teamId, pageNum, pageSize);
+        return CommonResponse.createSuccess(teamMemberInfosResDtos, "팀원 리스트 정보 가져오기 success");
     }
 
     @ApiOperation(value = "팀원 상세 정보 가져오기")
