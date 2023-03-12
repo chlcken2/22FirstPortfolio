@@ -4,6 +4,7 @@ import HelloMyTeam.Hellomyteam.config.S3Uploader;
 import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.ConditionStatus;
+import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,19 +102,26 @@ public class TeamService {
         return teamMemberInfo;
     }
 
-    public int acceptTeamMemberById(Long teamId, MemberIdDto memberIdDto) {
-        //수락 전 auth 상태 체크
-        Integer result = teamMemberInfoRepository.checkAuthWait(memberIdDto.getMemberId(), teamId);
-        if (result == 0 || result == null) {
-            log.info("@result: " + result);
-            return 0;
+    public CommonResponse<?> acceptTeamMemberById(Long teamId, Long memberId) {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        MemberStatus memberStatus = findMember.get().getMemberStatus();
+        if (!memberStatus.equals(MemberStatus.NORMAL)) {
+            return CommonResponse.createError(memberStatus, "정상 회원이 아닙니다.");
         }
 
-        teamMemberInfoRepository.updateTeamMemberAuthById(memberIdDto.getMemberId(), teamId);
+        TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findByTeamIdAndMemberId(teamId, memberId);
+        if (!findTeamMemberInfo.getAuthority().equals(AuthorityStatus.WAIT)) {
+            return CommonResponse.createError(findTeamMemberInfo.getAuthority(), "현재 teamMember이므로 가입 신청자가 아닙니다.");
+        }
 
-        int countMember = teamMemberInfoRepository.getMemberCountByTeamId(teamId);
-        teamMemberInfoRepository.updateTeamCount(teamId, countMember);
-        return result;
+        TeamMemberInfo beforeTeamMemberInfo = em.find(TeamMemberInfo.class, findTeamMemberInfo.getId());
+        beforeTeamMemberInfo.setAuthority(AuthorityStatus.TEAM_MEMBER);
+        beforeTeamMemberInfo.setJoinDate(LocalDateTime.now());
+
+        Team beforeTeam = em.find(Team.class, teamId);
+        beforeTeam.setMemberCount(beforeTeam.getMemberCount() + 1);
+
+        return CommonResponse.createSuccess(beforeTeamMemberInfo.getAuthority(), "팀원으로 반영되었습니다.");
     }
 
     public Team findTeamByTeamMemberId(TeamMemberIdDto teamMemberIdParam) {

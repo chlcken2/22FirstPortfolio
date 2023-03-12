@@ -1,13 +1,10 @@
 package HelloMyTeam.Hellomyteam.repository;
 
-import HelloMyTeam.Hellomyteam.entity.Team;
 import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, Long> {
@@ -53,4 +50,5 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
 
     boolean existsByTeamIdAndMemberId(Long teamId, Long memberId);
 
+    TeamMemberInfo findByTeamIdAndMemberId(Long teamId, Long memberId);
 }

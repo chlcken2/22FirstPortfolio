@@ -51,6 +51,9 @@ public class CommonResponse<T> {
     public static CommonResponse<?> createError(String message) {
         return new CommonResponse<>(ERROR_STATUS, null, message);
     }
+    public static <T> CommonResponse<T> createError(T data, String message) {
+        return new CommonResponse<>(ERROR_STATUS, data, message);
+    }
 
     private CommonResponse(String status, T data, String message) {
         this.status = status;
