@@ -111,7 +111,7 @@ public class TeamService {
 
         TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findByTeamIdAndMemberId(teamId, memberId);
         if (!findTeamMemberInfo.getAuthority().equals(AuthorityStatus.WAIT)) {
-            return CommonResponse.createError(findTeamMemberInfo.getAuthority(), "현재 teamMember이므로 가입 신청자가 아닙니다.");
+            return CommonResponse.createError(findTeamMemberInfo.getAuthority(), "현재 소속팀의 팀원이므로, 가입 신청자가 아닙니다.");
         }
 
         TeamMemberInfo beforeTeamMemberInfo = em.find(TeamMemberInfo.class, findTeamMemberInfo.getId());

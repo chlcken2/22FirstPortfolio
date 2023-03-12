@@ -14,11 +14,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -83,16 +81,9 @@ public class TeamController {
         return teamService.findAppliedTeamMember(teamMemberInfoId, teamId);
     }
 
-    //TODO: 팀원수락시 joinDate생성하기,
     @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
     @PostMapping("/{teamId}/member/accept")
     public CommonResponse<?> acceptTeamMember(@PathVariable Long teamId, @RequestBody Long memberId) {
-//        int changeNo = teamService.acceptTeamMemberById(teamId, memberId);
-//
-//        String stringResult = Integer.toString(changeNo);
-//        String template = "총 %s 명이 반영되었습니다.";
-//        String message = String.format(template, stringResult);
-//        return CommonResponse.createSuccess(true, message);
         return teamService.acceptTeamMemberById(teamId, memberId);
     }
 
