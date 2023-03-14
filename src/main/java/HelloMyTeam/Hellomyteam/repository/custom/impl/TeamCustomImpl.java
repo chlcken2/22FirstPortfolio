@@ -41,7 +41,8 @@ public class TeamCustomImpl implements TeamJpaRepository {
 
          return queryFactory
                 .select(new QTeamSearchDto(
-                        team.teamName
+                        team.id
+                        , team.teamName
                         , team.oneIntro
                         , team.teamSerialNo
                         , member.name

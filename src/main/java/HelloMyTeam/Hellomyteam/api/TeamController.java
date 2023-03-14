@@ -36,12 +36,12 @@ public class TeamController {
         return teamService.getTeamMemberInfoId(teamId, memberId);
     }
 
-    @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
-    @GetMapping("/{teamId}")
-    public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {
-        Team team = teamService.findTeamById(teamId);
-        return CommonResponse.createSuccess(team, "team 정보 전달");
-    }
+//    @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
+//    @GetMapping("/{teamId}")
+//    public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {
+//        Team team = teamService.findTeamById(teamId);
+//        return CommonResponse.createSuccess(team, "team 정보 전달");
+//    }
 
     @ApiOperation(value = "팀 생성", notes = "팀 생성: 회원테이블에 member_id가 존재해야한다.")
     @PostMapping("/create")
@@ -52,7 +52,7 @@ public class TeamController {
         return CommonResponse.createSuccess(team);
     }
 
-    @ApiOperation(value = "팀 찾기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
+    @ApiOperation(value = "(팀 찾기)팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @GetMapping("/find")
     public CommonResponse<?> findTeam (@RequestParam(value = "teamName", required = false) String teamName,
                                        @RequestParam(value = "teamSerialNo", required = false) Integer teamSerialNo) {
@@ -65,7 +65,7 @@ public class TeamController {
     }
 
 
-    @ApiOperation(value = "팀 가입신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
+    @ApiOperation(value = "(팀 찾기)팀 가입 신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
     @PostMapping("/join")
     public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Member member = memberService.findMemberByTeamMemberId(teamMemberIdParam);
@@ -75,19 +75,19 @@ public class TeamController {
     }
 
     //TODO: (알림)팀원 가입 신정자 정보 가져오기,teamMemberInfoId전달해줘서 팀장일 경우 조회가능하게.
-    @ApiOperation(value = "알림 페이지 데이터 가져오기", notes = "알림페이지에 띄어질 정보, 가입 수락 전 권한 = WAIT")
+    @ApiOperation(value = "(알림) 알림 페이지 팀 가입 신청자 데이터 가져오기", notes = "알림페이지에 띄어질 정보/ teamMemberInfoId= 회원 번호, teamId = 현재 팀")
     @GetMapping("/{teamId}/join")
     public CommonResponse<?> getApplicant(@RequestParam Long teamMemberInfoId, @PathVariable Long teamId) {
         return teamService.findAppliedTeamMember(teamMemberInfoId, teamId);
     }
 
-    @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
+    @ApiOperation(value = "(알림)팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
     @PostMapping("/{teamId}/member/accept")
     public CommonResponse<?> acceptTeamMember(@PathVariable Long teamId, @RequestBody Long memberId) {
         return teamService.acceptTeamMemberById(teamId, memberId);
     }
 
-    @ApiOperation(value = "팀원 수락 거절")
+    @ApiOperation(value = "(알림)팀원 수락 거절")
     @PostMapping(value = "/{teamId}/member/reject")
     public CommonResponse<?> rejectMember(@PathVariable Long teamId, @RequestBody MemberIdDto memberIdParam) {
         Long count = teamService.deleteMemberByMemberId(teamId, memberIdParam);

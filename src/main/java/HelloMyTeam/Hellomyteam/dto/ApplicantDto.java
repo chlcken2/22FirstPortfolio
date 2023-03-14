@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 public class ApplicantDto {
     private String name;
-    private Long userId;
+    private Long memberId;
 
     @QueryProjection
-    public ApplicantDto(String name, Long userId) {
+    public ApplicantDto(String name, Long memberId) {
         this.name = name;
-        this.userId = userId;
+        this.memberId = memberId;
     }
 }
