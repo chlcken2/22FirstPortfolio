@@ -4,23 +4,30 @@ import HelloMyTeam.Hellomyteam.config.S3Uploader;
 import HelloMyTeam.Hellomyteam.dto.*;
 import HelloMyTeam.Hellomyteam.entity.*;
 import HelloMyTeam.Hellomyteam.entity.status.ConditionStatus;
+import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
 import HelloMyTeam.Hellomyteam.entity.status.team.AuthorityStatus;
 import HelloMyTeam.Hellomyteam.repository.FileUploadRepository;
+import HelloMyTeam.Hellomyteam.repository.MemberRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamMemberInfoRepository;
 import HelloMyTeam.Hellomyteam.repository.TeamRepository;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.FileUploadCustomImpl;
 import HelloMyTeam.Hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Slf4j
@@ -36,6 +43,7 @@ public class TeamService {
     private final FileUploadRepository fileUploadRepository;
     private final FileUploadCustomImpl fileUploadCustomImpl;
     private final S3Uploader s3Uploader;
+    private final MemberRepository memberRepository;
 
     public Team createTeamWithAuthNo(TeamDto teamInfo) {
         int authNo = (int)(Math.random() * (9999 - 1000 + 1)) + 1000;
@@ -94,19 +102,26 @@ public class TeamService {
         return teamMemberInfo;
     }
 
-    public int acceptTeamMemberById(Long teamId, MemberIdDto memberIdDto) {
-        //수락 전 auth 상태 체크
-        Integer result = teamMemberInfoRepository.checkAuthWait(memberIdDto.getMemberId(), teamId);
-        if (result == 0 || result == null) {
-            log.info("@result: " + result);
-            return 0;
+    public CommonResponse<?> acceptTeamMemberById(Long teamId, Long memberId) {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        MemberStatus memberStatus = findMember.get().getMemberStatus();
+        if (!memberStatus.equals(MemberStatus.NORMAL)) {
+            return CommonResponse.createError(memberStatus, "정상 회원이 아닙니다.");
         }
 
-        teamMemberInfoRepository.updateTeamMemberAuthById(memberIdDto.getMemberId(), teamId);
+        TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findByTeamIdAndMemberId(teamId, memberId);
+        if (!findTeamMemberInfo.getAuthority().equals(AuthorityStatus.WAIT)) {
+            return CommonResponse.createError(findTeamMemberInfo.getAuthority(), "현재 소속팀의 팀원이므로, 가입 신청자가 아닙니다.");
+        }
 
-        int countMember = teamMemberInfoRepository.getMemberCountByTeamId(teamId);
-        teamMemberInfoRepository.updateTeamCount(teamId, countMember);
-        return result;
+        TeamMemberInfo beforeTeamMemberInfo = em.find(TeamMemberInfo.class, findTeamMemberInfo.getId());
+        beforeTeamMemberInfo.setAuthority(AuthorityStatus.TEAM_MEMBER);
+        beforeTeamMemberInfo.setJoinDate(LocalDateTime.now());
+
+        Team beforeTeam = em.find(Team.class, teamId);
+        beforeTeam.setMemberCount(beforeTeam.getMemberCount() + 1);
+
+        return CommonResponse.createSuccess(beforeTeamMemberInfo.getAuthority(), "팀원으로 반영되었습니다.");
     }
 
     public Team findTeamByTeamMemberId(TeamMemberIdDto teamMemberIdParam) {
@@ -203,13 +218,48 @@ public class TeamService {
         return result;
     }
 
-    public List<ApplicantDto> findAppliedTeamMember(Long teamId) {
-        List<ApplicantDto> applicantDto = teamCustomImpl.getApplyTeamMember(teamId);
-        return applicantDto;
+    public CommonResponse<?> findAppliedTeamMember(Long teamMemberInfoId, Long teamId) {
+        Optional<TeamMemberInfo> findTeamMemberInfo = teamMemberInfoRepository.findById(teamMemberInfoId);
+        AuthorityStatus teamMemberStatus = findTeamMemberInfo.get().getAuthority();
+        Long findTeamId = findTeamMemberInfo.get().getTeam().getId();
+
+        if (findTeamId != teamId) {
+            return CommonResponse.createSuccess(teamId, "가입한 팀이 아닙니다.");
+        }
+
+        if (teamMemberStatus.equals(AuthorityStatus.LEADER)) {
+            List<ApplicantDto> applicantDto = teamCustomImpl.getApplyTeamMember(teamId);
+            return CommonResponse.createSuccess(applicantDto, "리더의 경우 보여지는 팀 가입 신청 데이터입니다.");
+        }
+        return CommonResponse.createSuccess("데이터가 없습니다.");
     }
 
-    public List<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId) {
-        List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId);
+    public Page<TeamMemberInfosResDto> getTeamMemberInfos(Long teamId, int pageNum, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("created_date").descending());
+        Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId, pageable);
         return teamMemberInfosResDtos;
+    }
+
+    public CommonResponse<?> getTeamMemberInfoId(Long teamId, Long memberId) {
+        Optional<Team> team = teamRepository.findById(teamId);
+        Optional<Member> member = memberRepository.findById(memberId);
+
+        if (!team.isPresent()) {
+            return CommonResponse.createError("가입한 팀이 없습니다. teamId를 확인해주세요.");
+        }
+
+        if (!member.isPresent()) {
+            return CommonResponse.createError("가입한 회원이 아닙니다. memberId를 확인해주세요.");
+        }
+
+        boolean checkResult = teamMemberInfoRepository.existsByTeamIdAndMemberId(teamId, memberId);
+
+        if (!checkResult) {
+            return CommonResponse.createError("팀에 가입한 회원이 아닙니다. teamId와 memberId를 확인해주세요.");
+        }
+
+        Long teamMemberInfoId = teamCustomImpl.getTeamMemberInfoIdByIds(teamId, memberId);
+
+        return CommonResponse.createSuccess(teamMemberInfoId, "teamMemberInfo_Id 값 success");
     }
 }

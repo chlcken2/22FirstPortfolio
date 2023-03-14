@@ -17,18 +17,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -104,32 +103,29 @@ public class AuthController {
             , @ApiResponse(code=499, message="JWT 토큰 형식 오류")
             , @ApiResponse(code=490, message="refresh Token 같지 않음 > 로그인 재요청")
     })
-    @PostMapping("/refresh")
-    public CommonResponse<?> readCookie(@RequestBody MemberRequest memberRequest, HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping("/refresh")
+    public CommonResponse<?> readCookie(HttpServletRequest request, HttpServletResponse response) {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
         if (StringUtils.hasText(authorizationHeader)) {
             authorizationHeader = authorizationHeader.substring(7);
         }
 
-        Member member = memberRepository.findByEmail(memberRequest.getEmail());
-        if (StringUtils.hasText(member.getEmail())) {
-            if (member.getRefreshToken().equals(authorizationHeader)) {
-
-                switch (response.getStatus()) {
-                    case 200: {
-                        Token token = tokenProvider.generateToken(memberRequest.getEmail(), "ROLE_USER");
-                        member.setRefreshToken(token.getRefreshToken());
-                        memberRepository.save(member);
-                        return CommonResponse.createSuccess(token);
-                    }
-                    case 496: return CommonResponse.createError(new JwtTokenException("MalformedJwtException").getMessage());
-                    case 497: return CommonResponse.createError(new JwtTokenException("UnsupportedJwtException").getMessage());
-                    case 498: return CommonResponse.createError(new JwtTokenException("ExpiredJwtException").getMessage());
-                    case 499: return CommonResponse.createError(new JwtTokenException("Exception").getMessage());
+        Member member = memberRepository.findByEmail(tokenProvider.getUid(authorizationHeader));
+        if (member.getRefreshToken().equals(authorizationHeader)) {
+            switch (response.getStatus()) {
+                case 200: {
+                    Token token = tokenProvider.generateToken(member.getEmail(), "ROLE_USER");
+                    member.setRefreshToken(token.getRefreshToken());
+                    memberRepository.save(member);
+                    return CommonResponse.createSuccess(token);
                 }
-            } else {
-                response.setStatus(490);
+                case 496: return CommonResponse.createError(new JwtTokenException("MalformedJwtException").getMessage());
+                case 497: return CommonResponse.createError(new JwtTokenException("UnsupportedJwtException").getMessage());
+                case 498: return CommonResponse.createError(new JwtTokenException("ExpiredJwtException").getMessage());
+                case 499: return CommonResponse.createError(new JwtTokenException("Exception").getMessage());
             }
+        } else {
+            response.setStatus(490);
         }
 
         return CommonResponse.createError("refresh Token 같지않음");

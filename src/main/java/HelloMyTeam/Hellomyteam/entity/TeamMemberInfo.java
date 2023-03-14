@@ -8,6 +8,7 @@ import HelloMyTeam.Hellomyteam.entity.status.team.SpecialBadgeStatus;
 import com.sun.istack.NotNull;
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Setter
@@ -54,6 +55,7 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     private Integer drinkingCapacity;
 
+    private LocalDateTime joinDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")

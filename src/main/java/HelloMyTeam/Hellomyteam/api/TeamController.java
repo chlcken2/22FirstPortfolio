@@ -8,9 +8,12 @@ import HelloMyTeam.Hellomyteam.entity.TeamMemberInfo;
 import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.service.MemberService;
 import HelloMyTeam.Hellomyteam.service.TeamService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,12 +30,18 @@ public class TeamController {
     private final TeamService teamService;
     private final MemberService memberService;
 
-    @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
-    @GetMapping("/{teamId}")
-    public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {
-        Team team = teamService.findTeamById(teamId);
-        return CommonResponse.createSuccess(team, "team 정보 전달");
+    @ApiOperation(value = "teamMemberInfo_id 가져오기", notes = "teamId와 memberId를 통해 팀 회원 id를 가져온다.")
+    @GetMapping("/teamMemberInfoId")
+    public CommonResponse<?> getTeamMemberInfoId(@RequestParam Long teamId, @RequestParam Long memberId) {
+        return teamService.getTeamMemberInfoId(teamId, memberId);
     }
+
+//    @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
+//    @GetMapping("/{teamId}")
+//    public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {
+//        Team team = teamService.findTeamById(teamId);
+//        return CommonResponse.createSuccess(team, "team 정보 전달");
+//    }
 
     @ApiOperation(value = "팀 생성", notes = "팀 생성: 회원테이블에 member_id가 존재해야한다.")
     @PostMapping("/create")
@@ -43,7 +52,7 @@ public class TeamController {
         return CommonResponse.createSuccess(team);
     }
 
-    @ApiOperation(value = "팀 찾기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
+    @ApiOperation(value = "(팀 찾기)팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @GetMapping("/find")
     public CommonResponse<?> findTeam (@RequestParam(value = "teamName", required = false) String teamName,
                                        @RequestParam(value = "teamSerialNo", required = false) Integer teamSerialNo) {
@@ -56,7 +65,7 @@ public class TeamController {
     }
 
 
-    @ApiOperation(value = "팀 가입신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
+    @ApiOperation(value = "(팀 찾기)팀 가입 신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
     @PostMapping("/join")
     public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Member member = memberService.findMemberByTeamMemberId(teamMemberIdParam);
@@ -65,25 +74,20 @@ public class TeamController {
         return CommonResponse.createSuccess(result, "null일 경우 중복가입 체크, 리더 본인팀 가입 x");
     }
 
-    @ApiOperation(value = "팀 가입신청자 정보 가져오기", notes = "알림페이지에 띄어질 정보, 가입 수락 전 권한 = WAIT")
+    //TODO: (알림)팀원 가입 신정자 정보 가져오기,teamMemberInfoId전달해줘서 팀장일 경우 조회가능하게.
+    @ApiOperation(value = "(알림) 알림 페이지 팀 가입 신청자 데이터 가져오기", notes = "알림페이지에 띄어질 정보/ teamMemberInfoId= 회원 번호, teamId = 현재 팀")
     @GetMapping("/{teamId}/join")
-    public CommonResponse<?> getApplicant(@PathVariable Long teamId) {
-        List<ApplicantDto> applicantDto = teamService.findAppliedTeamMember(teamId);
-        return CommonResponse.createSuccess(applicantDto, "팀 가입 신청한 회원 정보 가져오기");
+    public CommonResponse<?> getApplicant(@RequestParam Long teamMemberInfoId, @PathVariable Long teamId) {
+        return teamService.findAppliedTeamMember(teamMemberInfoId, teamId);
     }
 
-    @ApiOperation(value = "팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
+    @ApiOperation(value = "(알림)팀원 수락", notes = "팀 가입 신청에 따른 팀원 수락, 가입할 memberId와, 가입할 teamId 입력")
     @PostMapping("/{teamId}/member/accept")
-    public CommonResponse<?> acceptTeamMember(@PathVariable Long teamId, @RequestBody MemberIdDto memberIdDto) {
-        int changeNo = teamService.acceptTeamMemberById(teamId, memberIdDto);
-
-        String stringResult = Integer.toString(changeNo);
-        String template = "총 %s 명이 반영되었습니다.";
-        String message = String.format(template, stringResult);
-        return CommonResponse.createSuccess(true, message);
+    public CommonResponse<?> acceptTeamMember(@PathVariable Long teamId, @RequestBody Long memberId) {
+        return teamService.acceptTeamMemberById(teamId, memberId);
     }
 
-    @ApiOperation(value = "팀원 수락 거절")
+    @ApiOperation(value = "(알림)팀원 수락 거절")
     @PostMapping(value = "/{teamId}/member/reject")
     public CommonResponse<?> rejectMember(@PathVariable Long teamId, @RequestBody MemberIdDto memberIdParam) {
         Long count = teamService.deleteMemberByMemberId(teamId, memberIdParam);
@@ -123,10 +127,14 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀원 리스트 정보 가져오기", notes = "team_id를 통한 팀원 리스트 가져오기")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "pageSize", value = "들고올 데이터 수(API 사용시 메인홈과 팀원 페이지에 적절한 숫자 넣기", required = true, dataType = "string", paramType = "query", defaultValue = "10"),
+    })
     @GetMapping(value = "/{teamId}/members")
-    public CommonResponse<?> getTeamMemberInfos(@PathVariable Long teamId) {
-        List<TeamMemberInfosResDto> teamMemberInfosResDtos = teamService.getTeamMemberInfos(teamId);
-        return CommonResponse.createSuccess(teamMemberInfosResDtos, "팀원 정보 가져오기 success");
+    public CommonResponse<?> getTeamMemberInfos(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam int pageSize) {
+        Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamService.getTeamMemberInfos(teamId, pageNum, pageSize);
+        return CommonResponse.createSuccess(teamMemberInfosResDtos, "팀원 리스트 정보 가져오기 success");
     }
 
     @ApiOperation(value = "팀원 상세 정보 가져오기")
