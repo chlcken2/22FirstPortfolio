@@ -1,5 +1,6 @@
 package hellomyteam.hellomyteam.api;
 
+import com.nimbusds.oauth2.sdk.ErrorResponse;
 import hellomyteam.hellomyteam.dto.*;
 import hellomyteam.hellomyteam.entity.Image;
 import hellomyteam.hellomyteam.entity.Member;
@@ -8,9 +9,7 @@ import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.dto.CommonResponse;
 import hellomyteam.hellomyteam.service.MemberService;
 import hellomyteam.hellomyteam.service.TeamService;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,21 +36,25 @@ public class TeamController {
         return teamService.getTeamMemberInfoId(teamId, memberId);
     }
 
-//    @ApiOperation(value = "팀 정보 가져오기", notes = "팀 엔티티에 대한 정보를 가져온다.")
-//    @GetMapping("/{teamId}")
-//    public CommonResponse<?> getTeamInfo(@PathVariable Long teamId) {
-//        Team team = teamService.findTeamById(teamId);
-//        return CommonResponse.createSuccess(team, "team 정보 전달");
-//    }
-
-    @ApiOperation(value = "팀 생성", notes = "팀 생성: 회원테이블에 member_id가 존재해야한다.", consumes = "multipart/form-data")
+    @ApiOperation(value = "팀 생성", notes = "img_size 10MB, 팀 생성: 회원테이블에 member_id가 존재해야한다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "팀 생성 성공"),
+            @ApiResponse(code = 500, message = "memberId가 존재하지 않거나, 탈퇴한 회원입니다.", response = ErrorResponse.class)
+    })
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CommonResponse<?> saveTeam(@ModelAttribute TeamDto teamInfo) throws IOException {
-        Team team = teamService.createTeamWithAuthNo(teamInfo);
+    public CommonResponse<?> saveTeam(@ModelAttribute(value = "teamInfo") TeamDto teamInfo,
+                                      @RequestPart(value = "image") MultipartFile image) throws IOException {
+        HashMap<String, Object> hashMap = new HashMap<>();
+
         Member member = memberService.findMemberByTeamInfo(teamInfo);
+        Team team = teamService.createTeamWithAuthNo(teamInfo);
+
         teamService.teamMemberInfoSaveAuthLeader(team, member);
-        teamService.saveLogo(teamInfo.getImgFile(), team.getId());
-        return CommonResponse.createSuccess(team);
+        List<Image> savedImage = teamService.saveLogo(image, team.getId());
+
+        hashMap.put("createdTeam", team);
+        hashMap.put("teamLogo", savedImage);
+        return CommonResponse.createSuccess(hashMap);
     }
 
 
@@ -102,12 +106,8 @@ public class TeamController {
         return CommonResponse.createSuccess(count, message);
     }
 
-    @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트",
-            notes = "해당 API는 포스트맨에서 진행할 것, " +
-                    "KEY: imgFile, VALUE: 이미지파일 / KEY: teamIdParam, VALUE: {\"teamId\": 숫자})" +
-                    "참고 링크: https://smooth-foxtrot-e11.notion.site/swagger-mine-6f0e4ca8ad964f56b0c23d86d6780b98"
-    )
-    @PostMapping(value = "/{teamId}/logo", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트", notes = "img_size 10MB")
+    @PostMapping(value = "/{teamId}/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public CommonResponse<?> updateLogo(@PathVariable Long teamId, @RequestPart MultipartFile imgFile) throws IOException {
         List<Image> savedImage = teamService.saveLogo(imgFile, teamId);
         return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
@@ -119,7 +119,6 @@ public class TeamController {
         List<Image> image = teamService.deleteLogoByTeamId(teamId);
         return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
     }
-
 
     @ApiOperation(value = "팀 탈퇴")
     @PostMapping(value = "/{teamId}/withDraw")
