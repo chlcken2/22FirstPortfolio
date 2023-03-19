@@ -87,6 +87,7 @@ public class TeamService {
             log.info("중복 가입신청 체크..." + String.valueOf(result));
             return null;
         }
+        LocalDateTime currentDateTime = LocalDateTime.now();
 
         TeamMemberInfo teamMemberInfo = TeamMemberInfo.builder()
                 .authority(AuthorityStatus.WAIT)
@@ -97,6 +98,7 @@ public class TeamService {
                 .drinkingCapacity(1)
                 .team(team)
                 .member(member)
+                .applyDate(currentDateTime)
                 .build();
         teamMemberInfoRepository.save(teamMemberInfo);
         return teamMemberInfo;
