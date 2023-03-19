@@ -71,13 +71,13 @@ public class TeamController {
     }
 
 
-    @ApiOperation(value = "(팀 찾기)팀 가입 신청", notes = "team_id를 통한 팀 가입신청, 가입 수락 전 권한 = WAIT")
+    @ApiOperation(value = "(팀 찾기)팀 가입 신청", notes = "가입할 팀Id와 가입할 회원Id를 입력한다, 가입 시청 후 회원 권한 = WAIT")
     @PostMapping("/join")
     public CommonResponse<?> joinTeam(@RequestBody TeamMemberIdDto teamMemberIdParam) {
         Member member = memberService.findMemberByTeamMemberId(teamMemberIdParam);
         Team team = teamService.findTeamByTeamMemberId(teamMemberIdParam);
         TeamMemberInfo result = teamService.joinTeamAuthWait(team, member);
-        return CommonResponse.createSuccess(result, "null일 경우 중복가입 체크, 리더 본인팀 가입 x");
+        return CommonResponse.createSuccess(result, "success");
     }
 
     //TODO: (알림)팀원 가입 신정자 정보 가져오기,teamMemberInfoId전달해줘서 팀장일 경우 조회가능하게.
