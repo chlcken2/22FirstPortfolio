@@ -105,6 +105,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
     public TeamMemberInfoDto findTeamMemberInfoById(Long teamMemberInfoId) {
         return queryFactory.
                 select(new QTeamMemberInfoDto(
+                        team.id,
                         member.name,
                         teamMemberInfo.address,
                         member.birthday,
@@ -127,8 +128,9 @@ public class TeamCustomImpl implements TeamJpaRepository {
     public List<ApplicantDto> getApplyTeamMember(Long teamId) {
         return queryFactory
                 .select(new QApplicantDto(
-                        member.name,
-                        member.id
+                        member.name
+                        , member.id
+                        , teamMemberInfo.applyDate
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.member, member)

@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class TeamMemberInfoDto {
+    private Long teamId;
     private String name;
     private String address;
     private String birthday;
@@ -22,7 +23,8 @@ public class TeamMemberInfoDto {
     private PersonalPositionStatus preferPosition;
 
     @QueryProjection
-    public TeamMemberInfoDto(String name, String address, String birthday, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, PersonalPositionStatus preferPosition) {
+    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, PersonalPositionStatus preferPosition) {
+        this.teamId = teamId;
         this.name = name;
         this.address = address;
         this.birthday = birthday;

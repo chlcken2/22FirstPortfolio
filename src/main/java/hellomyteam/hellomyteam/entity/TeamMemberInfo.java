@@ -57,6 +57,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     private LocalDateTime joinDate;
 
+    private LocalDateTime applyDate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;

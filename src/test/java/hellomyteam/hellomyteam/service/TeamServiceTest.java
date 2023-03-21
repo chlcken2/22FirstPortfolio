@@ -139,7 +139,7 @@ public class TeamServiceTest {
                 .memberId(savedMember.getId())
                 .build();
         //가입할 팀 찾기
-        Team team = teamService.findTeamByTeamMemberId(teamMemberIdParam);
+        Team team = teamService.findTeamByTeamMemberId(teamMemberIdParam.getTeamId());
 
         //when
         TeamMemberInfo teamMemberInfo = teamService.joinTeamAuthWait(team, savedMember);
