@@ -105,6 +105,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
     public TeamMemberInfoDto findTeamMemberInfoById(Long teamMemberInfoId) {
         return queryFactory.
                 select(new QTeamMemberInfoDto(
+                        team.id,
                         member.name,
                         teamMemberInfo.address,
                         member.birthday,

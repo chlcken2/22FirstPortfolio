@@ -19,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -91,7 +90,7 @@ public class TeamController {
 
     //TODO: (알림)팀원 가입 신정자 정보 가져오기,teamMemberInfoId전달해줘서 팀장일 경우 조회가능하게.
     @ApiOperation(value = "(알림) 알림 페이지 팀 가입 신청자 데이터 가져오기", notes = "알림페이지에 띄어질 정보/ teamMemberInfoId= 회원 번호, teamId = 현재 팀")
-    @GetMapping("/teams/{teamid}/members/{teammemberinfoid}/notifications")
+    @GetMapping("/teams/{teamid}/team-member/{teammemberinfoid}/notifications")
     public CommonResponse<?> getApplicant(@PathVariable(value = "teamid")Long teamId,
                                           @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
         return teamService.findAppliedTeamMember(teamMemberInfoId, teamId);
@@ -134,11 +133,10 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀 탈퇴")
-    @DeleteMapping(value = "/teams/{teamid}/members/{memberid}")
+    @DeleteMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}")
     public CommonResponse<?> withDrawTeam(@PathVariable(value = "teamid") Long teamId,
-                                          @PathVariable(value = "memberid") Long memberId) {
-        Map<String, String> param = teamService.withDrawTeamByMemberId(teamId, memberId);
-        return CommonResponse.createSuccess(param.get("authorityStatus"), param.get("message"));
+                                          @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
+        return teamService.withDrawTeamByMemberId(teamId, teamMemberInfoId);
     }
 
     @ApiOperation(value = "팀원 리스트", notes = "team_id를 통한 팀원 리스트 가져오기")
@@ -155,19 +153,19 @@ public class TeamController {
     }
 
     @ApiOperation(value = "팀원 상세 정보 가져오기")
-    @GetMapping(value = "/teams/team-member/{teammemberinfoid}")
-    public CommonResponse<?> getTeamMemberInfo(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
-        TeamMemberInfoDto teamMemberInfoDto = teamService.getTeamMemberInfo(teamMemberInfoId);
-        return CommonResponse.createSuccess(teamMemberInfoDto, "팀원 정보 가져오기 success");
+    @GetMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}")
+    public CommonResponse<?> getTeamMemberInfo(@PathVariable(value = "teamid") Long teamId,
+                                               @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
+        return teamService.getTeamMemberInfo(teamId, teamMemberInfoId);
     }
 
     @ApiOperation(value = "팀원 상세 정보 수정", notes = "본인일 경우에만 수정 가능")
-    @PutMapping(value = "/teams/team-member/{teammemberinfoid}")
-    public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+    @PutMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}")
+    public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "teamid") Long teamId,
+                                                @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
                                                 @RequestBody TeamInfoUpdateDto teamInfoUpdateDto
     ) {
-        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamMemberInfoId, teamInfoUpdateDto);
-        return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
+        return teamService.editTeamMemberInfo(teamId, teamMemberInfoId, teamInfoUpdateDto);
     }
 
     //TODO 팀 관리/정보 수정

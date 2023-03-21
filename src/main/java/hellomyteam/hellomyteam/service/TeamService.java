@@ -172,35 +172,47 @@ public class TeamService {
         return count;
     }
 
-    public Map<String, String> withDrawTeamByMemberId(Long teamId, Long memberId) {
-        Map<String, String> param = new HashMap<>();
-        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, memberId);
+    public CommonResponse<?> withDrawTeamByMemberId(Long teamId, Long teamMemberInfoId) {
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+        if (teamMemberInfo.getTeam().getId() != teamId) {
+            return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
+        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, teamMemberInfo.getMember().getId());
 
         if (!(authorityStatus.equals(AuthorityStatus.SUB_LEADER) || authorityStatus.equals(AuthorityStatus.TEAM_MEMBER))) {
             String stringResult = String.valueOf(authorityStatus);
             String template = "%s 의 권한일 경우 팀을 탈퇴 할 수 없습니다. 팀원으로 변경바랍니다.";
             String message = String.format(template, stringResult);
-            param.put("message", message);
-            param.put("authorityStatus", String.valueOf(authorityStatus));
-            return param;
+
+            return CommonResponse.createError(authorityStatus, message);
         }
         //팀 탈퇴
-        teamCustomImpl.withDrawTeamByMemberId(teamId, memberId);
+        teamCustomImpl.withDrawTeamByMemberId(teamId, teamMemberInfo.getMember().getId());
         String stringResult = String.valueOf(authorityStatus);
         String template = "현재 권한: %s, 해당 팀을 탈퇴하였습니다.";
         String message = String.format(template, stringResult);
-        param.put("message", message);
-        param.put("authorityStatus", String.valueOf(authorityStatus));
-        return param;
+        return CommonResponse.createError(authorityStatus, message);
     }
 
-    public TeamMemberInfoDto getTeamMemberInfo(Long teamMemberInfoId) {
+    public CommonResponse<?> getTeamMemberInfo(Long teamId, Long teamMemberInfoId) {
         TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
-        return teamMemberInfoDto;
+        if (teamMemberInfoDto.getTeamId() != teamId) {
+            return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
+        return CommonResponse.createSuccess(teamMemberInfoDto, "success");
     }
 
-    public TeamMemberInfoDto editTeamMemberInfo(Long teamMemberInfoId, TeamInfoUpdateDto teamInfoUpdateDto) {
+    public CommonResponse<?> editTeamMemberInfo(Long teamId, Long teamMemberInfoId, TeamInfoUpdateDto teamInfoUpdateDto) {
         TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+        if (teamMemberInfo.getMember() == null) {
+            return CommonResponse.createError("존재하지 않는 회원입니다.");
+        }
+
+        if (teamMemberInfo.getTeam().getId() != teamId) {
+            HashMap<String, Long> hashMap = new HashMap<>();
+            hashMap.put("입력한 teamid", teamId);
+            return CommonResponse.createError(hashMap, "입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
 
         TeamMemberInfo findTeamMemberInfo = em.find(TeamMemberInfo.class, teamMemberInfoId);
         Member findMember = em.find(Member.class, teamMemberInfo.getMember().getId());
@@ -217,7 +229,7 @@ public class TeamService {
         findMember.setName(teamInfoUpdateDto.getChangeName());
 
         TeamMemberInfoDto result = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
-        return result;
+        return CommonResponse.createSuccess(result, "수정 되었습니다.");
     }
 
     public CommonResponse<?> findAppliedTeamMember(Long teamMemberInfoId, Long teamId) {

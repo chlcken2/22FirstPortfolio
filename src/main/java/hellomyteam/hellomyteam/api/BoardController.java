@@ -42,16 +42,15 @@ public class BoardController {
 //    }
 
     @ApiOperation(value = "게시판 작성", notes = "teamMemberInfo_id가 존재해야한다, 게시판을 생성한다.")
-    @PostMapping("/board/write")
+    @PostMapping("/board")
     public CommonResponse<?> writeBoard(@RequestBody BoardWriteDto boardWriteDto) {
         Board board = boardService.createBoard(boardWriteDto);
         return CommonResponse.createSuccess(board, "게시판 작성 success");
     }
 
-    //TODO 게시판 댓글 가져오기
     @ApiOperation(value = "게시판 상세 조회", notes = "boardId로 게시판 상세 조회, 쿠키를 통한 조회수 중복체크 처리 포함")
-    @GetMapping("/board/{boardId}")
-    public CommonResponse<?> detailBoard(@PathVariable Long boardId,
+    @GetMapping("/board/{boardid}")
+    public CommonResponse<?> detailBoard(@PathVariable(value = "boardid") Long boardId,
                                          HttpServletRequest request,
                                          HttpServletResponse response) {
         boardService.updateView(boardId, request, response);
@@ -60,23 +59,23 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시판 상세 수정", notes = "boardId로 게시판 수정하기")
-    @PutMapping("/board/{boardId}")
-    public CommonResponse<?> updateBoard(@PathVariable Long boardId, @RequestBody BoardUpdateDto boardUpdateDto) {
+    @PutMapping("/board/{boardid}")
+    public CommonResponse<?> updateBoard(@PathVariable(value = "boardid") Long boardId,
+                                         @RequestBody BoardUpdateDto boardUpdateDto) {
         Board board = boardService.updateBoard(boardId, boardUpdateDto);
         return CommonResponse.createSuccess(board, "게시판 수정하기 success");
     }
 
-    //TODO 관련된 댓글, 대댓글 삭제 "연관관계 매핑" 확인할 것
     @ApiOperation(value = "게시판 삭제", notes = "boardId로 게시판 삭제하기")
-    @DeleteMapping("/board/{boardId}")
-    public CommonResponse<?> deleteBoard(@PathVariable Long boardId) {
+    @DeleteMapping("/board/{boardid}")
+    public CommonResponse<?> deleteBoard(@PathVariable(value = "boardid") Long boardId) {
         boardService.deleteBoard(boardId);
         return CommonResponse.createSuccess("보드 삭제 success");
     }
 
     @ApiOperation(value = "게시판 좋아요/취소", notes = "좋아요 클릭시 true 리턴, 이후 클릭시 좋아요 해제하고 false리턴")
-    @PostMapping("/board/like/{boardId}/")
-    public CommonResponse<?> isLikeBoard(@PathVariable Long boardId,
+    @PostMapping("/board/{boardid}/like")
+    public CommonResponse<?> isLikeBoard(@PathVariable(value = "boardid") Long boardId,
                                           @RequestBody LikeReqDto likeReqDto) {
         Boolean bool = likeService.checkLikeBoard(likeReqDto.getTeamMemberInfoId(), boardId);
         return CommonResponse.createSuccess(bool, "좋아요 true/false");
