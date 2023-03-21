@@ -1,5 +1,6 @@
 package HelloMyTeam.Hellomyteam.api;
 
+import HelloMyTeam.Hellomyteam.dto.AuthNumDto;
 import HelloMyTeam.Hellomyteam.entity.Member;
 import HelloMyTeam.Hellomyteam.entity.TermsAndCond;
 import HelloMyTeam.Hellomyteam.entity.status.MemberStatus;
@@ -11,19 +12,18 @@ import HelloMyTeam.Hellomyteam.dto.CommonResponse;
 import HelloMyTeam.Hellomyteam.dto.MemberRequest;
 import HelloMyTeam.Hellomyteam.dto.SignUpRequest;
 import HelloMyTeam.Hellomyteam.repository.MemberRepository;
+import HelloMyTeam.Hellomyteam.service.AuthService;
 import HelloMyTeam.Hellomyteam.service.TokenProvider;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +38,28 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    AuthService authService;
+
+    @ApiOperation(value = "certification", notes="이메일에 인증번호 전송")
+    @GetMapping("/email")
+    public void mailCertification(@RequestParam String mail){
+       // AuthService authService = new AuthService();
+        authService.sendMail(mail);
+    }
+
+    @ApiOperation(value = "numMatching" , notes = "이메일에 전송된 난수 매칭")
+    @GetMapping("/match")
+    public void numMatching(@RequestParam int num){
+
+        System.out.println(num);
+        AuthNumDto authNumDto = authService.getAuthNumDto();
+
+        String chkstr = authNumDto.getAuthCode();
+        System.out.println(chkstr);
+        System.out.println("테스트입니다.");
+
+    }
 
     @ApiOperation(value = "login", notes = "로그인")
     @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")

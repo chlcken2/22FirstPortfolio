@@ -9,8 +9,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +46,17 @@ public class BoardController {
 //        Page<BoardListResDto> boards = boardService.getBoards(teamId, boardCategory, boardSearchReqDto, boardSearch2ReqDto, pageable);
 //        return CommonResponse.createSuccess(boards, "게시판 리스트 가져오기 success");
 //    }
+
+    /**
+     * 페이징 처리
+     */
+    //PageRequest page = PageRequest.of(0,10, Sort.by("created_date").descending());
+    @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId로 팀 별 게시판 조회")
+    @GetMapping("/team/{teamId}/boards")
+    public CommonResponse<?> getBoards(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam String category){
+//        Board board = boardService.getBoards(teamId, pageNum);
+        return boardService.getBoards(teamId, pageNum, category);
+    }
 
     @ApiOperation(value = "게시판 작성", notes = "teamMemberInfo_id가 존재해야한다, 게시판을 생성한다.")
     @PostMapping("/board/write")

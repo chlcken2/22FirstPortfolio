@@ -51,6 +51,9 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/auth/signup").permitAll()
+                .antMatchers("/api/auth/refresh").permitAll()
                 .antMatchers("/api/**","/auth/**", "/token/**", "/user/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
                 .anyRequest().authenticated();

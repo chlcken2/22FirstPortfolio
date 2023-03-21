@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 
 @Slf4j
@@ -35,9 +36,16 @@ public class BoardService {
     private final BoardCustomImpl boardCustomImpl;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final LikeRepository likeRepository;
+
     private final EntityManager em;
 
+    public CommonResponse<?> getBoards(Long teamId, int pageNum, String category){
+        // pageNum = pageSize : 한 화면에 가져올 게시물 수
+        pageNum = pageNum * 10;
 
+        List<Board> boards = boardRepository.getBoards(teamId,pageNum, category);
+        return CommonResponse.createSuccess(boards, "boardsList success");
+    }
     public Board createBoard(BoardWriteDto boardWriteDto) {
         TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findById(boardWriteDto.getTeamMemberInfoId())
                 .orElseThrow(()-> new IllegalStateException("teamMemberInfo id가 누락되었습니다."));

@@ -29,6 +29,15 @@ repositories {
 }
 
 dependencies {
+
+	/* 메일 인증 */
+	implementation 'com.sun.mail:javax.mail:1.6.2'
+	implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation group: 'org.springframework', name: 'spring-context-support', version: '5.3.24'
+
+	/* 암호화 jasypt */
+	implementation 'org.jasypt:jasypt:1.9.3'
+
 	implementation 'org.springframework.security:spring-security-test'
 	implementation "org.springframework.boot:spring-boot-starter-test"
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
