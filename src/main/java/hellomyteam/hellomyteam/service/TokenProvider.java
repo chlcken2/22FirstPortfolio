@@ -20,7 +20,7 @@ import java.util.Date;
 public class TokenProvider {
 
     private static final String BEARER_TYPE = "Bearer ";
-    long ACCESS_TOKEN_VALIDATiON_SECOND = 3600000L;              // 1시간
+    long ACCESS_TOKEN_VALIDATiON_SECOND = 300000L;              // 1시간
     long REFRESH_TOKEN_VALIDATiON_SECOND = 3600000 * 24 * 30L;
     @Value("${jwt.secret}")
     private String secretKey;
