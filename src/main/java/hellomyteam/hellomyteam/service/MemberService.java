@@ -28,8 +28,8 @@ public class MemberService {
         return member;
     }
 
-    public Member findMemberByTeamMemberId(TeamMemberIdDto memberIdParam) {
-        Member member = memberRepository.findById(memberIdParam.getMemberId())
+    public Member findMemberByTeamMemberId(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("memberId가 누락되었습니다."));
         return member;
     }

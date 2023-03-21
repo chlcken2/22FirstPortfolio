@@ -126,8 +126,8 @@ public class TeamService {
         return CommonResponse.createSuccess(beforeTeamMemberInfo.getAuthority(), "팀원으로 반영되었습니다.");
     }
 
-    public Team findTeamByTeamMemberId(TeamMemberIdDto teamMemberIdParam) {
-        Team team = teamRepository.findById(teamMemberIdParam.getTeamId())
+    public Team findTeamByTeamMemberId(Long teamId) {
+        Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
         return team;
     }
@@ -167,25 +167,25 @@ public class TeamService {
     }
 
 
-    public Long deleteMemberByMemberId(Long teamId, MemberIdDto memberIdParam) {
-        Long count = teamCustomImpl.deleteMemberByMemberId(teamId, memberIdParam.getMemberId());
+    public Long deleteMemberByMemberId(Long teamId, Long memberId) {
+        Long count = teamCustomImpl.deleteMemberByMemberId(teamId, memberId);
         return count;
     }
 
-    public Map<String, String> withDrawTeamByMemberId(Long teamId, MemberIdDto memberIdParam) {
+    public Map<String, String> withDrawTeamByMemberId(Long teamId, Long memberId) {
         Map<String, String> param = new HashMap<>();
-        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, memberIdParam.getMemberId());
+        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, memberId);
 
         if (!(authorityStatus.equals(AuthorityStatus.SUB_LEADER) || authorityStatus.equals(AuthorityStatus.TEAM_MEMBER))) {
             String stringResult = String.valueOf(authorityStatus);
-            String template = "%s 의 권한일 경우 팀을 탈퇴 할 수 없습니다. 부팀장, 팀원으로 변경바랍니다.";
+            String template = "%s 의 권한일 경우 팀을 탈퇴 할 수 없습니다. 팀원으로 변경바랍니다.";
             String message = String.format(template, stringResult);
             param.put("message", message);
             param.put("authorityStatus", String.valueOf(authorityStatus));
             return param;
         }
         //팀 탈퇴
-        teamCustomImpl.withDrawTeamByMemberId(teamId, memberIdParam.getMemberId());
+        teamCustomImpl.withDrawTeamByMemberId(teamId, memberId);
         String stringResult = String.valueOf(authorityStatus);
         String template = "현재 권한: %s, 해당 팀을 탈퇴하였습니다.";
         String message = String.format(template, stringResult);
