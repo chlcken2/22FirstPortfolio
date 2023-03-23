@@ -79,6 +79,11 @@ public class AuthController {
         }
     }
 
+    /**
+     *
+     * @param auth 토큰
+     * @param authNumber 이메일에 전송된 난수
+     */
     @GetMapping("/verify")
     public void verify(@RequestParam String auth, @RequestParam int authNumber){
         System.out.println("시크릿키 : " + secretKey);
