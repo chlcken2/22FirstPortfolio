@@ -1,9 +1,14 @@
 package HelloMyTeam.Hellomyteam.service;
 
 import HelloMyTeam.Hellomyteam.dto.AuthNumDto;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -18,7 +23,7 @@ import javax.transaction.Transactional;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
-import java.util.InvalidPropertiesFormatException;
+import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
@@ -31,9 +36,15 @@ public class AuthService {
     //private final JwtTokenProvider jwtTokenProvider;
     private int authNumber;
     private String uniqueAuthNumber;
+    private static final long EXPIRATION_TIME = 10 * 60 * 1000;
 
     private AuthNumDto authNumDto;
-    public void sendMail(String mailId){
+
+    @Autowired
+    private TokenProvider tokenProvider;
+    @Value("${jwt.secret}")
+    private String secretKey;
+    public String sendMail(String mailId){
 
         Random random = new Random();
         authNumber = random.nextInt(888888)+111111;
@@ -41,9 +52,21 @@ public class AuthService {
         uniqueAuthNumber = mailId + "_" + authNumber;
         authNumDto = AuthNumDto.builder()
                 .authCode(uniqueAuthNumber)
+                .authNumber(authNumber)
                 .build();
 
+        System.out.println("시크릿 : " + secretKey);
+        System.out.println(secretKey.getBytes());
+        String token = Jwts.builder()
+                        .setSubject(mailId)
+                        .claim("authNumber", authNumber)
+                        .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                        .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
+                        .compact();
+
         System.out.println(authNumDto.getAuthCode());
+        System.out.println(authNumDto.getAuthNumber());
+        System.out.println(token);
 
         Properties authProperties = new Properties();
         try{
@@ -104,6 +127,8 @@ public class AuthService {
             System.out.println("이메일 전송 실패!");
             ex.printStackTrace();
         }
+
+        return token;
     }
 
     private String encrypt (String str, String pw){
