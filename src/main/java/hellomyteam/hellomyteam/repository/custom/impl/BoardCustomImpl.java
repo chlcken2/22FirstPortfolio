@@ -24,44 +24,6 @@ public class BoardCustomImpl {
 
     private final JPAQueryFactory queryFactory;
 
-
-//    public Page<BoardListResDto> findBoardsByTeamId(Long teamId,
-//                                                    BoardCategory boardCategory,
-//                                                    BoardSearchReqDto boardSearchReqDto,
-//                                                    Pageable pageRequest) {
-//        log.info("getAllOrderSpecifiers start");
-//        List<OrderSpecifier> orders = getAllOrderSpecifiers(pageRequest);
-//        log.info("contents start");
-//        List<BoardListResDto> contents = queryFactory
-//                .select(new QBoardListResDto(
-//                        board.writer
-//                        , board.title
-//                        , board.boardStatus
-//                        , board.viewCount
-//                        , board.createdDate
-//                        , board.commentCount
-//                        , board.likeCount
-//                )).from(board)
-//                .where(board.teamMemberInfo.team.id.eq(teamId))
-//                .where(board.boardStatus.eq(BoardAndCommentStatus.NORMAL))
-//                .where(board.boardCategory.eq(boardCategory))
-//                .orderBy(orders.stream().toArray(OrderSpecifier[]::new))
-//                .orderBy(board.createdDate.desc())
-//                .offset(pageRequest.getOffset())
-//                .limit(pageRequest.getPageSize())
-//                .fetch();
-//
-//        JPAQuery<Long> countQuery = queryFactory
-//                .select(board.count())
-//                .from(board)
-//                .orderBy(orders.stream().toArray(OrderSpecifier[]::new))
-//                .where(board.teamMemberInfo.team.id.eq(teamId))
-//                .where(board.boardStatus.eq(BoardAndCommentStatus.NORMAL))
-//                .where(board.boardCategory.eq(boardCategory));
-//
-//        return PageableExecutionUtils.getPage(contents, pageRequest, countQuery::fetchOne);
-//    }
-
     public BoardDetailResDto findBoardById(Long id) {
         return queryFactory.select(new QBoardDetailResDto(
                         board.writer

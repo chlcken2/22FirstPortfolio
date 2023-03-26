@@ -60,21 +60,6 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-//    public Page<BoardListResDto> getBoards(Long teamId, BoardCategory boardCategory, BoardSearchReqDto boardSearchReqDto, BoardSearch2ReqDto boardSearch2ReqDto, Pageable pageable) {
-//        //TODO pageable 값 설정 하고 레포에 전달
-//        log.info("start service");
-////        PageRequest pageRequest = PageRequest.of(15, 15, Sort.by(Sort.Direction.fromString(boardSearchReqDto.getOrderBy()), boardSearchReqDto.getSortBy()));
-////        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, boardSearchReqDto.getOrderBy()));
-////        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(), Sort.by(boardSearchReqDto.getOrderBy()).descending());
-////        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(),
-////                Sort.by(Sort.Direction.fromString(boardSearchReqDto.getOrderBy()), boardSearch2ReqDto.getSortBy()));
-//        PageRequest pageRequest = PageRequest.of((int) pageable.getOffset(), pageable.getPageSize(),
-//                Sort.by(Sort.Direction.fromString(boardSearchReqDto.getOrderBy()), String.valueOf(pageable.getSort())));
-//        log.info("page request");
-//        Page<BoardListResDto> boards = boardCustomImpl.findBoardsByTeamId(teamId, boardCategory, boardSearchReqDto, pageRequest);
-//        return boards;
-//    }
-
     public BoardDetailResDto getBoard(Long id) {
         BoardDetailResDto findBoard = boardCustomImpl.findBoardById(id);
         return findBoard;

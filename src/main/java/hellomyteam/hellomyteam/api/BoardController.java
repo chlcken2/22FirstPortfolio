@@ -24,11 +24,9 @@ public class BoardController {
     /**
      * 페이징 처리
      */
-    //PageRequest page = PageRequest.of(0,10, Sort.by("created_date").descending());
     @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId로 팀 별 게시판 조회")
     @GetMapping("/team/{teamId}/boards")
     public CommonResponse<?> getBoards(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam String category){
-//        Board board = boardService.getBoards(teamId, pageNum);
         return boardService.getBoards(teamId, pageNum, category);
     }
 
