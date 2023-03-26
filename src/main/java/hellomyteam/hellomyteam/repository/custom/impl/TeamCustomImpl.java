@@ -213,8 +213,11 @@ public class TeamCustomImpl implements TeamJpaRepository {
         return queryFactory.select(new QTeamNameIdDto(
                 team.teamName
                 ,team.id
+                ,image.imageUrl
                 ))
                 .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
                 .where(teamMemberInfo.member.id.eq(memberId))
                 .where(teamMemberInfo.authority.eq(AuthorityStatus.LEADER)
                         .or(teamMemberInfo.authority.eq(AuthorityStatus.SUB_LEADER))

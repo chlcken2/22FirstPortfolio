@@ -11,10 +11,12 @@ import lombok.Getter;
 public class TeamNameIdDto {
     private String teamName;
     private Long teamId;
+    private String imageUrl;
 
     @QueryProjection
-    public TeamNameIdDto(String teamName, Long teamId) {
+    public TeamNameIdDto(String teamName, Long teamId, String imageUrl) {
         this.teamName = teamName;
         this.teamId = teamId;
+        this.imageUrl = imageUrl;
     }
 }
