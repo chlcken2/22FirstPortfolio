@@ -32,7 +32,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
         BooleanBuilder builder = new BooleanBuilder();
 
         if (StringUtils.hasText(teamName)) {
-            builder.and(team.teamName.eq(teamName));
+            builder.and(team.teamName.contains(teamName));
         }
 
         if (teamSerialNo != null) {
