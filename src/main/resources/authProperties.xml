@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties [
+        <!ELEMENT properties (property*)>
+        <!ELEMENT property (#PCDATA)>
+        <!ATTLIST property name CDATA #REQUIRED>
+        ]>
+<properties>
+    <property name="mail.encryptor.pw">1q2w3e4r!@#$</property>
+    <!--
+    <property name="mail.username">5DFw9Z+Rf6FSAr/Amuuele3bBfs90/iDilZ6aWfQyrM=</property>
+    <property name="mail.password">BgXfN6qIlEfEggpICo187yxlojWeblsL</property>
+    -->
+
+    <property name="mail.username">rCcmkLZ2aOraV/h6nsC47NWMpNLCeRvFYNjFDQ36YWwfM7nb+vjZJA==</property>
+    <property name="mail.password">RjVgaRjVEQcVpQx5D9/arDsifNrJk0hmSiPRGx2UumU=</property>
+
+    <property name="mail.smtp.host">smtp.gmail.com</property>
+    <property name="mail.smtp.port">587</property>
+    <property name="mail.smtp.auth">true</property>
+    <property name="mail.smtp.starttls.enable">true</property>
+</properties>

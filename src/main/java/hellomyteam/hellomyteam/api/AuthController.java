@@ -1,5 +1,6 @@
 package hellomyteam.hellomyteam.api;
 
+import hellomyteam.hellomyteam.dto.AuthNumDto;
 import hellomyteam.hellomyteam.entity.Member;
 import hellomyteam.hellomyteam.entity.TermsAndCond;
 import hellomyteam.hellomyteam.entity.status.MemberStatus;
@@ -11,13 +12,16 @@ import hellomyteam.hellomyteam.dto.CommonResponse;
 import hellomyteam.hellomyteam.dto.MemberRequest;
 import hellomyteam.hellomyteam.dto.SignUpRequest;
 import hellomyteam.hellomyteam.repository.MemberRepository;
+import hellomyteam.hellomyteam.service.AuthService;
 import hellomyteam.hellomyteam.service.TokenProvider;
+import io.jsonwebtoken.Jwts;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -27,7 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -36,6 +39,67 @@ public class AuthController {
     private final MemberRepository memberRepository;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    /**
+     *
+     * @param mail 인증번호를 받을 이메일
+     * @return 인증번호와 이메일 담은 토큰
+     */
+    @ApiOperation(value = "certification", notes="이메일에 인증번호 전송 인증번호를 담음 토큰 리턴")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
+    @GetMapping("/email")
+    public String mailCertification(@RequestParam String mail){
+       // AuthService authService = new AuthService();
+        String token = authService.sendMail(mail);
+        return token;
+    }
+
+    @ApiOperation(value = "numMatching" , notes = "이메일에 전송된 난수 매칭")
+    @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
+    @GetMapping("/match")
+    public CommonResponse<?> numMatching(@RequestParam int num){
+
+        AuthNumDto authNumDto = authService.getAuthNumDto();
+        System.out.println(authNumDto.getAuthNumber());
+        if (authNumDto == null) {
+            System.out.println("인증번호를 입력해주세요.");
+            return CommonResponse.createError("인증번호를 입력해주세요.");
+        }
+
+        if (num == authNumDto.getAuthNumber()) {
+            System.out.println("인증번호가 일치합니다.");
+            return CommonResponse.createSuccess("인증번호가 일치합니다.");
+        } else {
+            System.out.println("인증번호가 일치하지 않습니다.");
+            return CommonResponse.createError("인증번호가 일치하지 않습니다.");
+        }
+    }
+    @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
+    @GetMapping("/verify")
+    public void verify(@RequestParam String auth, @RequestParam int authNumber){
+        try{
+            Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth);
+
+            String email = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth).getBody().getSubject();
+            int AuthNum = (int) Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth).getBody().get("authNumber");
+
+            if(AuthNum == authNumber){
+                System.out.println("인증성공");
+            }else{
+                System.out.println("인증 실패");
+            }
+
+        }catch (Exception e){
+            System.out.println("토큰 검증 실패");
+            System.out.println(e);
+        }
+    }
+
+
 
 
     @ApiOperation(value = "login", notes = "로그인")

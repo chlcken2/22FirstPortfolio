@@ -53,7 +53,6 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(PERMIT_URL_ARRAY).permitAll()
-//                .antMatchers("/api/**","/auth/**", "/token/**", "/user/**").authenticated()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(new JwtAuthFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);

@@ -18,28 +18,19 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api")
 public class BoardController {
 
-    /**
-     * 보드 crud
-     * 보드 종류 공지 / 자유
-     * 게시글 검색 필터 (좋아요, 최신순, 7일, 30일, 전 -> 네이버카페 참고)
-     * 조회수, 좋아요
-     * 페이징 카운트 쿼리
-     */
-
     private final BoardService boardService;
     private final LikeService likeService;
-    //TODO 검색 정렬 조건 추가 필
-//    @ApiOperation(value = "게시판 목록 조회", notes = "teamId로 팀 별 게시판을 조회한다. baseUrl/?page={page}&size={size}&sort={sort},DESC")
-//    @GetMapping("/team/{teamId}/boards")
-//    public CommonResponse<?> getBoards(@PathVariable Long teamId,
-//                                       @RequestParam(value = "boardCategory") BoardCategory boardCategory,
-//                                       @RequestParam BoardSearchReqDto boardSearchReqDto,
-//                                       @RequestParam BoardSearch2ReqDto boardSearch2ReqDto,
-//                                       @PageableDefault(value = 20) Pageable pageable
-//                                       ) {
-//        Page<BoardListResDto> boards = boardService.getBoards(teamId, boardCategory, boardSearchReqDto, boardSearch2ReqDto, pageable);
-//        return CommonResponse.createSuccess(boards, "게시판 리스트 가져오기 success");
-//    }
+
+    /**
+     * 페이징 처리
+     */
+    //PageRequest page = PageRequest.of(0,10, Sort.by("created_date").descending());
+    @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId로 팀 별 게시판 조회")
+    @GetMapping("/team/{teamId}/boards")
+    public CommonResponse<?> getBoards(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam String category){
+//        Board board = boardService.getBoards(teamId, pageNum);
+        return boardService.getBoards(teamId, pageNum, category);
+    }
 
     @ApiOperation(value = "게시판 작성", notes = "teamMemberInfo_id가 존재해야한다, 게시판을 생성한다.")
     @PostMapping("/board")
