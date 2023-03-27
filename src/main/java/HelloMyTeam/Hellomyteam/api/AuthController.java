@@ -59,33 +59,13 @@ public class AuthController {
         return token;
     }
 
-    @ApiOperation(value = "numMatching" , notes = "이메일에 전송된 난수 매칭")
-    @GetMapping("/match")
-    public CommonResponse<?> numMatching(@RequestParam int num){
-
-        AuthNumDto authNumDto = authService.getAuthNumDto();
-        System.out.println(authNumDto.getAuthNumber());
-        if (authNumDto == null) {
-            System.out.println("인증번호를 입력해주세요.");
-            return CommonResponse.createError("인증번호를 입력해주세요.");
-        }
-
-        if (num == authNumDto.getAuthNumber()) {
-            System.out.println("인증번호가 일치합니다.");
-            return CommonResponse.createSuccess("인증번호가 일치합니다.");
-        } else {
-            System.out.println("인증번호가 일치하지 않습니다.");
-            return CommonResponse.createError("인증번호가 일치하지 않습니다.");
-        }
-    }
-
     /**
      *
      * @param auth 토큰
      * @param authNumber 이메일에 전송된 난수
      */
     @GetMapping("/verify")
-    public void verify(@RequestParam String auth, @RequestParam int authNumber){
+    public CommonResponse<?> verify(@RequestParam String auth, @RequestParam int authNumber){
         System.out.println("시크릿키 : " + secretKey);
         System.out.println("시크릿키 : " + secretKey.getBytes());
         try{
@@ -95,14 +75,14 @@ public class AuthController {
             int AuthNum = (int) Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth).getBody().get("authNumber");
 
             if(AuthNum == authNumber){
-                System.out.println("인증성공");
+                return CommonResponse.createSuccess("인증성공");
             }else{
-                System.out.println("인증 실패");
+                return CommonResponse.createError("인증 실패");
             }
 
         }catch (Exception e){
-            System.out.println("토큰 검증 실패");
             System.out.println(e);
+            return CommonResponse.createError("토큰 검증 실패");
         }
     }
 

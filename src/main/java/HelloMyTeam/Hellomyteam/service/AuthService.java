@@ -49,14 +49,6 @@ public class AuthService {
         Random random = new Random();
         authNumber = random.nextInt(888888)+111111;
 
-        uniqueAuthNumber = mailId + "_" + authNumber;
-        authNumDto = AuthNumDto.builder()
-                .authCode(uniqueAuthNumber)
-                .authNumber(authNumber)
-                .build();
-
-        System.out.println("시크릿 : " + secretKey);
-        System.out.println(secretKey.getBytes());
         String token = Jwts.builder()
                         .setSubject(mailId)
                         .claim("authNumber", authNumber)
@@ -64,8 +56,6 @@ public class AuthService {
                         .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
                         .compact();
 
-        System.out.println(authNumDto.getAuthCode());
-        System.out.println(authNumDto.getAuthNumber());
         System.out.println(token);
 
         Properties authProperties = new Properties();
@@ -84,11 +74,9 @@ public class AuthService {
             }
             inputStream.close();
         }catch (IOException e){
-            System.out.println("에러가 발생했습니다1.");
             System.out.println(e);
             e.printStackTrace();
         }catch (Exception e){
-            System.out.println("에러가 발생했습니다2.");
             System.out.println(e);
         }
 
@@ -111,7 +99,7 @@ public class AuthService {
                 "<br>" +
                 "해당 인증번호를 인증번호 확인란에 기입하여 주세요.";
 
-        String myMail = "wonerwoner@naver.com";
+        String myMail = decrypt(authProperties.getProperty("mail.username"),authProperties.getProperty("mail.encryptor.pw"));
         Message message = new MimeMessage(session);
         try {
             MimeMessageHelper mmh = new MimeMessageHelper((MimeMessage) message,true,"utf-8");
@@ -149,9 +137,4 @@ public class AuthService {
         return encryptor.decrypt(str);
     }
 
-    public AuthNumDto getAuthNumDto(){
-        System.out.println("getAuthNumDto 실행");
-        System.out.println(authNumDto.getAuthCode());
-        return authNumDto;
-    }
 }
