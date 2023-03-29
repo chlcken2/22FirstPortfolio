@@ -49,7 +49,7 @@ public class Comment extends BaseTimeEntity {
     private List<Comment> children = new ArrayList<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     Set<Like> likes = new HashSet<>();
 
     @JsonIgnore
