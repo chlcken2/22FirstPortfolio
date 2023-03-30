@@ -11,6 +11,8 @@ import hellomyteam.hellomyteam.repository.TeamMemberInfoRepository;
 import hellomyteam.hellomyteam.repository.custom.impl.CommentCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -32,13 +34,13 @@ public class CommentService {
     private final EntityManager em;
 
 
-    public CommonResponse<?> findCommentsByBoard(Long boardId) {
+    public CommonResponse<?> findCommentsByBoard(Long boardId, int commentNum, int commentSize) {
         Board findBoard = boardService.getBoardById(boardId);
         if (null == findBoard) {
             return CommonResponse.createError("존재하지 않는 게시글 id 입니다.");
         }
-
-        List<Comment> comments = commentCustomImpl.findCommentByBoard(findBoard);
+        Pageable pageable = PageRequest.of(commentNum, commentSize);
+        List<Comment> comments = commentCustomImpl.findCommentByBoard(findBoard, pageable);
 
         List<CommentResDto> commentResDtoList = new ArrayList<>();
         Map<Long, CommentResDto> map = new HashMap<>();

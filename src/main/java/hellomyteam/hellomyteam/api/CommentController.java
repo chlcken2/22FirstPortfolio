@@ -3,6 +3,8 @@ package hellomyteam.hellomyteam.api;
 import hellomyteam.hellomyteam.dto.*;
 import hellomyteam.hellomyteam.service.CommentService;
 import hellomyteam.hellomyteam.service.LikeService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -19,9 +21,15 @@ public class CommentController {
     private final LikeService likeService;
 
     @ApiOperation(value = "댓글 가져오기", notes = "게시글에 대한 계층형 댓글 가져오기, 삭제된 게시글 상태변경, 값 변경 처리 적용")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "commentNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "commentSize", value = "들고올 데이터 수", required = true, dataType = "string", paramType = "query", defaultValue = "30"),
+    })
     @GetMapping("/boards/{boardid}/comment")
-    public CommonResponse<?> getBoardComments(@PathVariable(value = "boardid") Long boardId) {
-        return commentService.findCommentsByBoard(boardId);
+    public CommonResponse<?> getBoardComments(@PathVariable(value = "boardid") Long boardId,
+                                              @RequestParam int commentNum,
+                                              @RequestParam int commentSize) {
+        return commentService.findCommentsByBoard(boardId, commentNum, commentSize);
     }
 
     @ApiOperation(value = "댓글 작성", notes = "parentId가 null일 경우: 부모, parentId존재: 자식 댓글")
