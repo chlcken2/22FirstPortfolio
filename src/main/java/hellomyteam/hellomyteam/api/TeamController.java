@@ -57,8 +57,21 @@ public class TeamController {
         return CommonResponse.createSuccess(hashMap);
     }
 
+    @ApiOperation(value = "(팀 찾기) 팀 리스트 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "pageSize", value = "들고올 데이터 수", required = true, dataType = "string", paramType = "query", defaultValue = "40"),
+            @ApiImplicitParam(name = "pageSort", value = "정렬 기준(ASC, DESC, SHUFFLE)", required = true, dataType = "string", paramType = "query", defaultValue = "SHUFFLE"),
+    })
+    @GetMapping("/teams")
+    public CommonResponse<?> teams (@RequestParam int pageNum,
+                                    @RequestParam int pageSize,
+                                    @RequestParam String pageSort
+                                    ) {
+        return teamService.getTeams(pageNum, pageSize, pageSort);
+    }
 
-    @ApiOperation(value = "(팀 찾기)팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
+    @ApiOperation(value = "(팀 찾기)검색어를 통해 팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @GetMapping("/teams/{team-identifier}")
     public CommonResponse<?> findTeam (@RequestParam(value = "team-identifier") String teamIdentifier) {
         boolean isNumeric = teamIdentifier.chars().allMatch(Character::isDigit);

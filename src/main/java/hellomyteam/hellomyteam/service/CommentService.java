@@ -1,7 +1,9 @@
 package hellomyteam.hellomyteam.service;
 
 import hellomyteam.hellomyteam.dto.*;
-import hellomyteam.hellomyteam.entity.*;
+import hellomyteam.hellomyteam.entity.Board;
+import hellomyteam.hellomyteam.entity.Comment;
+import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.entity.status.BoardAndCommentStatus;
 import hellomyteam.hellomyteam.repository.BoardRepository;
 import hellomyteam.hellomyteam.repository.CommentRepository;

@@ -1,7 +1,9 @@
 package hellomyteam.hellomyteam.repository.custom.impl;
 
 import hellomyteam.hellomyteam.dto.*;
-import hellomyteam.hellomyteam.entity.*;
+import hellomyteam.hellomyteam.entity.Member;
+import hellomyteam.hellomyteam.entity.Team;
+import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.entity.status.team.AuthorityStatus;
 import hellomyteam.hellomyteam.repository.custom.TeamJpaRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -244,4 +246,96 @@ public class TeamCustomImpl implements TeamJpaRepository {
     }
 
 
+    public Page<TeamSearchDto> getTeamsInfoByDefault(Pageable pageable) {
+        List<TeamSearchDto> content =  queryFactory.select(new QTeamSearchDto(
+                        team.id
+                        , team.teamName
+                        , team.oneIntro
+                        , team.teamSerialNo
+                        , member.name
+                        , team.memberCount
+                        , image.imageUrl
+                ))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(teamMemberInfo.count())
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")));
+
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    public Page<TeamSearchDto> getTeamsInfoByASC(Pageable pageable) {
+        List<TeamSearchDto> content = queryFactory.select(new QTeamSearchDto(
+                        team.id
+                        , team.teamName
+                        , team.oneIntro
+                        , team.teamSerialNo
+                        , member.name
+                        , team.memberCount
+                        , image.imageUrl
+                ))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(team.id.asc())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(teamMemberInfo.count())
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")));
+
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    public Page<TeamSearchDto> getTeamsInfoByDESC(Pageable pageable) {
+        List<TeamSearchDto> content = queryFactory.select(new QTeamSearchDto(
+                        team.id
+                        , team.teamName
+                        , team.oneIntro
+                        , team.teamSerialNo
+                        , member.name
+                        , team.memberCount
+                        , image.imageUrl
+                ))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(team.id.desc())
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(teamMemberInfo.count())
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")));
+
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
 }

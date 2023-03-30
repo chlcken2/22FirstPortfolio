@@ -4,7 +4,6 @@ import hellomyteam.hellomyteam.entity.status.team.TacticalStyleStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Setter
 @Getter

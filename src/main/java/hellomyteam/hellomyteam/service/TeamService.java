@@ -2,7 +2,10 @@ package hellomyteam.hellomyteam.service;
 
 import hellomyteam.hellomyteam.config.S3Uploader;
 import hellomyteam.hellomyteam.dto.*;
-import hellomyteam.hellomyteam.entity.*;
+import hellomyteam.hellomyteam.entity.Image;
+import hellomyteam.hellomyteam.entity.Member;
+import hellomyteam.hellomyteam.entity.Team;
+import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.entity.status.ConditionStatus;
 import hellomyteam.hellomyteam.entity.status.MemberStatus;
 import hellomyteam.hellomyteam.entity.status.team.AuthorityStatus;
@@ -14,20 +17,14 @@ import hellomyteam.hellomyteam.repository.custom.impl.FileUploadCustomImpl;
 import hellomyteam.hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @Slf4j
@@ -252,6 +249,32 @@ public class TeamService {
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("created_date").descending());
         Page<TeamMemberInfosResDto> teamMemberInfosResDtos = teamCustomImpl.getTeamMemberInfoById(teamId, pageable);
         return teamMemberInfosResDtos;
+    }
+
+    public CommonResponse<?> getTeams(int pageNum, int pageSize, String pageSort) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        if (pageSort.equals("ASC")) {
+            Page<TeamSearchDto> teamSearchDtos = teamCustomImpl.getTeamsInfoByASC(pageable);
+            return CommonResponse.createSuccess(teamSearchDtos, "팀 오름차순(ASC) 리스트 success");
+
+        } else if (pageSort.equals("DESC")) {
+            Page<TeamSearchDto> teamSearchDtos = teamCustomImpl.getTeamsInfoByDESC(pageable);
+            return CommonResponse.createSuccess(teamSearchDtos, "팀 내림차순(DESC) 리스트 success");
+
+        } else if (pageSort.equals("SHUFFLE")) {
+            Page<TeamSearchDto> teamSearchDtos = teamCustomImpl.getTeamsInfoByDefault(pageable);
+            List<TeamSearchDto> content = new ArrayList<>(teamSearchDtos.getContent());
+
+            Collections.shuffle(content);
+
+            int fromIndex = (int) pageable.getOffset();
+            int toIndex = Math.min(fromIndex + pageable.getPageSize(), content.size());
+
+            List<TeamSearchDto> subList = content.subList(fromIndex, toIndex);
+            return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, content.size()), "팀 랜덤(SHUFFLE) 리스트 success");
+        }
+
+        return CommonResponse.createError("정확한 pageSort 값을 입력해주세요.");
     }
 
     public CommonResponse<?> getTeamMemberInfoId(Long teamId, Long memberId) {
