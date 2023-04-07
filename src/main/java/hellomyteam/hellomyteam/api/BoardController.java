@@ -29,7 +29,7 @@ public class BoardController {
      *  Parameter = teamId, pageNum, pageSize, category
      *  return = board, pageable(offset, pageSize, pageNumber, totalElements, totalPages)
      */
-    @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId로 팀 별 게시판 조회")
+    @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId, Category, pageNum, pageSize로 게시판 조회, offset, pageSize, pageNumber, totalElements, totalPages 리턴")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "teamId", value = "가져올 team Id"),
             @ApiImplicitParam(name = "pageNum", value = "페이지 번호"),
