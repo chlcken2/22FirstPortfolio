@@ -26,7 +26,7 @@ public class BoardController {
 
     /**
      * 페이징 처리
-     *  Parameter = teamId, pageNum, pageSize, category
+     *  Parameter = teamId, pageNum, pageSize, category, srchType, srchKwd, sortType
      *  return = board, pageable(offset, pageSize, pageNumber, totalElements, totalPages)
      */
     @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId, Category, pageNum, pageSize로 게시판 조회, offset, pageSize, pageNumber, totalElements, totalPages 리턴")
@@ -35,10 +35,14 @@ public class BoardController {
             @ApiImplicitParam(name = "pageNum", value = "페이지 번호"),
             @ApiImplicitParam(name = "pageSize", value = "보여줄 게시물 수"),
             @ApiImplicitParam(name = "category", value = "카테고리 ex)FREE_BOARD, NOTICE_BOARD"),
+            @ApiImplicitParam(name = "srchType", value = "검색 타입 ex)title, contents, writer"),
+            @ApiImplicitParam(name = "srchKwd", value = "검색 키워드"),
+            @ApiImplicitParam(name = "sortType", value = "정렬 타입 ex)최신순, 좋아요순", defaultValue = "created_date")
     })
     @GetMapping("/team/{teamId}/boards")
-    public CommonResponse<?> getBoards(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam int pageSize, @RequestParam BoardCategory category){
-        return boardService.getBoards(teamId, pageNum, pageSize, category);
+    public CommonResponse<?> getBoards(@PathVariable Long teamId, @RequestParam int pageNum, @RequestParam int pageSize, @RequestParam BoardCategory category, @RequestParam(required = false) String srchType, @RequestParam(required = false) String srchKwd, @RequestParam String sortType){
+
+        return boardService.getBoards(teamId, pageNum, pageSize, category, srchType, srchKwd, sortType);
     }
 
     @ApiOperation(value = "게시판 작성", notes = "teamMemberInfo_id가 존재해야한다, 게시판을 생성한다.")

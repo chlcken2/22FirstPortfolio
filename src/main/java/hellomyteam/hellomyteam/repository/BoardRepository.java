@@ -18,8 +18,17 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
             "from Board b " +
             "where b.team.id = :teamId " +
-            "and b.boardCategory = :category " +
-            "order by b.createdDate desc")
+            "and b.boardCategory = :category ")
     Page<BoardListResDto> getBoards(Long teamId, BoardCategory category, Pageable pageable);
 
+    @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
+            "from Board b " +
+            "where b.team.id = :teamId " +
+            "and b.boardCategory = :category " +
+            "and (:srchKwd is null or :srchKwd = '' or (CASE WHEN :srchType = 'writer' THEN b.writer " +
+            "          WHEN :srchType = 'title' THEN b.title " +
+            "          WHEN :srchType = 'contents' THEN b.contents " +
+            "          ELSE '' END) " +
+            "like CONCAT('%', :srchKwd, '%')) ")
+    Page<BoardListResDto> srchResult(Long teamId, BoardCategory category, Pageable pageable, String srchType, String srchKwd);
 }

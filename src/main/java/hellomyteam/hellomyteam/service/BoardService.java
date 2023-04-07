@@ -39,12 +39,24 @@ public class BoardService {
 
     private final EntityManager em;
 
-    public CommonResponse<?> getBoards(Long teamId, int pageNum, int pageSize, BoardCategory category){
-        // pageNum = pageSize : 한 화면에 가져올 게시물 수
-        Pageable pageable = PageRequest.of(pageNum -1, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
+    public CommonResponse<?> getBoards(Long teamId, int pageNum, int pageSize, BoardCategory category, String srchType, String srchKwd, String sortType){
+        // 정렬 조건 Check
+        if("created_date".equals(sortType)){
+            sortType = "createdDate";
+        }
+        if("like_count".equals(sortType)){
+            sortType = "likeCount";
+        }
+        Pageable pageable = PageRequest.of(pageNum -1, pageSize, Sort.by(Sort.Direction.DESC, sortType));
 
-        Page<BoardListResDto> boards = boardRepository.getBoards(teamId, category, pageable);
-        return CommonResponse.createSuccess(boards, "boardsList success");
+        //검색 타입 Check
+        if("".equals(srchType) || srchType != null){
+            Page<BoardListResDto> boards = boardRepository.srchResult(teamId, category, pageable, srchType, srchKwd);
+            return CommonResponse.createSuccess(boards, "boardsList success");
+        }else {
+            Page<BoardListResDto> boards = boardRepository.getBoards(teamId, category, pageable);
+            return CommonResponse.createSuccess(boards, "boardsList success");
+        }
     }
     public Board createBoard(BoardWriteDto boardWriteDto) {
         TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findById(boardWriteDto.getTeamMemberInfoId())
