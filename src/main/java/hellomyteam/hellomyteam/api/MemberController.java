@@ -55,8 +55,8 @@ public class MemberController {
     }
 
     @ApiOperation(value = "로그인 후 가입한 팀 id와 팀 이름 가져오기", notes = "user/me를 통해 userId전달, 데이터 미존재시 - 미가입 페이지 리턴")
-    @GetMapping("/user/teams/{memberId}")
-    public CommonResponse<?> getAfterTeamsByMemberId(@PathVariable Long memberId) {
+    @GetMapping("/user/teams/{memberid}")
+    public CommonResponse<?> getAfterTeamsByMemberId(@PathVariable(value = "memberid") Long memberId) {
         return memberService.findJoinTeam(memberId);
     }
 }
