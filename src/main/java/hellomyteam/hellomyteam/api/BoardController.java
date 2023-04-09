@@ -31,7 +31,7 @@ public class BoardController {
      */
     @ApiOperation(value = "게시판 목록 조회 / 페이징 처리", notes = "teamId, Category, pageNum, pageSize로 게시판 조회, offset, pageSize, pageNumber, totalElements, totalPages 리턴")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "teamId", value = "가져올 team Id"),
+            @ApiImplicitParam(name = "teamid", value = "가져올 team Id"),
             @ApiImplicitParam(name = "pageNum", value = "페이지 번호"),
             @ApiImplicitParam(name = "pageSize", value = "보여줄 게시물 수"),
             @ApiImplicitParam(name = "category", value = "카테고리 ex)FREE_BOARD, NOTICE_BOARD"),
