@@ -47,7 +47,7 @@ public class BoardService {
         if("like_count".equals(sortType)){
             sortType = "likeCount";
         }
-        Pageable pageable = PageRequest.of(pageNum -1, pageSize, Sort.by(Sort.Direction.DESC, sortType));
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.DESC, sortType));
 
         //검색 타입 Check
         if("".equals(srchType) || srchType != null){
