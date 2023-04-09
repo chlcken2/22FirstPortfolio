@@ -8,22 +8,23 @@ import java.time.LocalDateTime;
 
 @Getter
 public class BoardListResDto {
+    //b.contents, b.writer, b.title, b.commentCount, b.likeCount, b.createdDate
+    //b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents
     private String writer;
     private String title;
-    private BoardAndCommentStatus boardStatus;
-    private Integer viewNo;
     private LocalDateTime createdDate;
     private Integer commentCount;
     private Integer likeCount;
 
+    private String contents;
+
     @QueryProjection
-    public BoardListResDto(String writer, String title, BoardAndCommentStatus boardStatus, Integer viewNo, LocalDateTime createdDate, Integer commentCount, Integer likeCount) {
+    public BoardListResDto(String writer, String title, LocalDateTime createdDate, Integer commentCount, Integer likeCount, String contents) {
         this.writer = writer;
         this.title = title;
-        this.boardStatus = boardStatus;
-        this.viewNo = viewNo;
         this.createdDate = createdDate;
         this.commentCount = commentCount;
         this.likeCount = likeCount;
+        this.contents = contents;
     }
 }

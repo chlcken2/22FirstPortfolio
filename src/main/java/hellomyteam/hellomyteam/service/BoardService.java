@@ -2,6 +2,7 @@ package hellomyteam.hellomyteam.service;
 
 import hellomyteam.hellomyteam.dto.*;
 import hellomyteam.hellomyteam.entity.Board;
+import hellomyteam.hellomyteam.entity.BoardCategory;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.entity.status.BoardAndCommentStatus;
 import hellomyteam.hellomyteam.repository.BoardRepository;
@@ -10,6 +11,10 @@ import hellomyteam.hellomyteam.repository.TeamMemberInfoRepository;
 import hellomyteam.hellomyteam.repository.custom.impl.BoardCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.servlet.http.Cookie;
@@ -34,12 +39,24 @@ public class BoardService {
 
     private final EntityManager em;
 
-    public CommonResponse<?> getBoards(Long teamId, int pageNum, String category){
-        // pageNum = pageSize : 한 화면에 가져올 게시물 수
-        pageNum = pageNum * 10;
+    public CommonResponse<?> getBoards(Long teamId, int pageNum, int pageSize, BoardCategory category, String srchType, String srchKwd, String sortType){
+        // 정렬 조건 Check
+        if("created_date".equals(sortType)){
+            sortType = "createdDate";
+        }
+        if("like_count".equals(sortType)){
+            sortType = "likeCount";
+        }
+        Pageable pageable = PageRequest.of(pageNum -1, pageSize, Sort.by(Sort.Direction.DESC, sortType));
 
-        List<Board> boards = boardRepository.getBoards(teamId,pageNum, category);
-        return CommonResponse.createSuccess(boards, "boardsList success");
+        //검색 타입 Check
+        if("".equals(srchType) || srchType != null){
+            Page<BoardListResDto> boards = boardRepository.srchResult(teamId, category, pageable, srchType, srchKwd);
+            return CommonResponse.createSuccess(boards, "boardsList success");
+        }else {
+            Page<BoardListResDto> boards = boardRepository.getBoards(teamId, category, pageable);
+            return CommonResponse.createSuccess(boards, "boardsList success");
+        }
     }
     public Board createBoard(BoardWriteDto boardWriteDto) {
         TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findById(boardWriteDto.getTeamMemberInfoId())
