@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
@@ -19,7 +19,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "from Board b " +
             "where b.team.id = :teamId " +
             "and b.boardCategory = :category ")
-    Page<BoardListResDto> getBoards(Long teamId, BoardCategory category, Pageable pageable);
+    Page<BoardListResDto> getBoards(@Param("teamId") Long teamId, @Param("category") BoardCategory category,
+                                    @Param("pageable") Pageable pageable);
 
     @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
             "from Board b " +
@@ -30,5 +31,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "          WHEN :srchType = 'contents' THEN b.contents " +
             "          ELSE '' END) " +
             "like CONCAT('%', :srchKwd, '%')) ")
-    Page<BoardListResDto> srchResult(Long teamId, BoardCategory category, Pageable pageable, String srchType, String srchKwd);
+    Page<BoardListResDto> srchResult(@Param("teamId") Long teamId, @Param("category") BoardCategory category,
+                                     @Param("pageable") Pageable pageable, @Param("srchType") String srchType,
+                                     @Param("srchKwd") String srchKwd);
 }
