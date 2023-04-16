@@ -14,12 +14,13 @@ import hellomyteam.hellomyteam.dto.SignUpRequest;
 import hellomyteam.hellomyteam.repository.MemberRepository;
 import hellomyteam.hellomyteam.service.AuthService;
 import hellomyteam.hellomyteam.service.TokenProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ObjectUtils;
@@ -29,7 +30,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Date;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -40,8 +43,6 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
-    @Value("${jwt.secret}")
-    private String secretKey;
 
     /**
      *
@@ -52,54 +53,19 @@ public class AuthController {
     @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
     @GetMapping("/email")
     public String mailCertification(@RequestParam String mail){
-       // AuthService authService = new AuthService();
         String token = authService.sendMail(mail);
         return token;
     }
 
-    @ApiOperation(value = "numMatching" , notes = "이메일에 전송된 난수 매칭")
-    @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
-    @GetMapping("/match")
-    public CommonResponse<?> numMatching(@RequestParam int num){
-
-        AuthNumDto authNumDto = authService.getAuthNumDto();
-        System.out.println(authNumDto.getAuthNumber());
-        if (authNumDto == null) {
-            System.out.println("인증번호를 입력해주세요.");
-            return CommonResponse.createError("인증번호를 입력해주세요.");
-        }
-
-        if (num == authNumDto.getAuthNumber()) {
-            System.out.println("인증번호가 일치합니다.");
-            return CommonResponse.createSuccess("인증번호가 일치합니다.");
-        } else {
-            System.out.println("인증번호가 일치하지 않습니다.");
-            return CommonResponse.createError("인증번호가 일치하지 않습니다.");
-        }
-    }
-    @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
+    @ApiOperation(value = "tokenVerify", notes = "이메일에 전송된 인증번호와 해당 아이디로 발급된 토큰 내 인증번호 비교")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="auth" , value = "토큰 입력"),
+            @ApiImplicitParam(name="authNumber", value = "인증번호")
+    })
     @GetMapping("/verify")
-    public void verify(@RequestParam String auth, @RequestParam int authNumber){
-        try{
-            Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth);
-
-            String email = Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth).getBody().getSubject();
-            int AuthNum = (int) Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(auth).getBody().get("authNumber");
-
-            if(AuthNum == authNumber){
-                System.out.println("인증성공");
-            }else{
-                System.out.println("인증 실패");
-            }
-
-        }catch (Exception e){
-            System.out.println("토큰 검증 실패");
-            System.out.println(e);
-        }
+    public CommonResponse<?> verify(@RequestParam String auth, @RequestParam int authNumber, HttpServletResponse response){
+        return authService.chkJWT(auth, authNumber);
     }
-
-
-
 
     @ApiOperation(value = "login", notes = "로그인")
     @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
