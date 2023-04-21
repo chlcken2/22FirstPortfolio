@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class BoardListResDto {
     //b.contents, b.writer, b.title, b.commentCount, b.likeCount, b.createdDate
     //b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents
+    private Long id;
     private String writer;
     private String title;
     private LocalDateTime createdDate;
@@ -19,7 +20,8 @@ public class BoardListResDto {
     private String contents;
 
     @QueryProjection
-    public BoardListResDto(String writer, String title, LocalDateTime createdDate, Integer commentCount, Integer likeCount, String contents) {
+    public BoardListResDto(Long id, String writer, String title, LocalDateTime createdDate, Integer commentCount, Integer likeCount, String contents) {
+        this.id = id;
         this.writer = writer;
         this.title = title;
         this.createdDate = createdDate;
