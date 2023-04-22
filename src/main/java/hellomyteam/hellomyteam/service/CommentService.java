@@ -11,6 +11,7 @@ import hellomyteam.hellomyteam.repository.TeamMemberInfoRepository;
 import hellomyteam.hellomyteam.repository.custom.impl.CommentCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,12 @@ public class CommentService {
                 commentResDtoList.add(dto);
             }
         });
-        return CommonResponse.createSuccess(commentResDtoList, "계층형 댓글 조회 success");
+
+        int fromIndex = (int) pageable.getOffset();
+        int toIndex = Math.min(fromIndex + pageable.getPageSize(), commentResDtoList.size());
+
+        List<CommentResDto> subList = commentResDtoList.subList(fromIndex, toIndex);
+        return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, commentResDtoList.size()), "팀 랜덤(SHUFFLE) 리스트 success");
     }
 
     public CommonResponse<?> createComment(Long boardId, CommentCreateReqDto commentCreateReqDto) {
