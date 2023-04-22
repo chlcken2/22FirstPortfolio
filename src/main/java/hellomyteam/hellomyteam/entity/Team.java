@@ -36,6 +36,8 @@ public class Team extends BaseTimeEntity {
 
     private Integer teamSerialNo;                          //팀 고유번호
 
+    private String location;
+
     @JsonIgnore
     @OneToMany(mappedBy = "team")
     private List<TeamMemberInfo> teamMemberInfos = new ArrayList<>();
