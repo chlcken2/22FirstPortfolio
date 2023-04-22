@@ -46,10 +46,16 @@ public class CommentService {
         Map<Long, CommentResDto> map = new HashMap<>();
 
         comments.stream().forEach(c -> {
+            String imageUrl = commentCustomImpl.getWriterImgUrl(c.getTeamMemberInfo().getId());
             CommentResDto dto = convertCommentToDto(c);
+            dto.setImgUrl(imageUrl);
+
             map.put(dto.getCommentId(), dto);
-            if(c.getParent() != null) map.get(c.getParent().getId()).getChildren().add(dto);
-            else commentResDtoList.add(dto);
+            if (c.getParent() != null) {
+                map.get(c.getParent().getId()).getChildren().add(dto);
+            } else {
+                commentResDtoList.add(dto);
+            }
         });
         return CommonResponse.createSuccess(commentResDtoList, "계층형 댓글 조회 success");
     }
@@ -60,9 +66,7 @@ public class CommentService {
         }
 
         Board board = em.find(Board.class, boardId);
-//        Board board = boardRepository.findById(boardId)
-//                .orElseThrow(() -> new IllegalArgumentException("boardId가 누락되었습니다."));
-        log.info("@@boarD:" + board);
+
         if (board == null) {
             return CommonResponse.createError("존재하지 않는 게시글입니다.");
         }
@@ -117,7 +121,7 @@ public class CommentService {
                     .build();
         }
 
-        board.setCommentCount(board.getCommentCount() +1);
+        board.setCommentCount(board.getCommentCount() + 1);
         return CommonResponse.createSuccess(commentCreateResDto, "댓글 작성 success");
     }
 
@@ -139,3 +143,5 @@ public class CommentService {
         findComment.setCommentStatus(BoardAndCommentStatus.DELETE_USER);
     }
 }
+
+
