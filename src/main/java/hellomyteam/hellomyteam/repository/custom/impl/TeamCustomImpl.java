@@ -50,6 +50,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -255,6 +256,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -284,6 +286,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -316,6 +319,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
