@@ -1,8 +1,8 @@
 package hellomyteam.hellomyteam.service;
 
 import hellomyteam.hellomyteam.dto.AuthNumDto;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import hellomyteam.hellomyteam.dto.CommonResponse;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,16 +31,15 @@ import java.util.Random;
 @Transactional
 @RequiredArgsConstructor
 public class AuthService {
-
+    
     //private final JwtTokenProvider jwtTokenProvider;
     private int authNumber;
     private String uniqueAuthNumber;
     private static final long EXPIRATION_TIME = 10 * 60 * 1000;
 
     private AuthNumDto authNumDto;
+    private final TokenProvider tokenProvider;
 
-    @Autowired
-    private TokenProvider tokenProvider;
     @Value("${jwt.secret}")
     private String secretKey;
     public String sendMail(String mailId){
@@ -53,18 +53,18 @@ public class AuthService {
                 .authNumber(authNumber)
                 .build();
 
-        System.out.println("시크릿 : " + secretKey);
-        System.out.println(secretKey.getBytes());
-        String token = Jwts.builder()
+        System.out.println(mailId+"/"+ authNumber+"/"+ EXPIRATION_TIME);
+        String token = tokenProvider.mailToken(mailId, authNumber, EXPIRATION_TIME);
+        /*String token = Jwts.builder()
                         .setSubject(mailId)
                         .claim("authNumber", authNumber)
                         .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                         .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
-                        .compact();
+                        .compact();*/
 
-        System.out.println(authNumDto.getAuthCode());
-        System.out.println(authNumDto.getAuthNumber());
-        System.out.println(token);
+        log.debug(authNumDto.getAuthCode());
+        log.debug(String.format("%d",authNumDto.getAuthNumber()));
+        log.debug(token);
 
         Properties authProperties = new Properties();
         try{
@@ -82,12 +82,11 @@ public class AuthService {
             }
             inputStream.close();
         }catch (IOException e){
-            System.out.println("에러가 발생했습니다1.");
-            System.out.println(e);
-            e.printStackTrace();
+            log.debug("IOException 발생");
+            log.error("An error occurred ",e);
         }catch (Exception e){
-            System.out.println("에러가 발생했습니다2.");
-            System.out.println(e);
+            log.debug("Exception 발생");
+            log.error("An error occurred ",e);
         }
 
         Session session = Session.getInstance(authProperties, new javax.mail.Authenticator(){
@@ -101,7 +100,7 @@ public class AuthService {
             }
         });
 
-        String title = "테스트 입니다.";
+        String title = "[헬로마이팀] 회원가입을 위한 인증번호입니다.";
         String body =
                 "안녕하세요 가입을 위해 아래 인증번호를 입력해주세요." +
                 "<br><br>" +
@@ -119,11 +118,11 @@ public class AuthService {
             mmh.setText(body,true);
             Transport.send(message);
         }catch (AddressException ex){
-            System.out.println("올바른 이메일 주소 형식이 아닙니다.");
-            ex.printStackTrace();
+            log.debug("올바른 이메일 주소 형식이 아닙니다.");
+            log.error("An error occurred ",ex);
         }catch (MessagingException ex){
-            System.out.println("이메일 전송 실패!");
-            ex.printStackTrace();
+            log.debug("이메일 전송 실패!");
+            log.error("An error occurred ",ex);
         }
 
         return token;
@@ -147,9 +146,16 @@ public class AuthService {
         return encryptor.decrypt(str);
     }
 
-    public AuthNumDto getAuthNumDto(){
-        System.out.println("getAuthNumDto 실행");
-        System.out.println(authNumDto.getAuthCode());
-        return authNumDto;
+    public CommonResponse<?> chkJWT(String token, int authNumber){
+        if(StringUtils.hasText(token)&&tokenProvider.verifyToken(token)){
+            int AuthNum = tokenProvider.getAuthNumber(token);
+            if(authNumber == AuthNum){
+                return CommonResponse.createSuccess("인증 성공");
+            }else{
+                return CommonResponse.createError("인증 실패");
+            }
+        }else{
+            return CommonResponse.createError("토큰 만료");
+        }
     }
 }
