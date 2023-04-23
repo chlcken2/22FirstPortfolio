@@ -151,15 +151,21 @@ public class CommentService {
 
     public CommonResponse<?> updateComment(Long commentId, CommentUpdateReqDto commentUpdateReqDto) {
         Comment findComment = em.find(Comment.class, commentId);
-        if (findComment.getTeamMemberInfo().getId() != commentUpdateReqDto.getTeamMemberInfoId()) {
-            return CommonResponse.createError("수정 권한이 없습니다.");
+
+        if (!findComment.getTeamMemberInfo().getId().equals(commentUpdateReqDto.getTeamMemberInfoId())) {
+            System.out.println("findComment.getTeamMemberInfo().getId() = " + findComment.getTeamMemberInfo().getId());
+            System.out.println("commentUpdateReqDto = " + commentUpdateReqDto.getTeamMemberInfoId());
+            return CommonResponse.createError("수정 권한이 없습니다!.");
         }
+
         if (findComment.getCommentStatus().equals(BoardAndCommentStatus.DELETE_USER)) {
             return CommonResponse.createError("삭제된 댓글은 수정할 수 없습니다.");
         }
 
         findComment.setContent(commentUpdateReqDto.getContent());
-        return CommonResponse.createSuccess("수정되었습니다.");
+
+
+        return CommonResponse.createSuccess(findComment, "수정되었습니다.");
     }
 
     public void deleteComment(Long commentId) {
