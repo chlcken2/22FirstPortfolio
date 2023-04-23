@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import static hellomyteam.hellomyteam.entity.QComment.comment;
+import static hellomyteam.hellomyteam.entity.QImage.image;
 
 @Slf4j
 @Repository
@@ -25,5 +26,12 @@ public class CommentCustomImpl {
                 .limit(pageable.getPageSize())
                 .orderBy(comment.parent.id.asc().nullsFirst(), comment.createdDate.asc())
                 .fetch();
+    }
+
+    public String getWriterImgUrl(Long id) {
+        return queryFactory.select(image.imageUrl)
+                .from(image)
+                .where(image.teamMemberInfo.id.eq(id))
+                .fetchOne();
     }
 }

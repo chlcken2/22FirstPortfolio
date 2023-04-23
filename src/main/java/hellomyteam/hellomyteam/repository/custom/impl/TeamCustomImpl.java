@@ -50,6 +50,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -255,6 +256,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -284,6 +286,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -316,6 +319,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         , member.name
                         , team.memberCount
                         , image.imageUrl
+                        , team.location
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -337,5 +341,13 @@ public class TeamCustomImpl implements TeamJpaRepository {
 
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    public List<Long> findCurrentIdByLoginUser(String currentUserEmail) {
+        return queryFactory.select(teamMemberInfo.id)
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.member, member)
+                .where(teamMemberInfo.member.email.eq(currentUserEmail))
+                .fetch();
     }
 }

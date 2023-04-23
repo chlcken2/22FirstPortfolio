@@ -6,10 +6,6 @@
         ]>
 <properties>
     <property name="mail.encryptor.pw">1q2w3e4r!@#$</property>
-    <!--
-    <property name="mail.username">5DFw9Z+Rf6FSAr/Amuuele3bBfs90/iDilZ6aWfQyrM=</property>
-    <property name="mail.password">BgXfN6qIlEfEggpICo187yxlojWeblsL</property>
-    -->
 
     <property name="mail.username">rCcmkLZ2aOraV/h6nsC47NWMpNLCeRvFYNjFDQ36YWwfM7nb+vjZJA==</property>
     <property name="mail.password">RjVgaRjVEQcVpQx5D9/arDsifNrJk0hmSiPRGx2UumU=</property>

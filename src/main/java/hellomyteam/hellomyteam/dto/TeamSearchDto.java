@@ -16,10 +16,11 @@ public class TeamSearchDto {
     private String name;
     private Integer memberCount;
     private String imageUrl;
+    private String location;
 
 
     @QueryProjection
-    public TeamSearchDto(Long teamId, String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount, String imageUrl) {
+    public TeamSearchDto(Long teamId, String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount, String imageUrl, String location) {
         this.teamId = teamId;
         this.teamName = teamName;
         this.oneIntro = oneIntro;
@@ -27,5 +28,6 @@ public class TeamSearchDto {
         this.name = name;
         this.memberCount = memberCount;
         this.imageUrl = imageUrl;
+        this.location = location;
     }
 }
