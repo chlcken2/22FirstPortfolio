@@ -15,14 +15,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Board getBoardById(Long boardId);
 
-    @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
+    @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.id, b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
             "from Board b " +
             "where b.team.id = :teamId " +
             "and b.boardCategory = :category ")
     Page<BoardListResDto> getBoards(@Param("teamId") Long teamId, @Param("category") BoardCategory category,
                                     @Param("pageable") Pageable pageable);
 
-    @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
+    @Query(value = "select new hellomyteam.hellomyteam.dto.BoardListResDto(b.id, b.writer, b.title, b.createdDate, b.commentCount, b.likeCount, b. contents) " +
             "from Board b " +
             "where b.team.id = :teamId " +
             "and b.boardCategory = :category " +

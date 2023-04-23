@@ -40,7 +40,13 @@ public class BoardController {
             @ApiImplicitParam(name = "sortType", value = "정렬 타입 ex)최신순, 좋아요순", defaultValue = "created_date")
     })
     @GetMapping("/teams/{teamid}/boards")
-    public CommonResponse<?> getBoards(@PathVariable(value = "teamid") Long teamId, @RequestParam int pageNum, @RequestParam int pageSize, @RequestParam BoardCategory category, @RequestParam(required = false) String srchType, @RequestParam(required = false) String srchKwd, @RequestParam String sortType){
+    public CommonResponse<?> getBoards(@PathVariable(value = "teamid") Long teamId,
+                                       @RequestParam int pageNum,
+                                       @RequestParam int pageSize,
+                                       @RequestParam BoardCategory category,
+                                       @RequestParam(required = false) String srchType,
+                                       @RequestParam(required = false) String srchKwd,
+                                       @RequestParam String sortType){
 
         return boardService.getBoards(teamId, pageNum, pageSize, category, srchType, srchKwd, sortType);
     }
