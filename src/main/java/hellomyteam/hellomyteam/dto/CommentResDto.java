@@ -21,8 +21,9 @@ public class CommentResDto {
     private BoardAndCommentStatus commentStatus;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
-    private List<CommentResDto> children = new ArrayList<>();
     private String imgUrl;
+    private boolean isAuthor;
+    private List<CommentResDto> children = new ArrayList<>();
 
     public CommentResDto(Long commentId, String content, String writer, Long teamMemberInfoId, Integer likeCount, BoardAndCommentStatus commentStatus, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.commentId = commentId;

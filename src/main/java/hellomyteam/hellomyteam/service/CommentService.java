@@ -5,15 +5,17 @@ import hellomyteam.hellomyteam.entity.Board;
 import hellomyteam.hellomyteam.entity.Comment;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.entity.status.BoardAndCommentStatus;
-import hellomyteam.hellomyteam.repository.BoardRepository;
 import hellomyteam.hellomyteam.repository.CommentRepository;
 import hellomyteam.hellomyteam.repository.TeamMemberInfoRepository;
 import hellomyteam.hellomyteam.repository.custom.impl.CommentCustomImpl;
+import hellomyteam.hellomyteam.repository.custom.impl.TeamCustomImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -30,32 +32,48 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final BoardService boardService;
-    private final BoardRepository boardRepository;
     private final CommentCustomImpl commentCustomImpl;
+    private final TeamCustomImpl teamCustomImpl;
     private final EntityManager em;
 
 
     public CommonResponse<?> findCommentsByBoard(Long boardId, int commentNum, int commentSize) {
+        List<CommentResDto> commentResDtoList = new ArrayList<>();
+        Map<Long, CommentResDto> map = new HashMap<>();
+
         Board findBoard = boardService.getBoardById(boardId);
         if (null == findBoard) {
             return CommonResponse.createError("존재하지 않는 게시글 id 입니다.");
         }
+
+        //로그인 사용자 정보 받아옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        List<Long> currentIds = teamCustomImpl.findCurrentIdByLoginUser(currentUserEmail);
+
+        //페이징 처리 객체 생성
         Pageable pageable = PageRequest.of(commentNum, commentSize);
         List<Comment> comments = commentCustomImpl.findCommentByBoard(findBoard, pageable);
 
-        List<CommentResDto> commentResDtoList = new ArrayList<>();
-        Map<Long, CommentResDto> map = new HashMap<>();
-
+        //댓글 컨버팅 계층형 댓글 및 삭제 댓글 상태 변경
         comments.stream().forEach(c -> {
             String imageUrl = commentCustomImpl.getWriterImgUrl(c.getTeamMemberInfo().getId());
             CommentResDto dto = convertCommentToDto(c);
             dto.setImgUrl(imageUrl);
 
+            // 댓글 계층 생성
             map.put(dto.getCommentId(), dto);
             if (c.getParent() != null) {
                 map.get(c.getParent().getId()).getChildren().add(dto);
             } else {
                 commentResDtoList.add(dto);
+            }
+
+            //작성자 판별
+            if (currentIds.contains(dto.getTeamMemberInfoId())) {
+                dto.setAuthor(true);
+            } else {
+                dto.setAuthor(false);
             }
         });
 
@@ -63,7 +81,7 @@ public class CommentService {
         int toIndex = Math.min(fromIndex + pageable.getPageSize(), commentResDtoList.size());
 
         List<CommentResDto> subList = commentResDtoList.subList(fromIndex, toIndex);
-        return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, commentResDtoList.size()), "팀 랜덤(SHUFFLE) 리스트 success");
+        return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, commentResDtoList.size()), "comment 리스트 success");
     }
 
     public CommonResponse<?> createComment(Long boardId, CommentCreateReqDto commentCreateReqDto) {
