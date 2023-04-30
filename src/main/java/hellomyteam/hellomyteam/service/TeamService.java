@@ -299,4 +299,21 @@ public class TeamService {
 
         return CommonResponse.createSuccess(teamMemberInfoId, "teamMemberInfo_Id 값 success");
     }
+
+    /**
+     * 팀 가입 취소
+     * teamId 와 memberId 로 teamMemberInfoId 를 삭제함
+     * @param teamId
+     * @param memberId
+     * @return
+     */
+    public CommonResponse<?> cancelJoinTeam(Long teamId, Long memberId){
+        int checkDeleteId = teamMemberInfoRepository.deleteTeamMemberInfoById(teamId, memberId);
+
+        if(checkDeleteId > 0 ){
+            return CommonResponse.createSuccess("가입이 취소되었습니다.");
+        }else{
+            return CommonResponse.createError("가입 취소가 실패하였습니다.");
+        }
+    }
 }
