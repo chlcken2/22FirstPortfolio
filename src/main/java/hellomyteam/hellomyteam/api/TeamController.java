@@ -101,6 +101,17 @@ public class TeamController {
         return CommonResponse.createSuccess(result, "success");
     }
 
+    //TODO 팀 가입 취소
+    @ApiOperation(value = "팀 가입 취소", notes = "가입 신청한 팀Id 와 가입할 회원 Id를 입력한다. -> team_member_info_id 삭제")
+    @DeleteMapping(value = "/teams/{teamid}/cancel/{memberId}")
+    public CommonResponse<?> cancelJoinTeam(@PathVariable(value = "teamid") Long teamId,
+                                            @PathVariable(value = "memberId") Long memberId) {
+        Member member = memberService.findMemberByTeamMemberId(memberId);
+        Team team = teamService.findTeamByTeamMemberId(teamId);
+
+        return teamService.cancelJoinTeam(team.getId(), member.getId());
+    }
+
     //TODO: (알림)팀원 가입 신정자 정보 가져오기,teamMemberInfoId전달해줘서 팀장일 경우 조회가능하게.
     @ApiOperation(value = "(알림) 알림 페이지 팀 가입 신청자 데이터 가져오기", notes = "알림페이지에 띄어질 정보/ teamMemberInfoId= 회원 번호, teamId = 현재 팀")
     @GetMapping("/teams/{teamid}/team-member/{teammemberinfoid}/notifications")

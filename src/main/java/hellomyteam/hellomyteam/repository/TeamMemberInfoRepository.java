@@ -2,9 +2,12 @@ package hellomyteam.hellomyteam.repository;
 
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import javax.transaction.Transactional;
 
 @Repository
 public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, Long> {
@@ -51,4 +54,9 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
     boolean existsByTeamIdAndMemberId(Long teamId, Long memberId);
 
     TeamMemberInfo findByTeamIdAndMemberId(Long teamId, Long memberId);
+
+    @Modifying
+    @Transactional
+    @Query("Delete From TeamMemberInfo t where t.team.id = ?1 and t.member.id = ?2")
+    int deleteTeamMemberInfoById(Long teamId, Long memberId);
 }
