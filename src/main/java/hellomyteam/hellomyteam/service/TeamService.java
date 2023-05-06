@@ -277,6 +277,32 @@ public class TeamService {
         return CommonResponse.createError("정확한 pageSort 값을 입력해주세요.");
     }
 
+    public CommonResponse<?> getTeamList(int pageNum, int pageSize, String pageSort, long memberId){
+
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+        if("ASC".equals(pageSort)){
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListAsc(pageable, memberId);
+            return CommonResponse.createSuccess(teamListDtos, "팀 리스트 success");
+
+        } else if ("DESC".equals(pageSort)) {
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListDesc(pageable, memberId);
+            return CommonResponse.createSuccess(teamListDtos, "팀 리스트 success");
+
+        } else if ("SHUFFLE".equals(pageSort)) {
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListAsc(pageable, memberId);
+            List<TeamListDto> content = new ArrayList<>(teamListDtos.getContent());
+
+            Collections.shuffle(content);
+
+            int fromIndex = (int) pageable.getOffset();
+            int toIndex = Math.min(fromIndex + pageable.getPageSize(), content.size());
+
+            List<TeamListDto> subList = content.subList(fromIndex, toIndex);
+            return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, content.size()), "팀 랜덤(SHUFFLE) 리스트 success");
+        }
+        return CommonResponse.createError("정확한 pageSort 값을 입력해주세요.");
+    }
+
     public CommonResponse<?> getTeamMemberInfoId(Long teamId, Long memberId) {
         Optional<Team> team = teamRepository.findById(teamId);
         Optional<Member> member = memberRepository.findById(memberId);
