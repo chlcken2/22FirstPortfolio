@@ -71,6 +71,26 @@ public class TeamController {
         return teamService.getTeams(pageNum, pageSize, pageSort);
     }
 
+    //TODO member_id 값을 수동으로 받고 있음 추후 @authenticationpricipal 을 사용하여 이메일 확인 후 member_id 값 가져오는 방식 고려
+    @ApiOperation(value = "(팀 찾기) 팀 리스트 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),
+            @ApiImplicitParam(name = "pageSize", value = "들고올 데이터 수", required = true, dataType = "string", paramType = "query", defaultValue = "40"),
+            @ApiImplicitParam(name = "pageSort", value = "정렬 기준(ASC, DESC, SHUFFLE)", required = true, dataType = "string", paramType = "query", defaultValue = "SHUFFLE"),
+            @ApiImplicitParam(name = "memberId", value = "member_id 값", required = true, dataType = "long", paramType = "query", defaultValue = "0")
+    })
+    @GetMapping("/teamList")
+    public CommonResponse<?> getTeamList (@RequestParam int pageNum,
+                                          @RequestParam int pageSize,
+                                          @RequestParam String pageSort,
+                                          @RequestParam long memberId
+    ) {
+        if(memberId == 0){
+            return teamService.getTeams(pageNum, pageSize, pageSort);
+        }
+        return teamService.getTeamList(pageNum, pageSize, pageSort, memberId);
+    }
+
     @ApiOperation(value = "(팀 찾기)검색어를 통해 팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @GetMapping("/teams/{team-identifier}")
     public CommonResponse<?> findTeam (@RequestParam(value = "team-identifier") String teamIdentifier) {
