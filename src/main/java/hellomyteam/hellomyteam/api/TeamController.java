@@ -212,6 +212,26 @@ public class TeamController {
         return teamService.editTeamMemberInfo(teamId, teamMemberInfoId, teamInfoUpdateDto);
     }
 
+    /**
+     * @param teamMemberInfoId
+     * @param imgFile
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation(value = "프로필 이미지 단일 추가 및 존재시 업데이트", notes = "img_size 10MB")
+    @PostMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<?> updateProfileImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                               @RequestPart MultipartFile imgFile) throws IOException {
+
+        return teamService.saveProfile(imgFile, teamMemberInfoId);
+    }
+
+    @ApiOperation(value = "프로필 이미지 조회하기")
+    @GetMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/profile")
+    public CommonResponse<?> getProfileImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
+        return teamService.getProfile(teamMemberInfoId);
+    }
+
     //TODO 팀 관리/정보 수정
 //    @ApiOperation(value = "팀 관리 / 정보 수정")
 //    @PutMapping(value = "/member/{memberId}")

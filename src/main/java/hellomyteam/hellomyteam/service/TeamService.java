@@ -129,6 +129,48 @@ public class TeamService {
         return team;
     }
 
+    /**
+     * 팀원-개인 프로필 저장
+     * @param multipartFile
+     * @param teamMemberInfoId
+     * @return
+     * @throws IOException
+     */
+
+    public CommonResponse<?> saveProfile(MultipartFile multipartFile, Long teamMemberInfoId) throws IOException {
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+
+        if (!multipartFile.isEmpty()) {
+            Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "profile");
+            String fileName = storedFileURL.get("fileName");
+            String uploadImageUrl = storedFileURL.get("uploadImageUrl");
+
+            //teamMemberInfo_id로 저장
+            Image image = Image.builder()
+                    .teamMemberInfo(teamMemberInfo)
+                    .imageUrl(uploadImageUrl)
+                    .storeFilename(fileName)
+                    .build();
+
+            Boolean result = fileUploadRepository.existsImageByTeamMemberInfoId(teamMemberInfoId);
+
+            //존재=true
+            if (result) {
+                fileUploadCustomImpl.updateProfileByTeamMemberInfoId(teamMemberInfoId, image.getImageUrl(), image.getStoreFilename());
+            } else {
+                fileUploadRepository.save(image);
+            }
+        }
+        return CommonResponse.createSuccess("profile 이미지 저장 success");
+    }
+
+    /**
+     * 팀 로고 이미지 저장
+     * @param multipartFile
+     * @param teamId
+     * @return
+     * @throws IOException
+     */
     public List saveLogo(MultipartFile multipartFile, Long teamId) throws IOException {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
@@ -341,5 +383,10 @@ public class TeamService {
         }else{
             return CommonResponse.createError("가입 취소가 실패하였습니다.");
         }
+    }
+
+    public CommonResponse<?> getProfile(Long teamMemberInfoId) {
+        ImgProfileResDto image = fileUploadCustomImpl.getProfileImgByTmiId(teamMemberInfoId);
+        return CommonResponse.createSuccess(image, "profile 이미지 조회 결과");
     }
 }
