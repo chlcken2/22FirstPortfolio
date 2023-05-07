@@ -25,7 +25,9 @@ public interface FileUploadRepository extends JpaRepository<Image, Long> {
 
     Boolean existsImageByTeamId(Long teamId);
 
+    List<Image> findImageByTeamId(Long teamId);
+
     Boolean existsImageByTeamMemberInfoId(Long teamMemberInfoId);
 
-    List<Image> findImageByTeamId(Long teamId);
+    Boolean existsImageByTeamMemberInfoBackGroundId(Long teamMemberInfoId);
 }
