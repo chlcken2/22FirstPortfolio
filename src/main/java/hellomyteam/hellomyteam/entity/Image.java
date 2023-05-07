@@ -19,6 +19,8 @@ public class Image extends BaseTimeEntity {
 
     private String storeFilename;
 
+    private Long teamMemberInfoBackGroundId;
+
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
@@ -32,10 +34,13 @@ public class Image extends BaseTimeEntity {
     @JoinColumn(name = "teamMemberInfo_id")
     private TeamMemberInfo teamMemberInfo;
 
+    //logo
     @Builder
-    public Image(String imageUrl, String storeFilename, Team team) {
+    public Image(String imageUrl, String storeFilename, Team team, TeamMemberInfo teamMemberInfo, Long teamMemberInfoBackGroundId) {
         this.imageUrl = imageUrl;
         this.storeFilename = storeFilename;
         this.team = team;
+        this.teamMemberInfo = teamMemberInfo;
+        this.teamMemberInfoBackGroundId = teamMemberInfoBackGroundId;
     }
 }

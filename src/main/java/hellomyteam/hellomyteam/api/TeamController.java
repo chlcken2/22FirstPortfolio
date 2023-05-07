@@ -7,6 +7,7 @@ import hellomyteam.hellomyteam.entity.Member;
 import hellomyteam.hellomyteam.entity.Team;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.dto.CommonResponse;
+import hellomyteam.hellomyteam.service.ImageService;
 import hellomyteam.hellomyteam.service.MemberService;
 import hellomyteam.hellomyteam.service.TeamService;
 import io.swagger.annotations.*;
@@ -28,6 +29,7 @@ public class TeamController {
 
     private final TeamService teamService;
     private final MemberService memberService;
+    private final ImageService imageService;
 
     @ApiOperation(value = "teamMemberInfo_id 가져오기", notes = "teamId와 memberId를 통해 팀 회원 id를 가져온다.")
     @GetMapping("/teams/{teamid}/members/{memberid}")
@@ -50,25 +52,33 @@ public class TeamController {
         Team team = teamService.createTeamWithAuthNo(teamInfo);
 
         teamService.teamMemberInfoSaveAuthLeader(team, member);
-        List<Image> savedImage = teamService.saveLogo(image, team.getId());
+        List<Image> savedImage = imageService.saveLogo(image, team.getId());
 
         hashMap.put("createdTeam", team);
         hashMap.put("teamLogo", savedImage);
         return CommonResponse.createSuccess(hashMap);
     }
 
+
+
+    //TODO member_id 값을 수동으로 받고 있음 추후 @authenticationpricipal 을 사용하여 이메일 확인 후 member_id 값 가져오는 방식 고려
     @ApiOperation(value = "(팀 찾기) 팀 리스트 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),
             @ApiImplicitParam(name = "pageSize", value = "들고올 데이터 수", required = true, dataType = "string", paramType = "query", defaultValue = "40"),
             @ApiImplicitParam(name = "pageSort", value = "정렬 기준(ASC, DESC, SHUFFLE)", required = true, dataType = "string", paramType = "query", defaultValue = "SHUFFLE"),
+            @ApiImplicitParam(name = "memberId", value = "member_id 값", required = true, dataType = "long", paramType = "query", defaultValue = "0")
     })
     @GetMapping("/teams")
-    public CommonResponse<?> teams (@RequestParam int pageNum,
-                                    @RequestParam int pageSize,
-                                    @RequestParam String pageSort
-                                    ) {
-        return teamService.getTeams(pageNum, pageSize, pageSort);
+    public CommonResponse<?> getTeamList (@RequestParam int pageNum,
+                                          @RequestParam int pageSize,
+                                          @RequestParam String pageSort,
+                                          @RequestParam long memberId
+    ) {
+        if(memberId == 0){
+            return teamService.getTeams(pageNum, pageSize, pageSort);
+        }
+        return teamService.getTeamList(pageNum, pageSize, pageSort, memberId);
     }
 
     @ApiOperation(value = "(팀 찾기)검색어를 통해 팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
@@ -101,6 +111,17 @@ public class TeamController {
         return CommonResponse.createSuccess(result, "success");
     }
 
+    //TODO 팀 가입 취소
+    @ApiOperation(value = "팀 가입 취소", notes = "가입 신청한 팀Id 와 가입할 회원 Id를 입력한다. -> team_member_info_id 삭제")
+    @DeleteMapping(value = "/teams/{teamid}/cancel/{memberId}")
+    public CommonResponse<?> cancelJoinTeam(@PathVariable(value = "teamid") Long teamId,
+                                            @PathVariable(value = "memberId") Long memberId) {
+        Member member = memberService.findMemberByTeamMemberId(memberId);
+        Team team = teamService.findTeamByTeamMemberId(teamId);
+
+        return teamService.cancelJoinTeam(team.getId(), member.getId());
+    }
+
     //TODO: (알림)팀원 가입 신정자 정보 가져오기,teamMemberInfoId전달해줘서 팀장일 경우 조회가능하게.
     @ApiOperation(value = "(알림) 알림 페이지 팀 가입 신청자 데이터 가져오기", notes = "알림페이지에 띄어질 정보/ teamMemberInfoId= 회원 번호, teamId = 현재 팀")
     @GetMapping("/teams/{teamid}/team-member/{teammemberinfoid}/notifications")
@@ -130,20 +151,7 @@ public class TeamController {
         return CommonResponse.createSuccess(count, message);
     }
 
-    @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트", notes = "img_size 10MB")
-    @PostMapping(value = "/teams/{teamid}/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public CommonResponse<?> updateLogo(@PathVariable(value = "teamid") Long teamId,
-                                        @RequestPart MultipartFile imgFile) throws IOException {
-        List<Image> savedImage = teamService.saveLogo(imgFile, teamId);
-        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
-    }
 
-    @ApiOperation(value = "팀 로고 삭제")
-    @DeleteMapping(value = "/teams/{teamid}/logo")
-    public CommonResponse<?> deleteLogo(@PathVariable(value = "teamid") Long teamId) {
-        List<Image> image = teamService.deleteLogoByTeamId(teamId);
-        return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
-    }
 
     @ApiOperation(value = "팀 탈퇴")
     @DeleteMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}")
@@ -181,6 +189,84 @@ public class TeamController {
         return teamService.editTeamMemberInfo(teamId, teamMemberInfoId, teamInfoUpdateDto);
     }
 
+    /**
+     * C,U 팀 로고 추가/수정
+     * @param teamId
+     * @param imgFile
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation(value = "팀 로고 단일 추가 및 존재시 업데이트", notes = "img_size 10MB")
+    @PostMapping(value = "/teams/{teamid}/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<?> updateLogo(@PathVariable(value = "teamid") Long teamId,
+                                        @RequestPart MultipartFile imgFile) throws IOException {
+        List<Image> savedImage = imageService.saveLogo(imgFile, teamId);
+        return CommonResponse.createSuccess(savedImage, "팀 로고 등록 success <type:List>");
+    }
+
+    /**
+     * 팀 로고 삭제
+     * @param teamId
+     * @return
+     */
+    @ApiOperation(value = "팀 로고 삭제")
+    @DeleteMapping(value = "/teams/{teamid}/logo")
+    public CommonResponse<?> deleteLogo(@PathVariable(value = "teamid") Long teamId) {
+        List<Image> image = imageService.deleteLogoByTeamId(teamId);
+        return CommonResponse.createSuccess(image, "팀 로고 삭제 success");
+    }
+
+    /**
+     * 팀 소속 유저 프로필 이미지 추가/수정
+     * @param teamMemberInfoId
+     * @param imgFile
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation(value = "프로필 이미지 단일 추가 및 존재시 업데이트", notes = "img_size 10MB")
+    @PostMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<?> updateProfileImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                              @RequestPart MultipartFile imgFile) throws IOException {
+
+        return imageService.saveProfile(imgFile, teamMemberInfoId);
+    }
+
+    /**
+     * 팀 소속 유저 프로필 이미지 조회 teamMemberInfoBackground = false
+     * @param teamMemberInfoId
+     * @return
+     */
+    @ApiOperation(value = "프로필 이미지 조회하기")
+    @GetMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/profile")
+    public CommonResponse<?> getProfileImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
+        return imageService.getProfile(teamMemberInfoId);
+    }
+
+    /**
+     * 팀 소속 유저 백그라운드 이미지 추가/수정
+     * @param teamMemberInfoId
+     * @param imgFile
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation(value = "백그라운드 이미지 단일 추가 및 존재시 업데이트", notes = "img_size 10MB")
+    @PostMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/background", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public CommonResponse<?> updateBackgroundImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                              @RequestPart MultipartFile imgFile) throws IOException {
+
+        return imageService.saveBackgroundImg(imgFile, teamMemberInfoId);
+    }
+
+    /**
+     * 백그라운드 이미지 조회 teamMemberInfoBackground = true
+     * @param teamMemberInfoId
+     * @return
+     */
+    @ApiOperation(value = "백그라운드 이미지 조회하기")
+    @GetMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/background")
+    public CommonResponse<?> getBackgroundImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
+        return imageService.getBackgroundImg(teamMemberInfoId);
+    }
     //TODO 팀 관리/정보 수정
 //    @ApiOperation(value = "팀 관리 / 정보 수정")
 //    @PutMapping(value = "/member/{memberId}")

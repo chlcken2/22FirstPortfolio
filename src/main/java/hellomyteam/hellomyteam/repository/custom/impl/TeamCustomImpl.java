@@ -1,5 +1,7 @@
 package hellomyteam.hellomyteam.repository.custom.impl;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.Expressions;
 import hellomyteam.hellomyteam.dto.*;
 import hellomyteam.hellomyteam.entity.Member;
 import hellomyteam.hellomyteam.entity.Team;
@@ -343,6 +345,50 @@ public class TeamCustomImpl implements TeamJpaRepository {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
+    public Page<TeamSearchDto> getTeamsInfoBySort(Pageable pageable, String Sort, long memberId){
+
+        OrderSpecifier orderSpecifier = getOrderSpecifier(Sort);
+
+        List<TeamSearchDto> content = queryFactory.select(new QTeamSearchDto(
+                        team.id
+                        , team.teamName
+                        , team.oneIntro
+                        , team.teamSerialNo
+                        , member.name
+                        , team.memberCount
+                        , image.imageUrl
+                        , team.location
+                ))
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(orderSpecifier)
+                .fetch();
+
+        JPAQuery<Long> countQuery = queryFactory
+                .select(teamMemberInfo.count())
+                .from(teamMemberInfo)
+                .join(teamMemberInfo.team, team)
+                .leftJoin(team.teamLogo, image)
+                .join(teamMemberInfo.member, member)
+                .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")));
+
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+    public OrderSpecifier<?> getOrderSpecifier(String Sort){
+
+        switch (Sort){
+            case "ASC":
+                return team.id.asc();
+            default:
+                return team.id.desc();
+        }
+    }
     public List<Long> findCurrentIdByLoginUser(String currentUserEmail) {
         return queryFactory.select(teamMemberInfo.id)
                 .from(teamMemberInfo)

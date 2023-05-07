@@ -2,9 +2,13 @@ package hellomyteam.hellomyteam.repository.custom.impl;
 
 import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import hellomyteam.hellomyteam.dto.ImgProfileResDto;
+import hellomyteam.hellomyteam.dto.QImgProfileResDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
+
 import static hellomyteam.hellomyteam.entity.QImage.image;
 
 @Repository
@@ -12,6 +16,17 @@ import static hellomyteam.hellomyteam.entity.QImage.image;
 public class FileUploadCustomImpl {
     private final JPAQueryFactory queryFactory;
     private final EntityManager em;
+
+    public void updateProfileByTeamMemberInfoId(Long teamMemberInfoId, String imageUrl, String storeFilename) {
+        queryFactory
+                .update(image)
+                .set(image.imageUrl, imageUrl)
+                .set(image.storeFilename, storeFilename)
+                .set(image.teamMemberInfo.id, teamMemberInfoId)
+                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
+                .execute();
+    }
+
 
     public void updateLogoByTeam(Long teamId, String imageUrl, String storeFilename) {
         queryFactory
@@ -30,4 +45,59 @@ public class FileUploadCustomImpl {
                 .where(image.team.id.eq(teamId))
                 .execute();
     }
+
+    public ImgProfileResDto getProfileImgByTmiId(Long teamMemberInfoId) {
+        return queryFactory
+                .select(new QImgProfileResDto(
+                        image.teamMemberInfo.id,
+                        image.imageUrl,
+                        image.storeFilename,
+                        image.createdDate,
+                        image.teamMemberInfoBackGroundId
+                ))
+                .from(image)
+                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
+                .fetchOne();
+    }
+
+    public void updateBackgroundByTeamMemberInfoId(Long teamMemberInfoId, String imageUrl, String storeFilename) {
+        queryFactory
+                .update(image)
+                .set(image.imageUrl, imageUrl)
+                .set(image.storeFilename, storeFilename)
+                .set(image.teamMemberInfoBackGroundId, teamMemberInfoId)
+                .where(image.teamMemberInfoBackGroundId.eq(teamMemberInfoId))
+                .execute();
+    }
+
+    public ImgProfileResDto getBackgroundImgByTmiId(Long teamMemberInfoId) {
+        return queryFactory
+                .select(new QImgProfileResDto(
+                        image.teamMemberInfo.id,
+                        image.imageUrl,
+                        image.storeFilename,
+                        image.createdDate,
+                        image.teamMemberInfoBackGroundId
+                ))
+                .from(image)
+                .where(image.teamMemberInfoBackGroundId.eq(teamMemberInfoId))
+                .fetchOne();
+    }
+
+//    public List<Image> existsProfileByTeamMemberInfoId(Long teamMemberInfoId) {
+//        return queryFactory
+//                .selectFrom(image)
+//                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
+//                .where(image.teamMemberInfoBackGroundId.eq(Boolean.FALSE))
+//                .fetch();
+//    }
+//
+//    public List<Image> existsBackgroundByTeamMemberInfoId(Long teamMemberInfoId) {
+//        return queryFactory
+//                .selectFrom(image)
+//                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
+//                .where(image.teamMemberInfoBackGround.eq(Boolean.TRUE))
+//                .fetch();
+//
+//    }
 }

@@ -23,7 +23,11 @@ public interface FileUploadRepository extends JpaRepository<Image, Long> {
                            @Param("imageUrl") String imageUrl,
                            @Param("storeFilename") String storeFilename);
 
-    Boolean existsImageByTeamId(Long TeamId);
+    Boolean existsImageByTeamId(Long teamId);
 
     List<Image> findImageByTeamId(Long teamId);
+
+    Boolean existsImageByTeamMemberInfoId(Long teamMemberInfoId);
+
+    Boolean existsImageByTeamMemberInfoBackGroundId(Long teamMemberInfoId);
 }

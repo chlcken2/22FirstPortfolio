@@ -2,7 +2,6 @@ package hellomyteam.hellomyteam.service;
 
 import hellomyteam.hellomyteam.config.S3Uploader;
 import hellomyteam.hellomyteam.dto.*;
-import hellomyteam.hellomyteam.entity.Image;
 import hellomyteam.hellomyteam.entity.Member;
 import hellomyteam.hellomyteam.entity.Team;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
@@ -129,41 +128,6 @@ public class TeamService {
         return team;
     }
 
-    public List saveLogo(MultipartFile multipartFile, Long teamId) throws IOException {
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
-
-        if (!multipartFile.isEmpty()) {
-            Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "teamLogo");
-            String fileName = storedFileURL.get("fileName");
-            String uploadImageUrl = storedFileURL.get("uploadImageUrl");
-
-            Image image = Image.builder()
-                    .team(team)
-                    .imageUrl(uploadImageUrl)
-                    .storeFilename(fileName)
-                    .build();
-
-            Boolean result = fileUploadRepository.existsImageByTeamId(teamId);
-            //존재=true
-            if (result) {
-                fileUploadCustomImpl.updateLogoByTeam(teamId, image.getImageUrl(), image.getStoreFilename());
-            } else {
-                fileUploadRepository.save(image);
-            }
-        }
-
-        List<Image> image =  fileUploadRepository.findImageByTeamId(teamId);
-        return image;
-    }
-
-    public List<Image> deleteLogoByTeamId(Long teamId) {
-        fileUploadCustomImpl.changeImageByTeamId(teamId);
-        List<Image> image =  fileUploadRepository.findImageByTeamId(teamId);
-        return image;
-    }
-
-
     public Long deleteMemberByMemberId(Long teamId, Long memberId) {
         Long count = teamCustomImpl.deleteMemberByMemberId(teamId, memberId);
         return count;
@@ -277,6 +241,32 @@ public class TeamService {
         return CommonResponse.createError("정확한 pageSort 값을 입력해주세요.");
     }
 
+    public CommonResponse<?> getTeamList(int pageNum, int pageSize, String pageSort, long memberId){
+
+            Pageable pageable = PageRequest.of(pageNum, pageSize);
+        if("ASC".equals(pageSort)){
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListAsc(pageable, memberId);
+            return CommonResponse.createSuccess(teamListDtos, "팀 리스트 success");
+
+        } else if ("DESC".equals(pageSort)) {
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListDesc(pageable, memberId);
+            return CommonResponse.createSuccess(teamListDtos, "팀 리스트 success");
+
+        } else if ("SHUFFLE".equals(pageSort)) {
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListAsc(pageable, memberId);
+            List<TeamListDto> content = new ArrayList<>(teamListDtos.getContent());
+
+            Collections.shuffle(content);
+
+            int fromIndex = (int) pageable.getOffset();
+            int toIndex = Math.min(fromIndex + pageable.getPageSize(), content.size());
+
+            List<TeamListDto> subList = content.subList(fromIndex, toIndex);
+            return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, content.size()), "팀 랜덤(SHUFFLE) 리스트 success");
+        }
+        return CommonResponse.createError("정확한 pageSort 값을 입력해주세요.");
+    }
+
     public CommonResponse<?> getTeamMemberInfoId(Long teamId, Long memberId) {
         Optional<Team> team = teamRepository.findById(teamId);
         Optional<Member> member = memberRepository.findById(memberId);
@@ -299,4 +289,23 @@ public class TeamService {
 
         return CommonResponse.createSuccess(teamMemberInfoId, "teamMemberInfo_Id 값 success");
     }
+
+    /**
+     * 팀 가입 취소
+     * teamId 와 memberId 로 teamMemberInfoId 를 삭제함
+     * @param teamId
+     * @param memberId
+     * @return
+     */
+    public CommonResponse<?> cancelJoinTeam(Long teamId, Long memberId){
+        int checkDeleteId = teamMemberInfoRepository.deleteTeamMemberInfoById(teamId, memberId);
+
+        if(checkDeleteId > 0 ){
+            return CommonResponse.createSuccess("가입이 취소되었습니다.");
+        }else{
+            return CommonResponse.createError("가입 취소가 실패하였습니다.");
+        }
+    }
+
+
 }
