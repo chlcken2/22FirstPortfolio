@@ -83,15 +83,16 @@ public class TeamController {
 
     @ApiOperation(value = "(팀 찾기)검색어를 통해 팀 정보 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @GetMapping("/teams/{team-identifier}")
-    public CommonResponse<?> findTeam (@RequestParam(value = "team-identifier") String teamIdentifier) {
+    public CommonResponse<?> findTeam (@RequestParam(value = "team-identifier") String teamIdentifier,
+                                        @RequestParam(value = "member_id") long memberId) {
         boolean isNumeric = teamIdentifier.chars().allMatch(Character::isDigit);
 
-        List<TeamSearchDto> findTeams = null;
+        List<TeamListDto> findTeams = null;
         if (isNumeric) {
             int teamSerialNo = Integer.parseInt(teamIdentifier);
-            findTeams = teamService.findTeamBySearchCond(null, teamSerialNo);
+            findTeams = teamService.findTeamBySearchCond(null, teamSerialNo, memberId);
         } else {
-            findTeams = teamService.findTeamBySearchCond(teamIdentifier, null);
+            findTeams = teamService.findTeamBySearchCond(teamIdentifier, null, memberId);
         }
 
         if (findTeams.isEmpty()) {
@@ -99,7 +100,6 @@ public class TeamController {
         }
         return CommonResponse.createSuccess(findTeams, "검색 결과 success");
     }
-
 
     @ApiOperation(value = "(팀 찾기)팀 가입 신청", notes = "가입할 팀Id와 가입할 회원Id를 입력한다, 가입 신청 후 회원 권한 = WAIT")
     @PostMapping("/teams/{teamid}/join")

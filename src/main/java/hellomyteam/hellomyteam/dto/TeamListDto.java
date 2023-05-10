@@ -19,6 +19,7 @@ public class TeamListDto {
     private AuthorityStatus leader_authority;
     private AuthorityStatus member_authority;
 
+    @QueryProjection
     public TeamListDto(Long teamId, String teamName, String oneIntro, Integer teamSerialNo, String name, Integer memberCount, String imageUrl, String location, AuthorityStatus leader_authority,AuthorityStatus member_authority){
         this.teamId = teamId;
         this.teamName = teamName;

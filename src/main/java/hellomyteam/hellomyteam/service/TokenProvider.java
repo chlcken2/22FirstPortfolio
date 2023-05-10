@@ -24,10 +24,7 @@ public class TokenProvider {
 
     @PostConstruct
     protected void init() {
-        System.out.println("여기 실행됨");
-        System.out.println(secretKey);
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        System.out.println(secretKey);
     }
 
     public Token generateToken(String uid, String role) {

@@ -43,7 +43,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
             builder.and(team.teamSerialNo.eq(teamSerialNo));
         }
 
-         return queryFactory
+        return queryFactory
                 .select(new QTeamSearchDto(
                         team.id
                         , team.teamName
@@ -60,7 +60,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                 .join(teamMemberInfo.member, member)
                 .on(teamMemberInfo.authority.eq(AuthorityStatus.valueOf("LEADER")))
                 .where(builder)
-                 .fetch();
+                .fetch();
     }
 
 
