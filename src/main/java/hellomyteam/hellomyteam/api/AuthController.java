@@ -63,7 +63,7 @@ public class AuthController {
             @ApiImplicitParam(name="authNumber", value = "인증번호")
     })
     @GetMapping("/verify")
-    public CommonResponse<?> verify(@RequestParam String auth, @RequestParam int authNumber, HttpServletResponse response){
+    public CommonResponse<?> verify(@RequestParam String auth, @RequestParam int authNumber){
         return authService.chkJWT(auth, authNumber);
     }
 
