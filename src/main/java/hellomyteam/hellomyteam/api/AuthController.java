@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RestController
@@ -97,14 +98,22 @@ public class AuthController {
     @ApiImplicitParam(name = "Authorization", value = "Access Token 입력x")
     @PostMapping("/signup")
     public CommonResponse<?> registerUser(@RequestBody SignUpRequest signUpRequest) {
-        if(memberRepository.existsByEmail(signUpRequest.getEmail())) {
+        String email = signUpRequest.getEmail().replaceAll("(\r\n|\r|\n|\n\r|\\p{Z}|\\t)", "");
+
+        CommonResponse<?> response = isValidEmail(email);
+
+        if(!"올바른 이메일 형식입니다.".equals(response.getData())){
+            return CommonResponse.createError(response.getMessage());
+        }
+
+        if(memberRepository.existsByEmail(email)) {
             return CommonResponse.createError(new BadRequestException("Email address already in use.").getMessage());
         }
 
         String encodePassword = passwordEncoder.encode(signUpRequest.getPassword());
 
         Member member = Member.builder()
-                                .email(signUpRequest.getEmail())
+                                .email(email)
                                 .password(encodePassword)
                                 .name(signUpRequest.getName())
                                 .birthday(signUpRequest.getBirthday())
@@ -158,5 +167,19 @@ public class AuthController {
         }
 
         return CommonResponse.createError("refresh Token 같지않음");
+    }
+
+    public static CommonResponse<?> isValidEmail (String email){
+        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(regex);
+        if("".equals(email))
+            return CommonResponse.createError("이메일을 작성해주세요.");
+        if(!pattern.matcher(email).matches())
+            return CommonResponse.createError("올바른 이메일 형식이 아닙니다.");
+
+        return CommonResponse.createSuccess("올바른 이메일 형식입니다.");
     }
 }
