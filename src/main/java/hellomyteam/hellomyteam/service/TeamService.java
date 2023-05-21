@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -65,9 +66,24 @@ public class TeamService {
         return savedteamMemberInfo;
     }
 
-    public List<TeamSearchDto> findTeamBySearchCond(String teamName, Integer teamSerialNo) {
+/*    public List<TeamSearchDto> findTeamBySearchCond(String teamName, Integer teamSerialNo, long memberId) {
         List<TeamSearchDto> team = teamCustomImpl.getInfoBySerialNoOrTeamName(teamName, teamSerialNo);
+
         return team;
+    }*/
+
+    public List<TeamListDto> findTeamBySearchCond(String teamName, Integer teamSerialNo, long memberId) {
+       //List<TeamSearchDto> team = teamCustomImpl.getInfoBySerialNoOrTeamName(teamName, teamSerialNo);
+        List<TeamListDto> teamSearchDtos = null;
+
+        if(StringUtils.hasText(teamName)) {
+            teamSearchDtos = teamRepository.getInfoBySerialNoOrTeamName(teamName, memberId);
+        }
+        if(null != teamSerialNo) {
+            teamSearchDtos = teamRepository.getInfoBySerialNoOrTeamName(teamSerialNo, memberId);
+        }
+
+            return teamSearchDtos;
     }
 
     public Team findTeamById(Long id) {
@@ -217,6 +233,13 @@ public class TeamService {
         return teamMemberInfosResDtos;
     }
 
+    /** Deprecating soon
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param pageSort
+     * @return
+     */
     public CommonResponse<?> getTeams(int pageNum, int pageSize, String pageSort) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         if (pageSort.equals("ASC")) {
@@ -255,7 +278,7 @@ public class TeamService {
             return CommonResponse.createSuccess(teamListDtos, "팀 리스트 success");
 
         } else if ("SHUFFLE".equals(pageSort)) {
-            Page<TeamListDto> teamListDtos = teamRepository.getTeamListAsc(pageable, memberId);
+            Page<TeamListDto> teamListDtos = teamRepository.getTeamListDefault(pageable, memberId);
             List<TeamListDto> content = new ArrayList<>(teamListDtos.getContent());
 
             Collections.shuffle(content);
@@ -264,7 +287,7 @@ public class TeamService {
             int toIndex = Math.min(fromIndex + pageable.getPageSize(), content.size());
 
             List<TeamListDto> subList = content.subList(fromIndex, toIndex);
-            return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, content.size()), "팀 랜덤(SHUFFLE) 리스트 success");
+            return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, teamListDtos.getTotalElements()), "팀 랜덤(SHUFFLE) 리스트 success");
         }
         return CommonResponse.createError("정확한 pageSort 값을 입력해주세요.");
     }
