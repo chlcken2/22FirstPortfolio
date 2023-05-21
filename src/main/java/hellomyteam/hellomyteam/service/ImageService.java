@@ -3,9 +3,11 @@ package hellomyteam.hellomyteam.service;
 import hellomyteam.hellomyteam.config.S3Uploader;
 import hellomyteam.hellomyteam.dto.CommonResponse;
 import hellomyteam.hellomyteam.dto.ImgProfileResDto;
+import hellomyteam.hellomyteam.entity.Board;
 import hellomyteam.hellomyteam.entity.Image;
 import hellomyteam.hellomyteam.entity.Team;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
+import hellomyteam.hellomyteam.repository.BoardRepository;
 import hellomyteam.hellomyteam.repository.FileUploadRepository;
 import hellomyteam.hellomyteam.repository.TeamMemberInfoRepository;
 import hellomyteam.hellomyteam.repository.TeamRepository;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class ImageService {
 
     private final TeamRepository teamRepository;
+    private final BoardRepository boardRepository;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final FileUploadRepository fileUploadRepository;
     private final FileUploadCustomImpl fileUploadCustomImpl;
@@ -159,5 +162,36 @@ public class ImageService {
     public CommonResponse<?> getBackgroundImg(Long teamMemberInfoId) {
         ImgProfileResDto image = fileUploadCustomImpl.getBackgroundImgByTmiId(teamMemberInfoId);
         return CommonResponse.createSuccess(image, "background 이미지 조회 결과");
+    }
+
+    //TODO 게시판 이미지 저장
+    /**
+     * 게시판 이미지 저장
+     * @param
+     * @return
+     */
+    public CommonResponse<?> saveBoardImage(Long teamId, Long boardId, MultipartFile multipartFile) throws IOException{
+        if(!multipartFile.isEmpty()){
+            Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "boardImg"+boardId);
+
+            String fileName = storedFileURL.get("fileName");
+            String uploadImageUrl = storedFileURL.get("uploadImageUrl");
+
+            Team team = teamRepository.findById(teamId)
+                    .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("boardId가 누락되었습니다."));
+
+            Image image = Image.builder()
+                    .team(team)
+                    .board(board)
+                    .imageUrl(uploadImageUrl)
+                    .storeFilename(fileName)
+                    .build();
+            fileUploadRepository.save(image);
+            return CommonResponse.createSuccess("이미지 저장성공"+fileName+uploadImageUrl);
+
+        }
+        return CommonResponse.createError("에러발생");
     }
 }

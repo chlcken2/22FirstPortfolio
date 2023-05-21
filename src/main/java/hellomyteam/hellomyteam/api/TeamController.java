@@ -59,9 +59,6 @@ public class TeamController {
         return CommonResponse.createSuccess(hashMap);
     }
 
-
-
-    //TODO member_id 값을 수동으로 받고 있음 추후 @authenticationpricipal 을 사용하여 이메일 확인 후 member_id 값 가져오는 방식 고려
     @ApiOperation(value = "(팀 찾기) 팀 리스트 가져오기", notes = "팀 이름 혹은 팀 고유번호를 입력해야한다. ")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "페이지네이션 번호", required = true, dataType = "string", paramType = "query", defaultValue = "0"),

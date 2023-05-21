@@ -169,7 +169,7 @@ public class AuthController {
         return CommonResponse.createError("refresh Token 같지않음");
     }
 
-    public static CommonResponse<?> isValidEmail (String email){
+    private static CommonResponse<?> isValidEmail (String email){
         String regex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
                 "[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
