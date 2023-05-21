@@ -21,9 +21,12 @@ public class TeamMemberInfoDto {
     private Integer drinkingCapacity;
     private String image;
     private PersonalPositionStatus preferPosition;
+    private String phoneNumberVisibility;
+    private String birthdayVisibility;
+
 
     @QueryProjection
-    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, PersonalPositionStatus preferPosition) {
+    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, PersonalPositionStatus preferPosition, String phoneNumberVisibility, String birthdayVisibility) {
         this.teamId = teamId;
         this.name = name;
         this.address = address;
@@ -36,5 +39,7 @@ public class TeamMemberInfoDto {
         this.drinkingCapacity = drinkingCapacity;
         this.image = image;
         this.preferPosition = preferPosition;
+        this.phoneNumberVisibility = phoneNumberVisibility;
+        this.birthdayVisibility = birthdayVisibility;
     }
 }

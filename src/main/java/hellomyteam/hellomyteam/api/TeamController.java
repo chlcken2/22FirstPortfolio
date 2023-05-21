@@ -180,7 +180,9 @@ public class TeamController {
         return teamService.getTeamMemberInfo(teamId, teamMemberInfoId);
     }
 
-    @ApiOperation(value = "팀원 상세 정보 수정", notes = "본인일 경우에만 수정 가능")
+    @ApiOperation(value = "팀원 상세 정보 수정", notes = "본인일 경우에만 수정 가능 <br> " +
+                                            "changeBirthdayVisibility 공개/비공개는 'PUBLIC', 'PRIVATE' <br>" +
+                                            "changePhoneNumberVisibility 공개/비공개는 'PUBLIC', 'private' 으로 처리")
     @PutMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}")
     public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "teamid") Long teamId,
                                                 @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,

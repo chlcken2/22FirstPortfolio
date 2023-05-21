@@ -186,6 +186,8 @@ public class TeamService {
         findTeamMemberInfo.setConditionIndicator(teamInfoUpdateDto.getChangeConditionIndicator());
         findTeamMemberInfo.setDrinkingCapacity(teamInfoUpdateDto.getChangeDrinkingCapacity());
         findTeamMemberInfo.setPreferPosition(teamInfoUpdateDto.getChangePreferPosition());
+        findTeamMemberInfo.setBirthdayVisibility(teamInfoUpdateDto.getChangeBirthdayVisibility());
+        findTeamMemberInfo.setPhoneNumberVisibility(teamInfoUpdateDto.getChangePhoneNumberVisibility());
         findMember.setBirthday(teamInfoUpdateDto.getChangeBirthday());
         findMember.setName(teamInfoUpdateDto.getChangeName());
 

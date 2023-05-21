@@ -121,7 +121,9 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         teamMemberInfo.conditionIndicator,
                         teamMemberInfo.drinkingCapacity,
                         image.imageUrl,
-                        teamMemberInfo.preferPosition))
+                        teamMemberInfo.preferPosition,
+                        teamMemberInfo.birthdayVisibility,
+                        teamMemberInfo.phoneNumberVisibility))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
                 .join(teamMemberInfo.member, member)

@@ -55,6 +55,10 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     private Integer drinkingCapacity;
 
+    private String phoneNumberVisibility;
+
+    private String birthdayVisibility;
+
     private LocalDateTime joinDate;
 
     private LocalDateTime applyDate;
