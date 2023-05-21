@@ -96,14 +96,12 @@ public class BoardController {
         return CommonResponse.createSuccess(bool, "좋아요 true/false");
     }
 
-    //TODO 게시판 이미지 추가
     @ApiOperation(value = "게시판 이미지", notes = "게시판 이미지 저장 후 경로 반환")
     @PostMapping("/teams/{teamid}/board/{boardid}/image")
     public CommonResponse<?> addBoardImage(@PathVariable(value = "teamid") Long teamid,
                                            @PathVariable(value = "boardid") Long boardid,
                                            @RequestPart MultipartFile multipartFile
                                            ) throws IOException {
-        //imageService.saveBoardImage(teamid, boardid, multipartFile);
 
         return CommonResponse.createSuccess(imageService.saveBoardImage(teamid, boardid, multipartFile), "생성완료");
     }
