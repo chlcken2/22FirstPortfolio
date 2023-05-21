@@ -160,4 +160,14 @@ public class ImageService {
         ImgProfileResDto image = fileUploadCustomImpl.getBackgroundImgByTmiId(teamMemberInfoId);
         return CommonResponse.createSuccess(image, "background 이미지 조회 결과");
     }
+
+    public CommonResponse<?> deleteBackgroundImg(Long teamMemberInfoId, Long teamId) {
+        fileUploadCustomImpl.changeBackgroundImgByTMIId(teamMemberInfoId);
+        return CommonResponse.createSuccess("백그라운드 이미지 삭제");
+    }
+
+    public CommonResponse<?> deleteProfileImg(Long teamMemberInfoId, Long teamId) {
+        fileUploadCustomImpl.changeProfileImgByTMIId(teamMemberInfoId);
+        return CommonResponse.createSuccess("프로필 이미지 삭제");
+    }
 }

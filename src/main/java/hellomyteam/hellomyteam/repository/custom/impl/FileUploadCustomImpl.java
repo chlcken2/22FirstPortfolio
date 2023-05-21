@@ -84,20 +84,21 @@ public class FileUploadCustomImpl {
                 .fetchOne();
     }
 
-//    public List<Image> existsProfileByTeamMemberInfoId(Long teamMemberInfoId) {
-//        return queryFactory
-//                .selectFrom(image)
-//                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
-//                .where(image.teamMemberInfoBackGroundId.eq(Boolean.FALSE))
-//                .fetch();
-//    }
-//
-//    public List<Image> existsBackgroundByTeamMemberInfoId(Long teamMemberInfoId) {
-//        return queryFactory
-//                .selectFrom(image)
-//                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
-//                .where(image.teamMemberInfoBackGround.eq(Boolean.TRUE))
-//                .fetch();
-//
-//    }
+    public void changeBackgroundImgByTMIId(Long teamMemberInfoId) {
+        queryFactory
+                .update(image)
+                .set((Path<String>) image.imageUrl, (String) null)
+                .set((Path<String>) image.storeFilename, (String) null)
+                .where(image.teamMemberInfo.id.eq(teamMemberInfoId))
+                .execute();
+    }
+
+    public void changeProfileImgByTMIId(Long teamMemberInfoId) {
+        queryFactory
+                .update(image)
+                .set((Path<String>) image.imageUrl, (String) null)
+                .set((Path<String>) image.storeFilename, (String) null)
+                .where(image.teamMemberInfoBackGroundId.eq(teamMemberInfoId))
+                .execute();
+    }
 }

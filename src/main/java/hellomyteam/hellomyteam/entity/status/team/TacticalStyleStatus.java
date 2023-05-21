@@ -13,5 +13,4 @@ public enum TacticalStyleStatus {
     COUNTER_ATTACK("선수비 후 역습");
 
     private final String value;
-
 }

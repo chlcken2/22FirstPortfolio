@@ -245,6 +245,20 @@ public class TeamController {
     /**
      * 팀 소속 유저 백그라운드 이미지 추가/수정
      * @param teamMemberInfoId
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation(value = "프로필 이미지 단일 삭제")
+    @DeleteMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/profile")
+    public CommonResponse<?> deleteProfileImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                                 @PathVariable(value = "teamid") Long teamId) {
+
+        return imageService.deleteProfileImg(teamMemberInfoId, teamId);
+    }
+
+    /**
+     * 팀 소속 유저 백그라운드 이미지 추가/수정
+     * @param teamMemberInfoId
      * @param imgFile
      * @return
      * @throws IOException
@@ -267,6 +281,21 @@ public class TeamController {
     public CommonResponse<?> getBackgroundImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
         return imageService.getBackgroundImg(teamMemberInfoId);
     }
+
+    /**
+     * 팀 소속 유저 백그라운드 이미지 추가/수정
+     * @param teamMemberInfoId
+     * @return
+     * @throws IOException
+     */
+    @ApiOperation(value = "백그라운드 이미지 단일 삭제")
+    @DeleteMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/background")
+    public CommonResponse<?> deleteBackgroundImg(@PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                                 @PathVariable(value = "teamid") Long teamId) {
+
+        return imageService.deleteBackgroundImg(teamMemberInfoId, teamId);
+    }
+
     //TODO 팀 관리/정보 수정
 //    @ApiOperation(value = "팀 관리 / 정보 수정")
 //    @PutMapping(value = "/member/{memberId}")
