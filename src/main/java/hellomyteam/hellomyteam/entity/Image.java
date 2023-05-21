@@ -36,10 +36,11 @@ public class Image extends BaseTimeEntity {
 
     //logo
     @Builder
-    public Image(String imageUrl, String storeFilename, Team team, TeamMemberInfo teamMemberInfo, Long teamMemberInfoBackGroundId) {
+    public Image(String imageUrl, String storeFilename, Team team, Board board, TeamMemberInfo teamMemberInfo, Long teamMemberInfoBackGroundId) {
         this.imageUrl = imageUrl;
         this.storeFilename = storeFilename;
         this.team = team;
+        this.board = board;
         this.teamMemberInfo = teamMemberInfo;
         this.teamMemberInfoBackGroundId = teamMemberInfoBackGroundId;
     }
