@@ -167,8 +167,8 @@ public class ImageService {
     //TODO 게시판 이미지 저장
     /**
      * 게시판 이미지 저장
-     * @param
-     * @return
+     * @param teamId, boardId, file
+     * @return uploadImageUrl
      */
     public CommonResponse<?> saveBoardImage(Long teamId, Long boardId, MultipartFile multipartFile) throws IOException{
         if(!multipartFile.isEmpty()){
@@ -189,8 +189,7 @@ public class ImageService {
                     .storeFilename(fileName)
                     .build();
             fileUploadRepository.save(image);
-            return CommonResponse.createSuccess("이미지 저장성공"+fileName+uploadImageUrl);
-
+            return CommonResponse.createSuccess(uploadImageUrl);
         }
         return CommonResponse.createError("에러발생");
     }
