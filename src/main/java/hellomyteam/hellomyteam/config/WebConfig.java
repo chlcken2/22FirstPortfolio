@@ -10,8 +10,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("https://hellomyteam-front-o8od-1djv80i8p-chlcken2.vercel.app",
-                        "https://hellomyteam.com")
+                .allowedOrigins("https://hellomyteam.com",
+                        "https://www.hellomyteam.com",
+                        "https://hellomyteam-front-o8od.vercel.app/")
                 .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }

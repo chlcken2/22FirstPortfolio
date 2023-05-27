@@ -173,4 +173,34 @@ public class ImageService {
         fileUploadCustomImpl.changeProfileImgByTMIId(teamMemberInfoId);
         return CommonResponse.createSuccess("프로필 이미지 삭제");
     }
+
+
+    /**
+     * 게시판 이미지 저장
+     * @param teamId, boardId, file
+     * @return uploadImageUrl
+     */
+    public CommonResponse<?> saveBoardImage(Long teamId, Long boardId, MultipartFile multipartFile) throws IOException{
+        if(!multipartFile.isEmpty()){
+            Map<String, String> storedFileURL = s3Uploader.upload(multipartFile, "boardImg"+boardId);
+
+            String fileName = storedFileURL.get("fileName");
+            String uploadImageUrl = storedFileURL.get("uploadImageUrl");
+
+            Team team = teamRepository.findById(teamId)
+                    .orElseThrow(() -> new IllegalArgumentException("teamId가 누락되었습니다."));
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new IllegalArgumentException("boardId가 누락되었습니다."));
+
+            Image image = Image.builder()
+                    .team(team)
+                    .board(board)
+                    .imageUrl(uploadImageUrl)
+                    .storeFilename(fileName)
+                    .build();
+            fileUploadRepository.save(image);
+            return CommonResponse.createSuccess(uploadImageUrl);
+        }
+        return CommonResponse.createError("에러발생");
+    }
 }
