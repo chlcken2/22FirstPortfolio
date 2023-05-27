@@ -4,7 +4,9 @@ import hellomyteam.hellomyteam.dto.*;
 import hellomyteam.hellomyteam.entity.Board;
 import hellomyteam.hellomyteam.dto.CommonResponse;
 import hellomyteam.hellomyteam.entity.BoardCategory;
+import hellomyteam.hellomyteam.entity.Image;
 import hellomyteam.hellomyteam.service.BoardService;
+import hellomyteam.hellomyteam.service.ImageService;
 import hellomyteam.hellomyteam.service.LikeService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -12,8 +14,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -23,6 +28,7 @@ public class BoardController {
 
     private final BoardService boardService;
     private final LikeService likeService;
+    private final ImageService imageService;
 
     /**
      * 페이징 처리
@@ -94,5 +100,15 @@ public class BoardController {
                                          @RequestBody LikeReqDto likeReqDto) {
         Boolean bool = likeService.checkLikeBoard(likeReqDto.getTeamMemberInfoId(), boardId);
         return CommonResponse.createSuccess(bool, "좋아요 true/false");
+    }
+
+    @ApiOperation(value = "게시판 이미지", notes = "게시판 이미지 저장 후 경로 반환")
+    @PostMapping("/teams/{teamid}/board/{boardid}/image")
+    public CommonResponse<?> addBoardImage(@PathVariable(value = "teamid") Long teamid,
+                                           @PathVariable(value = "boardid") Long boardid,
+                                           @RequestPart MultipartFile multipartFile
+                                           ) throws IOException {
+
+        return CommonResponse.createSuccess(imageService.saveBoardImage(teamid, boardid, multipartFile), "생성완료");
     }
 }

@@ -3,9 +3,11 @@ package hellomyteam.hellomyteam.service;
 import hellomyteam.hellomyteam.config.S3Uploader;
 import hellomyteam.hellomyteam.dto.CommonResponse;
 import hellomyteam.hellomyteam.dto.ImgProfileResDto;
+import hellomyteam.hellomyteam.entity.Board;
 import hellomyteam.hellomyteam.entity.Image;
 import hellomyteam.hellomyteam.entity.Team;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
+import hellomyteam.hellomyteam.repository.BoardRepository;
 import hellomyteam.hellomyteam.repository.FileUploadRepository;
 import hellomyteam.hellomyteam.repository.TeamMemberInfoRepository;
 import hellomyteam.hellomyteam.repository.TeamRepository;
@@ -27,6 +29,7 @@ import java.util.Map;
 public class ImageService {
 
     private final TeamRepository teamRepository;
+    private final BoardRepository boardRepository;
     private final TeamMemberInfoRepository teamMemberInfoRepository;
     private final FileUploadRepository fileUploadRepository;
     private final FileUploadCustomImpl fileUploadCustomImpl;
