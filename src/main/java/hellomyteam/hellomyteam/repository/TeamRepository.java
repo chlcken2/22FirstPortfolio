@@ -119,4 +119,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     )
     List<TeamListDto> getInfoBySerialNoOrTeamName(@Param("teamSerialNo") long teamSerialNo,
                                                   @Param("memberIdTSN") long memberIdTSN);
+
 }

@@ -12,7 +12,8 @@ public enum AuthorityStatus {
     WAIT("가입 대기자"),
     MERCENARY("용병"),
     NORMAL("일반"),
-    WITHDRAW_FROM_TEAM("팀 탈퇴자");
+    WITHDRAW_FROM_TEAM("팀 탈퇴자"),
+    EMISSION_MEMBER("방출회원");
 
     private final String value;
 

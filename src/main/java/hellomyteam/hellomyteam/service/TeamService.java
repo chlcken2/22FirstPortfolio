@@ -19,10 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -51,6 +49,7 @@ public class TeamService {
                 .tacticalStyleStatus(teamInfo.getTacticalStyleStatus())
                 .memberCount(1)
                 .teamSerialNo(authNo)
+                .location(teamInfo.getLocation())
                 .build();
         teamRepository.save(team);
         return team;
@@ -156,12 +155,21 @@ public class TeamService {
         }
         AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, teamMemberInfo.getMember().getId());
 
-        if (!(authorityStatus.equals(AuthorityStatus.SUB_LEADER) || authorityStatus.equals(AuthorityStatus.TEAM_MEMBER))) {
-            String stringResult = String.valueOf(authorityStatus);
-            String template = "%s 의 권한일 경우 팀을 탈퇴 할 수 없습니다. 팀원으로 변경바랍니다.";
-            String message = String.format(template, stringResult);
+        if (authorityStatus.equals(AuthorityStatus.WITHDRAW_FROM_TEAM)) {
+            return CommonResponse.createError(authorityStatus, "이미 탈퇴한 회원입니다.");
+        }
 
-            return CommonResponse.createError(authorityStatus, message);
+        if (authorityStatus.equals(AuthorityStatus.LEADER)) {
+            Long teamMemberCount = teamCustomImpl.getTeamMemberCount(teamId);
+            log.info("teamMemberCount:" + teamMemberCount);
+            if (teamMemberCount > 1) {
+                String authResult = "현재권한: " + authorityStatus;
+                String teamMemberCountMessage = "현재팀원 수: " + teamMemberCount;
+                String template = "팀장의 권한일 경우 다음 조건을 만족해야합니다. 팀원으로 변경 혹은 모든 팀원을 탈퇴시키기 바랍니다.";
+                String message = authResult + ", " + teamMemberCountMessage + ", " + template;
+
+                return CommonResponse.createError(authorityStatus, message);
+            }
         }
         //팀 탈퇴
         teamCustomImpl.withDrawTeamByMemberId(teamId, teamMemberInfo.getMember().getId());
@@ -333,4 +341,68 @@ public class TeamService {
     }
 
 
+    public CommonResponse<?> emissionTeamByMemberId(Long teamId, Long teamMemberInfoId, Long emissionId) {
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+        if (teamMemberInfo.getTeam().getId() != teamId) {
+            return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
+
+        AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, teamMemberInfo.getMember().getId());
+
+        if (!(authorityStatus.equals(AuthorityStatus.LEADER) || authorityStatus.equals(AuthorityStatus.SUB_LEADER))) {
+            return CommonResponse.createError("현재권한: "+ authorityStatus, "팀장, 부팀장 이외에 해당 API를 사용할 수 없습니다.");
+        }
+
+        TeamMemberInfo emissionTeamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(emissionId);
+        if (teamMemberInfo.getTeam().getId() != teamId) {
+            return CommonResponse.createError("입력한 teamid와 탈퇴 시킬 회원이 가입한 팀 id가 다릅니다.");
+        }
+
+        AuthorityStatus emissionAuthorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, emissionTeamMemberInfo.getMember().getId());
+        if (!(emissionAuthorityStatus.equals(AuthorityStatus.TEAM_MEMBER))) {
+            return CommonResponse.createSuccess("방출하기 위한 회원의 현재 권한:" + emissionAuthorityStatus, "팀원이 아니기에 방출할 수 없습니다.");
+        }
+
+        teamCustomImpl.emissionTeamMemberById(teamId, emissionId);
+        return CommonResponse.createSuccess("해당 팀원이 방출되고, 팀의 회원 총 회원수가 변경되었습니다.");
+    }
+
+
+    public CommonResponse<?> changeAuthorityByTeamByMemberId(Long teamId, Long teamMemberInfoId, Long targetId, AuthorityStatus targetAuthority) {
+        // 기준이 되는 teamMemberInfoId 팀 가입 유무 체크
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+        if (teamMemberInfo.getTeam().getId() != teamId) {
+            return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
+
+        // 기준이 되는 teamMemberInfoId의 현재 권한 체크 리더, 부팀장일 경우 해당 API 이용 가능
+        AuthorityStatus standardAuthorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, teamMemberInfo.getMember().getId());
+        if (!(standardAuthorityStatus.equals(AuthorityStatus.LEADER) || standardAuthorityStatus.equals(standardAuthorityStatus.SUB_LEADER))) {
+            return CommonResponse.createError("현재권한: "+ standardAuthorityStatus, "팀장, 부팀장 이외에 해당 API를 사용할 수 없습니다.");
+        }
+
+        // 타겟이 되는 teamMemberInfoId의 팀 가입 유무
+        TeamMemberInfo targetTeamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(targetId);
+        if (teamMemberInfo.getTeam().getId() != teamId) {
+            return CommonResponse.createError("입력한 targetId와 권한 변경할 회원이 가입한 팀 id가 다릅니다.");
+        }
+
+        // 기준이 되는 teamMemberInfoId의 현재 권한 체크 부팀장일 경우 리더 제외하고 권한 수정 가능
+        AuthorityStatus targetTeamMemberInfoStatus = teamCustomImpl.getTeamMemberAuth(teamId, targetTeamMemberInfo.getMember().getId());
+        if (standardAuthorityStatus.equals(AuthorityStatus.SUB_LEADER) && targetTeamMemberInfoStatus.equals(AuthorityStatus.LEADER)) {
+            return CommonResponse.createError("기준 ID 권한:" + standardAuthorityStatus + " 타겟 ID 권한: " + targetTeamMemberInfoStatus, "부팀장이 리더의 권한을 변경할 수 없습니다.");
+        } else if (standardAuthorityStatus.equals(AuthorityStatus.SUB_LEADER) && targetTeamMemberInfoStatus.equals(AuthorityStatus.SUB_LEADER)) {
+            return CommonResponse.createError("기준 ID 권한:" + standardAuthorityStatus + " 타겟 ID 권한: " + targetTeamMemberInfoStatus, "부팀장이 부팀장의 권한을 변경할 수 없습니다.");
+        } else if (targetTeamMemberInfoStatus.equals(targetAuthority)) {
+            return CommonResponse.createError("기준 ID 권한:" + standardAuthorityStatus + " 타겟 ID 권한: " + targetTeamMemberInfoStatus, "동일한 권한으로 변경할 수 없습니다.");
+        }
+
+        //권한 수정 로직 실행
+        teamCustomImpl.updateAuthorityTargetId(teamId, targetId, targetAuthority);
+        log.info("@@targetAuthority" + targetAuthority);
+        TeamMemberInfo changedAuthorityTeamMember = em.find(TeamMemberInfo.class, targetId);
+        log.info("@@changedAuthorityTeamMember" + changedAuthorityTeamMember.getAuthority());
+
+        return CommonResponse.createSuccess("수정된 권한: " + changedAuthorityTeamMember.getAuthority(), "정상적으로 수정되었습니다.");
+    }
 }

@@ -59,4 +59,5 @@ public interface TeamMemberInfoRepository extends JpaRepository<TeamMemberInfo, 
     @Transactional
     @Query("Delete From TeamMemberInfo t where t.team.id = ?1 and t.member.id = ?2")
     int deleteTeamMemberInfoById(Long teamId, Long memberId);
+
 }

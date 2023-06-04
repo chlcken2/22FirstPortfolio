@@ -18,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
+
+import javax.persistence.EntityManager;
 import java.util.Date;
 import java.util.List;
 import static hellomyteam.hellomyteam.entity.QImage.image;
@@ -31,6 +33,7 @@ import static hellomyteam.hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
 public class TeamCustomImpl implements TeamJpaRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     public List<TeamSearchDto> getInfoBySerialNoOrTeamName(String teamName, Integer teamSerialNo) {
         BooleanBuilder builder = new BooleanBuilder();
@@ -219,8 +222,10 @@ public class TeamCustomImpl implements TeamJpaRepository {
     public List<TeamNameIdDto> findTeamMemberInfoIdsByMemberId(Long memberId) {
         return queryFactory.select(new QTeamNameIdDto(
                 team.teamName
-                ,team.id
-                ,image.imageUrl
+                , team.id
+                , image.imageUrl
+                , team.oneIntro
+                , team.memberCount
                 ))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
@@ -397,5 +402,43 @@ public class TeamCustomImpl implements TeamJpaRepository {
                 .join(teamMemberInfo.member, member)
                 .where(teamMemberInfo.member.email.eq(currentUserEmail))
                 .fetch();
+    }
+
+    public Long getTeamMemberCount(Long teamId) {
+        return queryFactory.select(teamMemberInfo.count())
+                .from(teamMemberInfo)
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .where(teamMemberInfo.authority.in(AuthorityStatus.LEADER, AuthorityStatus.SUB_LEADER, AuthorityStatus.TEAM_MEMBER))
+                .fetchFirst();
+    }
+
+    public void emissionTeamMemberById(Long teamId, Long emissionId) {
+        Long count = queryFactory
+                .update(teamMemberInfo)
+                .set(teamMemberInfo.authority, AuthorityStatus.EMISSION_MEMBER)
+                .set(teamMemberInfo.withdrawalDate, new Date())
+                .where(teamMemberInfo.authority.eq(AuthorityStatus.TEAM_MEMBER))
+                .where(teamMemberInfo.id.eq(emissionId))
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .execute();
+
+        queryFactory
+                .update(team)
+                .set(team.memberCount, team.memberCount.subtract(count))
+                .where(team.id.eq(teamId))
+                .execute();
+    }
+
+    public void updateAuthorityTargetId(Long teamId, Long targetId, AuthorityStatus targetAuthority) {
+        queryFactory
+                .update(teamMemberInfo)
+                .set(teamMemberInfo.authority, targetAuthority)
+                .where(teamMemberInfo.authority.in(AuthorityStatus.SUB_LEADER, AuthorityStatus.TEAM_MEMBER))
+                .where(teamMemberInfo.id.eq(targetId))
+                .where(teamMemberInfo.team.id.eq(teamId))
+                .execute();
+        //즉시 반영
+        em.clear();
+        em.flush();
     }
 }

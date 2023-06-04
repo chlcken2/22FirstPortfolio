@@ -7,6 +7,7 @@ import hellomyteam.hellomyteam.entity.Member;
 import hellomyteam.hellomyteam.entity.Team;
 import hellomyteam.hellomyteam.entity.TeamMemberInfo;
 import hellomyteam.hellomyteam.dto.CommonResponse;
+import hellomyteam.hellomyteam.entity.status.team.AuthorityStatus;
 import hellomyteam.hellomyteam.service.ImageService;
 import hellomyteam.hellomyteam.service.MemberService;
 import hellomyteam.hellomyteam.service.TeamService;
@@ -14,6 +15,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -151,9 +153,15 @@ public class TeamController {
         return CommonResponse.createSuccess(count, message);
     }
 
+    @ApiOperation(value = "팀원 방출", notes = "팀장/부팀장만 회원 탈퇴 가능, teamMemberInfoID=API를 수행하는 팀장/부팀장 teamMemberInfoId, emissionid=방출할 teamMemberInfoId")
+    @DeleteMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/{emissionid}")
+    public CommonResponse<?> emissionTeamMember(@PathVariable(value = "teamid") Long teamId,
+                                          @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                                @PathVariable(value = "emissionid") Long emissionId) {
+        return teamService.emissionTeamByMemberId(teamId, teamMemberInfoId, emissionId);
+    }
 
-
-    @ApiOperation(value = "팀 탈퇴")
+    @ApiOperation(value = "팀 탈퇴", notes = "부팀장/팀원 탈퇴 가능, 팀원이 팀장 한 명일 경우만 가능")
     @DeleteMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}")
     public CommonResponse<?> withDrawTeam(@PathVariable(value = "teamid") Long teamId,
                                           @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId) {
@@ -298,17 +306,21 @@ public class TeamController {
         return imageService.deleteBackgroundImg(teamMemberInfoId, teamId);
     }
 
-    //TODO 팀 관리/정보 수정
-//    @ApiOperation(value = "팀 관리 / 정보 수정")
-//    @PutMapping(value = "/member/{memberId}")
-//    public CommonResponse<?> editTeamMemberInfo(@PathVariable(value = "memberId") Long memberId,
-//                                                @RequestParam(required = true, value = "teamId") Long teamId,
-//                                                @RequestBody TeamInfoUpdateDto teamInfoUpdateDto
-//    ) {
-//        TeamMemberInfoDto teamMemberInfoDto = teamService.editTeamMemberInfo(teamInfoUpdateDto, memberId, teamId);
-//        return CommonResponse.createSuccess(teamMemberInfoDto, "내 정보 수정 success");
-//    }
 
-    //TODO 팀원 프로필 등록
+    @ApiOperation(value = "팀원 권한 수정", notes = "팀장: 부팀장 -> 팀원, 팀원 -> 부팀장 || 부팀장: 팀원 -> 부팀장")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "targetId", value = "권한이 수정될 회원 Id"),
+            @ApiImplicitParam(name = "authorityStatus", value = "수정 원하는 권한 선택"),
+            @ApiImplicitParam(name = "teammemberinfoid", value = "수정을 하는 회원 Id"),
+            @ApiImplicitParam(name = "teamid", value = "가입한  teamId"),
+    })
+    @PutMapping(value = "/teams/{teamid}/team-member/{teammemberinfoid}/authority")
+    public CommonResponse<?> editTeamMemberAuth(@PathVariable(value = "teamid") Long teamId,
+                                                @PathVariable(value = "teammemberinfoid") Long teamMemberInfoId,
+                                                @RequestParam Long targetId,
+                                                @RequestParam AuthorityStatus authorityStatus) {
+        return teamService.changeAuthorityByTeamByMemberId(teamId, teamMemberInfoId, targetId,  authorityStatus);
+    }
+
 
 }

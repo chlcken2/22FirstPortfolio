@@ -25,6 +25,9 @@ public class TeamDto {
     @ApiModelProperty(value = "상세 소개")
     private String detailIntro;
 
+    @ApiModelProperty(value = "상세 지역")
+    private String location;
+
     @ApiModelProperty(value = "팀 전술 스타일 , \n" +
             "POSSESSION: 점유율,\n" +
             "GEGENPRESSING: 게겐프레싱,\n" +

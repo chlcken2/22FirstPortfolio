@@ -12,11 +12,15 @@ public class TeamNameIdDto {
     private String teamName;
     private Long teamId;
     private String imageUrl;
+    private String oneIntro;
+    private Integer memberCount;
 
     @QueryProjection
-    public TeamNameIdDto(String teamName, Long teamId, String imageUrl) {
+    public TeamNameIdDto(String teamName, Long teamId, String imageUrl, String oneIntro, Integer memberCount) {
         this.teamName = teamName;
         this.teamId = teamId;
         this.imageUrl = imageUrl;
+        this.oneIntro = oneIntro;
+        this.memberCount = memberCount;
     }
 }
