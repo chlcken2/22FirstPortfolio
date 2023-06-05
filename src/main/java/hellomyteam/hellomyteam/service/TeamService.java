@@ -291,9 +291,8 @@ public class TeamService {
 
             Collections.shuffle(content);
 
-            int fromIndex = (int) pageable.getOffset();
+            int fromIndex = 0; //Math.min((int) pageable.getOffset(), content.size());
             int toIndex = Math.min(fromIndex + pageable.getPageSize(), content.size());
-
             List<TeamListDto> subList = content.subList(fromIndex, toIndex);
             return CommonResponse.createSuccess(new PageImpl<>(subList, pageable, teamListDtos.getTotalElements()), "팀 랜덤(SHUFFLE) 리스트 success");
         }

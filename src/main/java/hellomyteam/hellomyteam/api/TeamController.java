@@ -77,7 +77,7 @@ public class TeamController {
                                           @RequestParam String pageSort,
                                           @RequestParam long memberId
     ) {
-        if(memberId == 0){
+        if(memberId == 0){ // memberId가 없을 때를 고려
             return teamService.getTeams(pageNum, pageSize, pageSort);
         }
         return teamService.getTeamList(pageNum, pageSize, pageSort, memberId);
