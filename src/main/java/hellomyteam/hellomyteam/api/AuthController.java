@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private final MemberRepository memberRepository;
