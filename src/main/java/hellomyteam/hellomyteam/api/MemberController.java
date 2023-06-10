@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
     private final MemberRepository memberRepository;
     private final MemberService memberService;
