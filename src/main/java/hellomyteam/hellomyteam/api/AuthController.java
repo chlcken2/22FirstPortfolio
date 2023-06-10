@@ -73,6 +73,7 @@ public class AuthController {
     @PostMapping("/login")
     public CommonResponse<?> authenticateUser(@RequestBody MemberRequest memberRequest, HttpServletResponse response) {
         String email = memberRequest.getEmail();
+        log.info("login컨트롤러 실행");
         Member savedMember = memberRepository.findByEmail(email);
         if (ObjectUtils.isEmpty(savedMember)) {
             response.setStatus(404);
@@ -80,7 +81,7 @@ public class AuthController {
         }
 
         boolean checkPw = passwordEncoder.matches(memberRequest.getPassword(), savedMember.getPassword());
-
+        log.info("login 정보 중간 실행");
         if (!checkPw) {
             response.setStatus(404);
             return CommonResponse.createError(new MemberNotFoundException("password do not match").getMessage());
@@ -90,7 +91,7 @@ public class AuthController {
 
         savedMember.setRefreshToken(token.getRefreshToken());
         memberRepository.save(savedMember);
-
+        log.info("login 정보 로직 테우고 최종 결과 실행");
         return CommonResponse.createSuccess(token);
     }
 
