@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Getter
 @Builder
@@ -16,13 +18,13 @@ public class TeamInfoUpdateDto {
     private String changeName;
     private String changeAddress;
     private String changeBirthday;
-    private ConditionStatus changeConditionStatus;
+    private List<ConditionStatus> changeConditionStatus;
     private Integer changeBackNumber;
     private String changeMemberOneIntro;
     private String changeLeftRightFoot;
     private Integer changeConditionIndicator;
     private Integer changeDrinkingCapacity;
-    private PersonalPositionStatus changePreferPosition;
+    private List<PersonalPositionStatus> changePreferPosition;
     private String changeBirthdayVisibility;
     private String changePhoneNumberVisibility;
 }

@@ -2,9 +2,7 @@ package hellomyteam.hellomyteam.service;
 
 import hellomyteam.hellomyteam.config.S3Uploader;
 import hellomyteam.hellomyteam.dto.*;
-import hellomyteam.hellomyteam.entity.Member;
-import hellomyteam.hellomyteam.entity.Team;
-import hellomyteam.hellomyteam.entity.TeamMemberInfo;
+import hellomyteam.hellomyteam.entity.*;
 import hellomyteam.hellomyteam.entity.status.ConditionStatus;
 import hellomyteam.hellomyteam.entity.status.MemberStatus;
 import hellomyteam.hellomyteam.entity.status.team.AuthorityStatus;
@@ -180,43 +178,120 @@ public class TeamService {
     }
 
     public CommonResponse<?> getTeamMemberInfo(Long teamId, Long teamMemberInfoId) {
-        TeamMemberInfoDto teamMemberInfoDto = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
-        if (teamMemberInfoDto.getTeamId() != teamId) {
-            return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
+        if (teamMemberInfo.getMember() == null) {
+            return CommonResponse.createError("존재하지 않는 회원입니다.");
         }
-        return CommonResponse.createSuccess(teamMemberInfoDto, "success");
+
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
+            HashMap<String, Long> hashMap = new HashMap<>();
+            hashMap.put("입력한 teamid", teamId);
+            return CommonResponse.createError(hashMap, "입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
+
+        TeamMemberInfoDto result = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
+        return CommonResponse.createSuccess(result, "success");
     }
+
 
     public CommonResponse<?> editTeamMemberInfo(Long teamId, Long teamMemberInfoId, TeamInfoUpdateDto teamInfoUpdateDto) {
         TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
         if (teamMemberInfo.getMember() == null) {
             return CommonResponse.createError("존재하지 않는 회원입니다.");
         }
-
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        log.info("test0");
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             HashMap<String, Long> hashMap = new HashMap<>();
             hashMap.put("입력한 teamid", teamId);
             return CommonResponse.createError(hashMap, "입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
         }
+        log.info("test1");
 
         TeamMemberInfo findTeamMemberInfo = em.find(TeamMemberInfo.class, teamMemberInfoId);
+        log.info("test2");
         Member findMember = em.find(Member.class, teamMemberInfo.getMember().getId());
-
+        log.info("test3");
+        TeamMemberPersonalPosition teamMemberPersonalPosition = em.find(TeamMemberPersonalPosition.class, findTeamMemberInfo.getTeamMemberPersonalPosition().getId());
+        log.info("test4");
+        TeamMemberCondition teamMemberCondition = em.find(TeamMemberCondition.class, findTeamMemberInfo.getTeamMemberCondition().getId());
+        log.info("test5");
         findTeamMemberInfo.setAddress(teamInfoUpdateDto.getChangeAddress());
-        findTeamMemberInfo.setConditionStatus(teamInfoUpdateDto.getChangeConditionStatus());
         findTeamMemberInfo.setBackNumber(teamInfoUpdateDto.getChangeBackNumber());
         findTeamMemberInfo.setMemberOneIntro(teamInfoUpdateDto.getChangeMemberOneIntro());
         findTeamMemberInfo.setLeftRightFoot(teamInfoUpdateDto.getChangeLeftRightFoot());
         findTeamMemberInfo.setConditionIndicator(teamInfoUpdateDto.getChangeConditionIndicator());
         findTeamMemberInfo.setDrinkingCapacity(teamInfoUpdateDto.getChangeDrinkingCapacity());
-        findTeamMemberInfo.setPreferPosition(teamInfoUpdateDto.getChangePreferPosition());
+        log.info("findTeamMemberInfo값 세팅완료");
         findTeamMemberInfo.setBirthdayVisibility(teamInfoUpdateDto.getChangeBirthdayVisibility());
         findTeamMemberInfo.setPhoneNumberVisibility(teamInfoUpdateDto.getChangePhoneNumberVisibility());
         findMember.setBirthday(teamInfoUpdateDto.getChangeBirthday());
         findMember.setName(teamInfoUpdateDto.getChangeName());
+        log.info("findMember값 세팅완료");
+
+        // prefer position setting 하는 부분
+        int preferPositionCount = teamInfoUpdateDto.getChangePreferPosition().size();
+        int maxPostions = 2; // 최대 조건 개수
+
+        teamMemberPersonalPosition.setPosition1(preferPositionCount >= 1 ? String.valueOf(teamInfoUpdateDto.getChangePreferPosition().get(0)) : null);
+        teamMemberPersonalPosition.setPosition2(preferPositionCount >= 2 ? String.valueOf(teamInfoUpdateDto.getChangePreferPosition().get(1)) : null);
+
+        for (int i = preferPositionCount; i < maxPostions; i++) {
+            setNullPosition(teamMemberPersonalPosition, i + 1);
+        }
+
+        log.info("teamMemberPersonalPosition 세팅완료");
+        // condition 세팅 부분
+        int conditionCount = teamInfoUpdateDto.getChangeConditionStatus().size();
+        int maxConditions = 5; // 최대 조건 개수
+
+        teamMemberCondition.setCondition1(conditionCount >= 1 ? String.valueOf(teamInfoUpdateDto.getChangeConditionStatus().get(0)) : null);
+        teamMemberCondition.setCondition2(conditionCount >= 2 ? String.valueOf(teamInfoUpdateDto.getChangeConditionStatus().get(1)) : null);
+        teamMemberCondition.setCondition3(conditionCount >= 3 ? String.valueOf(teamInfoUpdateDto.getChangeConditionStatus().get(2)) : null);
+        teamMemberCondition.setCondition4(conditionCount >= 4 ? String.valueOf(teamInfoUpdateDto.getChangeConditionStatus().get(3)) : null);
+        teamMemberCondition.setCondition5(conditionCount >= 5 ? String.valueOf(teamInfoUpdateDto.getChangeConditionStatus().get(4)) : null);
+
+        // 남은 조건을 null로 설정 (maxConditions보다 작은 경우)
+        for (int i = conditionCount; i < maxConditions; i++) {
+            setNullCondition(teamMemberCondition, i + 1);
+        }
 
         TeamMemberInfoDto result = teamCustomImpl.findTeamMemberInfoById(teamMemberInfoId);
         return CommonResponse.createSuccess(result, "수정 되었습니다.");
+    }
+
+    private void setNullPosition(TeamMemberPersonalPosition teamMemberPersonalPosition, int positionCount) {
+        switch (positionCount) {
+            case 1:
+                teamMemberPersonalPosition.setPosition1(null);
+                break;
+            case 2:
+                teamMemberPersonalPosition.setPosition2(null);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void setNullCondition(TeamMemberCondition teamMemberCondition, int conditionNumber) {
+        switch (conditionNumber) {
+            case 1:
+                teamMemberCondition.setCondition1(null);
+                break;
+            case 2:
+                teamMemberCondition.setCondition2(null);
+                break;
+            case 3:
+                teamMemberCondition.setCondition3(null);
+                break;
+            case 4:
+                teamMemberCondition.setCondition4(null);
+                break;
+            case 5:
+                teamMemberCondition.setCondition5(null);
+                break;
+            default:
+                break;
+        }
     }
 
     public CommonResponse<?> findAppliedTeamMember(Long teamMemberInfoId, Long teamId) {
