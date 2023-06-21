@@ -28,6 +28,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @NotNull
     private AuthorityStatus authority;
 
+    @Enumerated(EnumType.STRING)
+    private PersonalPositionStatus preferPosition;
 //    @Enumerated(EnumType.STRING)
 //    private PersonalPositionStatus preferPosition;
 
@@ -40,6 +42,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date withdrawalDate;
 
+    @Enumerated(EnumType.STRING)
+    private ConditionStatus conditionStatus;
 //    @Enumerated(EnumType.STRING)
 //    private ConditionStatus conditionStatus;
 
@@ -55,9 +59,9 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     private Integer drinkingCapacity;
 
-    private String phoneNumberVisibility;
+    private Boolean phoneNumberVisibility;
 
-    private String birthdayVisibility;
+    private Boolean birthdayVisibility;
 
     private LocalDateTime joinDate;
 

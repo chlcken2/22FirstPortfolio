@@ -3,6 +3,9 @@ package hellomyteam.hellomyteam.dto;
 import hellomyteam.hellomyteam.entity.TeamMemberCondition;
 import hellomyteam.hellomyteam.entity.TeamMemberPersonalPosition;
 import com.querydsl.core.annotations.QueryProjection;
+import hellomyteam.hellomyteam.entity.status.ConditionStatus;
+import hellomyteam.hellomyteam.entity.status.team.PersonalPositionStatus;
+import hellomyteam.hellomyteam.entity.status.team.PersonalStyleStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,6 +18,8 @@ public class TeamMemberInfoDto {
     private String name;
     private String address;
     private String birthday;
+    private ConditionStatus conditionStatus;
+    private PersonalPositionStatus preferPositionList;
 //    private List<TeamMemberCondition> conditionStatusList;
 //    private List<TeamMemberPersonalPosition> preferPositionList;
     private Integer backNumber;
@@ -23,16 +28,18 @@ public class TeamMemberInfoDto {
     private Integer conditionIndicator;
     private Integer drinkingCapacity;
     private String image;
-    private String phoneNumberVisibility;
-    private String birthdayVisibility;
+    private Boolean phoneNumberVisibility;
+    private Boolean birthdayVisibility;
 
 
     @QueryProjection
-    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, String phoneNumberVisibility, String birthdayVisibility) {
+    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, ConditionStatus conditionStatus, PersonalPositionStatus preferPositionList, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, Boolean phoneNumberVisibility, Boolean birthdayVisibility) {
         this.teamId = teamId;
         this.name = name;
         this.address = address;
         this.birthday = birthday;
+        this.conditionStatus = conditionStatus;
+        this.preferPositionList = preferPositionList;
         this.backNumber = backNumber;
         this.memberOneIntro = memberOneIntro;
         this.leftRightFoot = leftRightFoot;

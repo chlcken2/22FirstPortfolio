@@ -21,6 +21,4 @@ public enum PersonalPositionStatus {
     NONE("등록된 포지션이 없습니다.");
 
     private final String value;
-
-
 }

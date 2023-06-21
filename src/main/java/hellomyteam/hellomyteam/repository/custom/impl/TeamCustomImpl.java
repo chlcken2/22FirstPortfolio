@@ -120,8 +120,8 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         member.name,
                         teamMemberInfo.address,
                         member.birthday,
-//                        teamMemberPersonalPosition,
-//                        teamMemberCondition,
+                        teamMemberInfo.conditionStatus,//teamMemberPersonalPosition,
+                        teamMemberInfo.preferPosition,//teamMemberCondition,
                         teamMemberInfo.backNumber,
                         teamMemberInfo.memberOneIntro,
                         teamMemberInfo.leftRightFoot,
@@ -137,7 +137,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                 .join(teamMemberInfo.teamMemberPersonalPosition, teamMemberPersonalPosition)
                 .join(teamMemberInfo.teamMemberCondition, teamMemberCondition)
                 .where(teamMemberInfo.id.eq(teamMemberInfoId))
-                .fetch();
+                .fetchOne();
     }
 
     public List<ApplicantDto> getApplyTeamMember(Long teamId) {
