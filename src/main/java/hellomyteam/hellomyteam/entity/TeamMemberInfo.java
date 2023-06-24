@@ -28,8 +28,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @NotNull
     private AuthorityStatus authority;
 
-//    @Enumerated(EnumType.STRING)
-//    private PersonalPositionStatus preferPosition;
+    @Enumerated(EnumType.STRING)
+    private PersonalPositionStatus preferPosition;
 
     @Enumerated(EnumType.STRING)
     private PersonalStyleStatus preferStyle;
@@ -40,8 +40,8 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date withdrawalDate;
 
-//    @Enumerated(EnumType.STRING)
-//    private ConditionStatus conditionStatus;
+    @Enumerated(EnumType.STRING)
+    private ConditionStatus conditionStatus;
 
     private Integer backNumber;
 
@@ -70,12 +70,6 @@ public class TeamMemberInfo extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
-
-    @OneToOne(mappedBy = "teamMemberInfo")
-    private TeamMemberCondition teamMemberCondition;
-
-    @OneToOne(mappedBy = "teamMemberInfo")
-    private TeamMemberPersonalPosition teamMemberPersonalPosition;
 
     @OneToOne(mappedBy = "teamMemberInfo")
     private Image image;

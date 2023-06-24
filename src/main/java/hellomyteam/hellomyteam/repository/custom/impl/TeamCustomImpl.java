@@ -25,9 +25,7 @@ import java.util.List;
 import static hellomyteam.hellomyteam.entity.QImage.image;
 import static hellomyteam.hellomyteam.entity.QMember.member;
 import static hellomyteam.hellomyteam.entity.QTeam.team;
-import static hellomyteam.hellomyteam.entity.QTeamMemberCondition.teamMemberCondition;
 import static hellomyteam.hellomyteam.entity.QTeamMemberInfo.teamMemberInfo;
-import static hellomyteam.hellomyteam.entity.QTeamMemberPersonalPosition.teamMemberPersonalPosition;
 
 @Slf4j
 @Repository
@@ -113,31 +111,28 @@ public class TeamCustomImpl implements TeamJpaRepository {
     }
 
     public TeamMemberInfoDto findTeamMemberInfoById(Long teamMemberInfoId) {
-
         return queryFactory.
                 select(new QTeamMemberInfoDto(
                         team.id,
                         member.name,
                         teamMemberInfo.address,
                         member.birthday,
-//                        teamMemberPersonalPosition,
-//                        teamMemberCondition,
+                        teamMemberInfo.conditionStatus,
                         teamMemberInfo.backNumber,
                         teamMemberInfo.memberOneIntro,
                         teamMemberInfo.leftRightFoot,
                         teamMemberInfo.conditionIndicator,
                         teamMemberInfo.drinkingCapacity,
                         image.imageUrl,
+                        teamMemberInfo.preferPosition,
                         teamMemberInfo.birthdayVisibility,
                         teamMemberInfo.phoneNumberVisibility))
                 .from(teamMemberInfo)
                 .join(teamMemberInfo.team, team)
                 .join(teamMemberInfo.member, member)
                 .leftJoin(teamMemberInfo.image, image)
-                .join(teamMemberInfo.teamMemberPersonalPosition, teamMemberPersonalPosition)
-                .join(teamMemberInfo.teamMemberCondition, teamMemberCondition)
                 .where(teamMemberInfo.id.eq(teamMemberInfoId))
-                .fetch();
+                .fetchOne();
     }
 
     public List<ApplicantDto> getApplyTeamMember(Long teamId) {
