@@ -89,13 +89,13 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
             "JOIN Member m ON leader_tmi.member.id = m.id " +
             "LEFT JOIN TeamMemberInfo member_tmi ON member_tmi.team.id = t.id AND member_tmi.member.id = :memberIdTN " +
             "WHERE " +
-            "    leader_tmi.authority = 'LEADER' AND t.teamName = :teamName ",
+            "    leader_tmi.authority = 'LEADER' AND t.teamName like CONCAT('%',:teamName,'%') ",
             countQuery = "SELECT COUNT(t) " +
                     "FROM TeamMemberInfo leader_tmi " +
                     "JOIN Team t ON leader_tmi.team.id = t.id " +
                     "JOIN Member m ON leader_tmi.member.id = m.id " +
                     "LEFT JOIN TeamMemberInfo member_tmi ON member_tmi.team.id = t.id AND member_tmi.member.id = :memberIdTN " +
-                    "WHERE leader_tmi.authority = 'LEADER' AND t.teamName = :teamName "
+                    "WHERE leader_tmi.authority = 'LEADER' AND t.teamName like CONCAT('%',:teamName,'%') "
     )
     List<TeamListDto> getInfoBySerialNoOrTeamName(@Param("teamName") String teamName,
                                                   @Param("memberIdTN") long memberIdTN);

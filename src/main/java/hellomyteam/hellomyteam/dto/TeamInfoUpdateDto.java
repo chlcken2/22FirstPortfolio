@@ -23,6 +23,6 @@ public class TeamInfoUpdateDto {
     private Integer changeConditionIndicator;
     private Integer changeDrinkingCapacity;
     private PersonalPositionStatus changePreferPosition;
-    private String changeBirthdayVisibility;
-    private String changePhoneNumberVisibility;
+    private Boolean changeBirthdayVisibility;
+    private Boolean changePhoneNumberVisibility;
 }

@@ -1,5 +1,6 @@
 package hellomyteam.hellomyteam.entity;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import hellomyteam.hellomyteam.entity.status.ConditionStatus;
 import hellomyteam.hellomyteam.entity.status.team.AuthorityStatus;
 import hellomyteam.hellomyteam.entity.status.team.PersonalPositionStatus;
@@ -55,9 +56,9 @@ public class TeamMemberInfo extends BaseTimeEntity {
 
     private Integer drinkingCapacity;
 
-    private String phoneNumberVisibility;
+    private Boolean phoneNumberVisibility;
 
-    private String birthdayVisibility;
+    private Boolean birthdayVisibility;
 
     private LocalDateTime joinDate;
 
