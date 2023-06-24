@@ -21,12 +21,12 @@ public class TeamMemberInfoDto {
     private Integer drinkingCapacity;
     private String image;
     private PersonalPositionStatus preferPosition;
-    private String phoneNumberVisibility;
-    private String birthdayVisibility;
+    private Boolean phoneNumberVisibility;
+    private Boolean birthdayVisibility;
 
 
     @QueryProjection
-    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, PersonalPositionStatus preferPosition, String phoneNumberVisibility, String birthdayVisibility) {
+    public TeamMemberInfoDto(Long teamId, String name, String address, String birthday, ConditionStatus conditionStatus, Integer backNumber, String memberOneIntro, String leftRightFoot, Integer conditionIndicator, Integer drinkingCapacity, String image, PersonalPositionStatus preferPosition, Boolean phoneNumberVisibility, Boolean birthdayVisibility) {
         this.teamId = teamId;
         this.name = name;
         this.address = address;
