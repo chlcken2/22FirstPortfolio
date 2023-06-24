@@ -61,8 +61,7 @@ public class BoardController {
     @PostMapping("/teams/{teamid}/board")
     public CommonResponse<?> writeBoard(@PathVariable(value = "teamid") Long teamId,
                                         @RequestBody BoardWriteDto boardWriteDto) {
-        Board board = boardService.createBoard(boardWriteDto);
-        return CommonResponse.createSuccess(board, "게시판 작성 success");
+        return boardService.createBoard(teamId, boardWriteDto);
     }
 
     @ApiOperation(value = "게시판 상세 조회", notes = "boardId로 게시판 상세 조회, 쿠키를 통한 조회수 중복체크 처리 포함")

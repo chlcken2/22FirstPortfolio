@@ -150,7 +150,7 @@ public class TeamService {
 
     public CommonResponse<?> withDrawTeamByMemberId(Long teamId, Long teamMemberInfoId) {
         TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
         }
         AuthorityStatus authorityStatus = teamCustomImpl.getTeamMemberAuth(teamId, teamMemberInfo.getMember().getId());
@@ -176,7 +176,7 @@ public class TeamService {
         String stringResult = String.valueOf(authorityStatus);
         String template = "현재 권한: %s, 해당 팀을 탈퇴하였습니다.";
         String message = String.format(template, stringResult);
-        return CommonResponse.createError(authorityStatus, message);
+        return CommonResponse.createSuccess(authorityStatus, message);
     }
 
     public CommonResponse<?> getTeamMemberInfo(Long teamId, Long teamMemberInfoId) {
@@ -193,7 +193,7 @@ public class TeamService {
             return CommonResponse.createError("존재하지 않는 회원입니다.");
         }
 
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             HashMap<String, Long> hashMap = new HashMap<>();
             hashMap.put("입력한 teamid", teamId);
             return CommonResponse.createError(hashMap, "입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
@@ -224,7 +224,7 @@ public class TeamService {
         AuthorityStatus teamMemberStatus = findTeamMemberInfo.get().getAuthority();
         Long findTeamId = findTeamMemberInfo.get().getTeam().getId();
 
-        if (findTeamId != teamId) {
+        if (!findTeamId.equals(teamId)) {
             return CommonResponse.createSuccess(teamId, "가입한 팀이 아닙니다.");
         }
 
@@ -342,7 +342,7 @@ public class TeamService {
 
     public CommonResponse<?> emissionTeamByMemberId(Long teamId, Long teamMemberInfoId, Long emissionId) {
         TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
         }
 
@@ -353,7 +353,7 @@ public class TeamService {
         }
 
         TeamMemberInfo emissionTeamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(emissionId);
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             return CommonResponse.createError("입력한 teamid와 탈퇴 시킬 회원이 가입한 팀 id가 다릅니다.");
         }
 
@@ -370,7 +370,7 @@ public class TeamService {
     public CommonResponse<?> changeAuthorityByTeamByMemberId(Long teamId, Long teamMemberInfoId, Long targetId, AuthorityStatus targetAuthority) {
         // 기준이 되는 teamMemberInfoId 팀 가입 유무 체크
         TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(teamMemberInfoId);
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
         }
 
@@ -382,7 +382,7 @@ public class TeamService {
 
         // 타겟이 되는 teamMemberInfoId의 팀 가입 유무
         TeamMemberInfo targetTeamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(targetId);
-        if (teamMemberInfo.getTeam().getId() != teamId) {
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
             return CommonResponse.createError("입력한 targetId와 권한 변경할 회원이 가입한 팀 id가 다릅니다.");
         }
 

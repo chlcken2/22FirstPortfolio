@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 
 @Slf4j
@@ -40,6 +39,7 @@ public class BoardService {
     private final EntityManager em;
 
     public CommonResponse<?> getBoards(Long teamId, int pageNum, int pageSize, BoardCategory category, String srchType, String srchKwd, String sortType){
+
         // 정렬 조건 Check
         if("created_date".equals(sortType)){
             sortType = "createdDate";
@@ -58,7 +58,12 @@ public class BoardService {
             return CommonResponse.createSuccess(boards, "boardsList success");
         }
     }
-    public Board createBoard(BoardWriteDto boardWriteDto) {
+    public CommonResponse createBoard(Long teamId, BoardWriteDto boardWriteDto) {
+        TeamMemberInfo teamMemberInfo = teamMemberInfoRepository.findTeamMemberInfoById(boardWriteDto.getTeamMemberInfoId());
+        if (!teamMemberInfo.getTeam().getId().equals(teamId)) {
+            return CommonResponse.createError("입력한 teamid와 회원이 가입한 팀 id가 다릅니다.");
+        }
+
         TeamMemberInfo findTeamMemberInfo = teamMemberInfoRepository.findById(boardWriteDto.getTeamMemberInfoId())
                 .orElseThrow(()-> new IllegalStateException("teamMemberInfo id가 누락되었습니다."));
 
@@ -74,7 +79,8 @@ public class BoardService {
                 .commentCount(0)
                 .likeCount(0)
                 .build();
-        return boardRepository.save(board);
+        boardRepository.save(board);
+        return CommonResponse.createSuccess(board, "저장되었습니다.");
     }
 
     public BoardDetailResDto getBoard(Long id) {
