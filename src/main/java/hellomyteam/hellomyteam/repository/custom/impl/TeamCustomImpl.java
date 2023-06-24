@@ -120,6 +120,7 @@ public class TeamCustomImpl implements TeamJpaRepository {
                         member.name,
                         teamMemberInfo.address,
                         member.birthday,
+                        teamMemberInfo.
                         teamMemberInfo.conditionStatus,//teamMemberPersonalPosition,
                         teamMemberInfo.preferPosition,//teamMemberCondition,
                         teamMemberInfo.backNumber,
