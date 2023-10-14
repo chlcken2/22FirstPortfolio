@@ -1,4 +1,6 @@
-### 🥅 HelloMyTeam 이란?
+### 
+### [🥅 HelloMyTeam 이란?](hellomyteam.com)
+
 
 <div>
 <img src="https://github.com/iafan1229/threejs/blob/master/1234.gif?raw=true" alt="썸네일"/>
@@ -26,6 +28,7 @@
 <li>Framework : Springboot 3.x.x</li>
 <li>Web backend: Java, Gradle, Spring boot, Spring Security, JPA, Spring Data JPA, Querydsl, Mysql</li>
 <li>Infra: EC2, CodeDeploy RDS, Mardia DB</li>
+<li>etc: Nginx, SSL</li>
 </ul>
 
 ### 📚 저희는 이렇게 프로젝트 해요
