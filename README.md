@@ -1,5 +1,5 @@
 ### 
-### [🥅 HelloMyTeam 이란?](hellomyteam.com)
+### [🥅 HelloMyTeam 이란?](www.hellomyteam.com)
 
 
 <div>
