@@ -1,6 +1,6 @@
 ### 
-### [🥅 HelloMyTeam 이란?](www.hellomyteam.com)
-
+### [🥅 HelloMyTeam 이란?](https://www.hellomyteam.com)
+> 비용 문제로 backend 서버를 내려 정상적인 로그인이 어렵습니다.
 
 <div>
 <img src="https://github.com/iafan1229/threejs/blob/master/1234.gif?raw=true" alt="썸네일"/>
