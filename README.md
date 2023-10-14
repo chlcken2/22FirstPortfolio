@@ -5,7 +5,8 @@
 </div>
 
 <p>축구 인사관리 서비스입니다. 축구 팀원들이 사용할 만한 플랫폼을 만들기 위해 시작되었습니다. </p>
-<p>버젼 1은 회원가입, 로그인, 팀생성,가입,탈퇴,찾기, 권한변경, 공지/자유게시판 으로 구성되어 있습니다.</p>
+<p>현재는 ver1.0에서 잠정 중단 되었습니다. </p>
+<p>ver1.0에는 회원가입, 로그인, 팀생성, 가입, 탈퇴, 팀 찾기, 권한변경, 공지/자유게시판 기능이 개발되어 있습니다.</p>
 <hr/>
 
 ### 📚 백엔드 팀원을 소개합니다.
@@ -23,7 +24,7 @@
 <ul>
 <li>Language : JAVA</li>
 <li>Framework : Springboot 3.x.x</li>
-<li>Web backend: Java, Gradle, Spring boot, Spring Security, JPA, Spring Data JPA,  Querydsl, Mysql</li>
+<li>Web backend: Java, Gradle, Spring boot, Spring Security, JPA, Spring Data JPA, Querydsl, Mysql</li>
 <li>Infra: EC2, CodeDeploy RDS, Mardia DB</li>
 </ul>
 
@@ -52,8 +53,7 @@
 
 <hr/>
 
-<p>2023년 11월 시작 ~ ing</p>
-<p> ver1.0 95% </p>
+<p>2022년 11월 시작 ~ 2023년 06월 ver1.0 마무리</p>
 
 
 
